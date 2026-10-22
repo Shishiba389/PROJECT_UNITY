@@ -1,0 +1,62 @@
+{
+  "SHANGPREE": {
+    "file": "logos/shangpree.svg",
+    "source": "https://shangpree.com/web/images/shangpree-logo.svg"
+  },
+  "REALBARRIER": {
+    "file": "logos/realbarrier.svg",
+    "source": "https://itshanbul.com/wp-content/themes/hanbul/images/brand/logo-real-barrier.svg"
+  },
+  "ITSSKIN": {
+    "file": "logos/itsskin.svg",
+    "source": "https://itshanbul.com/wp-content/themes/hanbul/images/brand/logo-itsskin.svg"
+  },
+  "DIXIONIST": {
+    "file": "logos/dixionist.svg",
+    "source": "https://itshanbul.com/wp-content/themes/hanbul/images/brand/brand_dixionist_pagination_logo.svg"
+  },
+  "CHASINRABBITS": {
+    "file": "logos/chasinrabbits.svg",
+    "source": "https://itshanbul.com/wp-content/themes/hanbul/images/brand/logo-chasin-rabbits.svg"
+  },
+  "ATOPALM": {
+    "file": "logos/atopalm.svg",
+    "source": "https://itshanbul.com/wp-content/themes/hanbul/images/brand/logo-atopalm.svg"
+  },
+  "DERMA-B": {
+    "file": "logos/derma_b.svg",
+    "source": "https://itshanbul.com/wp-content/themes/hanbul/images/brand/logo-derma-b.svg?v1.1"
+  },
+  "ZEROID": {
+    "file": "logos/zeroid.svg",
+    "source": "https://itshanbul.com/wp-content/themes/hanbul/images/brand/logo-zeroid.svg"
+  },
+  "COSRX": {
+    "file": "logos/cosrx.png",
+    "source": "https://www.cosrx.com/cdn/shop/files/COSRX_150x.png?v=1658313147"
+  },
+  "MEDICUBE": {
+    "file": "logos/medicube.svg",
+    "source": "https://medicube.us/cdn/shop/files/25ME_global.svg?v=1745386759&width=600"
+  },
+  "BEAUTYOFJOSEON": {
+    "file": "logos/beautyofjoseon.png",
+    "source": "https://beautyofjoseon.com/cdn/shop/files/boj-logo-text-default.png?crop=center&height=45&v=1765267757&width=480"
+  },
+  "ANUA": {
+    "file": "logos/anua.png",
+    "source": "https://anua.com/cdn/shop/files/PNG_RGB_Primary_logo_ver2_2_255e833c-0e91-42df-96ca-0b7377ba7a8a.png?v=1779429699&width=247"
+  },
+  "INNISFREE": {
+    "file": "logos/innisfree.svg",
+    "source": "https://us.innisfree.com/cdn/shop/files/IFLogo-Green-247x32.svg?v=1778609524&width=246"
+  },
+  "LANEIGE": {
+    "file": "logos/laneige.svg",
+    "source": "https://us.laneige.com/cdn/shop/files/B.I_LANEIGE_wordmark_Blue.svg?v=1723506883&width=246"
+  },
+  "SKIN1004": {
+    "file": "logos/skin1004.png",
+    "source": "https://www.skin1004.com/cdn/shop/files/SKIN1004_LOGO_300PX_30c77c72-0035-4b50-ba2c-f2c7a36a0d9d.png?v=1738771518&width=600"
+  }
+}

@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.N.T — Asset Nexus Technology</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f4faf1',
+                            100: '#e5f3de',
+                            500: '#80b86c',
+                            600: '#497b3c',
+                            700: '#264d2d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fbf7;
+        }
+
+        body.ant-home {
+            background:
+                radial-gradient(ellipse 54% 35% at 50% 22%, rgba(214, 237, 204, .68), transparent 82%),
+                radial-gradient(ellipse 38% 42% at 88% 82%, rgba(228, 243, 223, .62), transparent 90%),
+                #f9fcf8;
+        }
+        body.ant-home #main-scroll-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(39, 98, 33, .045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(39, 98, 33, .045) 1px, transparent 1px);
+            background-size: 56px 56px;
+            mask-image: radial-gradient(ellipse 55% 57% at 50% 29%, #000 12%, transparent 100%);
+        }
+        .ant-home-art { display: none; }
+        body.ant-home .ant-home-art { display: block; position: absolute; width: min(940px, 90vw); height: auto; left: 50%; top: clamp(250px, 31vh, 345px); transform: translateX(-50%); pointer-events: none; opacity: .8; }
+        body.ant-home #search-view-wrapper { position: relative; z-index: 1; }
+
+        /* Custom smooth transition styles for layout shift */
+        .transition-all-custom {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Hide scrollbar for clean UI */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Custom aspect ratio box grid styling */
+        .square-grid-item {
+            aspect-ratio: 1 / 1;
+        }
+
+        :root { --ant-green: #d8edcc; --ant-green-deep: #376b37; --ant-line: #dce8da; }
+        body { color: #25402c; }
+        #language-switch { position: fixed; top: 14px; right: 18px; z-index: 60; display: flex; gap: 3px; padding: 4px; background: white; border: 1px solid var(--ant-line); border-radius: 999px; box-shadow: 0 8px 24px rgba(30,70,40,.08); }
+        #language-switch button { min-width: 34px; padding: 5px 8px; border-radius: 999px; color: #276221; font-size: 11px; font-weight: 800; }
+        #language-switch button[aria-pressed="true"] { background: #276221; color: #fff; }
+        #toast { top: 62px; right: 18px; max-width: min(360px, calc(100vw - 36px)); }
+        #main-scroll-container { padding-bottom: 116px; }
+        button, input, [role="button"] { touch-action: manipulation; }
+        button:focus-visible, input:focus-visible, [role="button"]:focus-visible { outline: 3px solid #6eb464 !important; outline-offset: 3px; }
+        button:disabled { cursor: not-allowed; opacity: .48; }
+        #top-toolbar-container { background: #fff; color: #25402c; border-bottom: 1px solid var(--ant-line); box-shadow: 0 10px 30px rgba(30,70,40,.09); }
+        #top-toolbar-container > div { padding-right: 96px; }
+        #top-toolbar-container .ant-top-tabs { background: #f4faf1; border: 1px solid #d4e8cd; }
+        #top-toolbar-container button { min-height: 36px; color: #276221; }
+        #top-toolbar-container .ant-top-back { background: #fff; border: 1px solid #cfe3c9; }
+        #top-toolbar-container .ant-top-tab { background: transparent; border: 1px solid transparent; font-weight: 600; }
+        #top-toolbar-container .ant-top-back:hover, #top-toolbar-container .ant-top-tab:hover { background: #e8f4e3; }
+        #top-toolbar-container .ant-top-tab.ant-tool-active { background: #dcefd4 !important; color: #276221 !important; border-color: #a7c99d; box-shadow: none; }
+        #top-toolbar-container button span, #bottom-toolbar-container button span { color: inherit !important; }
+        #top-toolbar-container button i { color: #276221 !important; }
+        #bottom-toolbar-container > div { background: #f8fdf5; color: #294d2f; border: 1px solid #cfe4c7; box-shadow: 0 13px 32px rgba(28,75,37,.20), 0 3px 8px rgba(28,75,37,.10); }
+        #bottom-toolbar-container { bottom: max(16px, env(safe-area-inset-bottom)); }
+        #bottom-toolbar-container button { color: #315d36; border-color: #cfe4c7; }
+        #bottom-toolbar-container button { min-height: 44px; }
+        #bottom-toolbar-container button:hover, #bottom-toolbar-container button:nth-of-type(2) { background: #e4f3dc; color: #244e2b; }
+        #bottom-toolbar-container button:nth-of-type(1) i { color: #38bdf8 !important; }
+        #bottom-toolbar-container button:nth-of-type(2) i { color: #fbbf24 !important; }
+        #bottom-toolbar-container button:nth-of-type(3) i { color: #34d399 !important; }
+        #bottom-toolbar-container button:nth-of-type(4) i { color: #c084fc !important; }
+        #bottom-toolbar-container button:nth-of-type(5) i { color: #94a3b8 !important; }
+        #bottom-toolbar-container button span { text-transform: uppercase; }
+        #bottom-toolbar-container .bg-slate-700 { background: #d0e2cc; }
+        #search-container button, #result-page button { transition: background-color .2s, transform .2s; }
+        #search-container button[onclick="executeSearch()"], #result-page button[onclick^="showToast"] { background: #276221; color: #fff; box-shadow: none; }
+        #search-container button[onclick="executeSearch()"]:hover, #result-page button[onclick^="showToast"]:hover { background: #1d4d19; }
+        #search-container button[onclick="executeSearch()"] { white-space: nowrap; }
+        #search-container button[onclick*="file-upload"] { background: #edf7e9; color: #276221; border: 1px solid #276221; }
+        #search-container input { min-width: 0; }
+        #return-to-master { margin-left: max(0px, calc((100% - 1024px) / 2)); margin-bottom: 8px; }
+        #search-input:focus-visible, #master-search-input:focus-visible { outline: none !important; }
+        #search-container > div:first-child:focus-within, .ant-master-search:focus-within { border-color: #8cbd80; box-shadow: 0 0 0 4px rgba(111, 173, 100, .14), 0 15px 28px rgba(33, 79, 40, .10); }
+        #search-feedback { max-width: 100%; }
+        #result-page button[onclick="showToast(t('saved'))"] { background: #edf7e9; color: #276221; border: 1px solid #276221; }
+        #lib-brand-grid-view > div:first-child button, #lib-product-detail-view > div:first-child button, #tool-view .ant-workspace-head button { background: #276221; color: #fff; border-color: #276221; }
+        #lib-brand-grid-view > div:first-child button:hover, #lib-product-detail-view > div:first-child button:hover, #tool-view .ant-workspace-head button:hover { background: #1d4d19; }
+        #search-container .fa-magnifying-glass { color: #58845a; }
+        #search-container .fa-cloud-arrow-up { color: #276221; }
+        #search-container input::placeholder, #app-subtitle { color: #718476; }
+        #app-title span, #detail-category, #lib-detail-product-brand { color: var(--ant-green-deep) !important; }
+        #brand-cards-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+        .ant-brand-card { min-height: 100px; padding: 14px; background: white; border: 1px solid var(--ant-line); border-radius: 14px; display: grid; place-items: center; cursor: pointer; transition: background .2s, border-color .2s, transform .2s; }
+        .ant-brand-card:hover, .ant-brand-card:focus-visible { background: #f0f8ec; border-color: #91c487; transform: translateY(-2px); }
+        .ant-brand-logo { display: block; width: min(100%, 132px); max-height: 58px; object-fit: contain; }
+        .ant-brand-logo.logo-invert { filter: invert(1); }
+        .ant-logo-placeholder { width: 58px; height: 58px; display: grid; place-items: center; border-radius: 14px; background: #edf4ea; border: 1px solid #dce9d8; color: #8bad87; }
+        .ant-brand-logo[hidden], .ant-logo-placeholder[hidden] { display: none !important; }
+        .ant-logo-placeholder svg { width: 27px; height: 27px; }
+        .ant-library-preview { width: 100%; min-height: 430px; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(300px, .65fr); gap: 22px; padding: 22px; background: #fff; border: 1px solid #cddfcb; border-radius: 20px; box-shadow: 0 18px 34px rgba(34,77,43,.10); }
+        .ant-master-bar { width: 100%; margin-top: 14px; padding: 15px 20px; background: #fff; border: 1px solid #cddfcb; border-radius: 16px; box-shadow: 0 9px 22px rgba(34,77,43,.07); }
+        .ant-master-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .ant-master-action { min-height: 44px; display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px; border: 1px solid #cfe3c9; border-radius: 10px; background: #f4faf1; color: #276221; font-size: 12px; font-weight: 700; }
+        .ant-master-action:hover { background: #e4f3dc; }
+        .ant-master-search { display: flex; align-items: center; gap: 10px; margin-top: 16px; padding: 5px 6px 5px 14px; border: 1px solid #cfe3c9; border-radius: 14px; background: #fff; transition: border-color .2s, box-shadow .2s; }
+        .ant-master-search input { min-width: 0; flex: 1; background: transparent; font-size: 14px; }
+        .ant-master-search button { min-height: 44px; padding: 8px 16px; border-radius: 10px; background: #276221; color: #fff; font-size: 12px; font-weight: 700; }
+        .ant-master-search button:hover { background: #1d4d19; }
+        .ant-master-table-wrap { overflow-x: auto; margin-top: 16px; border: 1px solid #e0ebdc; border-radius: 12px; }
+        .ant-master-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; }
+        .ant-master-table th { padding: 11px 12px; background: #f4faf1; color: #527554; font-weight: 700; }
+        .ant-master-table td { padding: 9px 12px; border-top: 1px solid #e7efe4; color: #294d2f; }
+        .ant-master-table tbody tr:hover { background: #f8fcf6; }
+        .ant-master-table td button { min-height: 44px; color: #276221; font-weight: 700; text-align: left; text-decoration: underline; text-underline-offset: 3px; }
+        .ant-master-fields { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+        .ant-master-fields dt { font-size: 10px; font-weight: 800; color: #749075; text-transform: uppercase; letter-spacing: .07em; }
+        .ant-master-fields dd { margin-top: 4px; font-size: 12px; font-weight: 650; color: #294d2f; overflow-wrap: anywhere; }
+        .ant-library-main { min-width: 0; }
+        .ant-library-side { min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+        #brand-product-squares-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+        #brand-product-squares-grid .square-grid-item { aspect-ratio: 1; border: 1px solid #e2ece0; border-radius: 9px; overflow: hidden; background: #f4f8f2; }
+        #brand-product-squares-grid img, .ant-feature-image img { width: 100%; height: 100%; display: block; object-fit: cover; }
+        .ant-feature-image { aspect-ratio: 4 / 3; overflow: hidden; border-radius: 12px; background: #f4f8f2; cursor: pointer; }
+        .ant-empty-image { width: 100%; height: 100%; display: grid; place-items: center; color: #8ba78c; background: linear-gradient(145deg, #f6faf4, #eaf4e8); }
+        .ant-next-button { width: 44px; height: 44px; right: 5px; top: 50%; transform: translateY(-50%); border: 0; border-radius: 50%; display: grid; place-items: center; background: transparent; color: #fff; }
+        .ant-next-button::before { content: ''; position: absolute; inset: 5px; border-radius: 50%; background: #276221; box-shadow: 0 3px 12px rgba(25,60,32,.14); }
+        .ant-next-button:hover::before { background: #1d4d19; }
+        .ant-next-button i { position: relative; z-index: 1; }
+        #lib-detail-img, #visual-image { display: block; width: 100%; height: 100%; object-fit: cover; background: #fff; }
+        #lib-product-detail-view .ant-image-frame { background: white; border-color: var(--ant-line); }
+        .ant-tool-active { background: #1d4d19 !important; color: #fff !important; box-shadow: inset 0 0 0 1px #a5c795; }
+        .ant-workspace-card { width: 100%; min-height: 600px; overflow: hidden; background: white; border: 1px solid #cddfcb; border-radius: 22px; box-shadow: 0 18px 42px rgba(34,77,43,.12); }
+        .ant-workspace-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--ant-line); background: #f5fbf1; }
+        .ant-workspace-frame { display: block; width: 100%; height: min(76vh, 850px); min-height: 560px; border: 0; background: white; }
+        .ant-workspace-placeholder { min-height: 520px; display: grid; place-items: center; padding: 30px; text-align: center; color: #58705b; }
+        .ant-box-enter { animation: ant-box-enter .34s cubic-bezier(.2,.8,.2,1) both; }
+        @keyframes ant-box-enter { from { opacity: 0; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        body.ant-workspace-mode #main-scroll-container { max-width: none; min-height: 0; padding: 0; overflow: hidden; }
+        body.ant-workspace-mode #tool-view, body.ant-workspace-mode #tool-card { height: 100%; min-height: 0; margin: 0; }
+        body.ant-workspace-mode #tool-card { border: 0; border-radius: 0; box-shadow: none; }
+        body.ant-workspace-mode .ant-workspace-head { display: none; }
+        body.ant-workspace-mode .ant-workspace-frame { height: 100%; min-height: 0; }
+        body.ant-workspace-mode #top-library-title { visibility: hidden; }
+        body.ant-workspace-mode .ant-box-enter { animation: ant-workspace-enter .28s ease-out both; }
+        @keyframes ant-workspace-enter { from { opacity: .55; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+        @media (max-width: 700px) {
+            #language-switch { top: 8px; right: 8px; }
+            #top-toolbar-container > div { flex-direction: column; align-items: stretch; gap: 8px; padding: 28px 0 0; }
+            #top-toolbar-container > div > button { align-self: flex-start; white-space: nowrap; }
+            #top-toolbar-container > div > button { min-height: 44px; }
+            #top-toolbar-container .ant-top-tabs { width: 100%; overflow-x: auto; white-space: nowrap; justify-content: space-between; }
+            #top-toolbar-container .ant-top-tabs button { flex: none; white-space: nowrap; }
+            #top-toolbar-container .ant-top-tabs button { min-height: 44px; }
+            #top-toolbar-container .ant-top-tabs button span { display: inline !important; }
+            #top-library-title { display: none !important; }
+            #lib-brand-grid-view > div:first-child { flex-direction: column; align-items: flex-start; }
+            #lib-brand-grid-view > div:first-child button { white-space: nowrap; }
+            .ant-library-preview { grid-template-columns: 1fr; min-height: 0; padding: 14px; }
+            #brand-product-squares-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .ant-master-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 600px) {
+            body.ant-home .ant-home-art { width: 125vw; top: 260px; opacity: .56; }
+            .ant-master-bar { padding: 14px; }
+            .ant-master-actions { width: 100%; }
+            .ant-master-search { flex-wrap: wrap; }
+            .ant-master-search input { font-size: 16px; }
+            body.ant-home #main-scroll-container::before { background-size: 48px 48px; opacity: .65; }
+            #bottom-toolbar-container button { min-width: 0; min-height: 54px; padding: 5px 2px; gap: 2px; }
+            #bottom-toolbar-container button i { font-size: 16px; }
+            #bottom-toolbar-container button span { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+            #bottom-toolbar-container button::after { content: attr(data-short-vi); font-size: 9px; font-weight: 700; line-height: 1; white-space: nowrap; }
+            html[lang="en"] #bottom-toolbar-container button::after { content: attr(data-short-en); }
+            #search-container input { font-size: 16px; }
+        }
+    </style>
+</head>
+<body class="ant-home h-screen w-screen overflow-hidden flex flex-col justify-between text-slate-800 antialiased relative">
+
+    <div id="language-switch" role="group" aria-label="Language / Ngôn ngữ">
+        <button type="button" onclick="setLanguage('vi')" data-lang="vi" aria-pressed="true">VI</button>
+        <button type="button" onclick="setLanguage('en')" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast" role="status" aria-live="polite" class="fixed top-5 right-5 z-50 transform translate-y-[-100px] opacity-0 transition-all duration-300 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 border border-slate-700 pointer-events-none">
+        <i id="toast-icon" class="fa-solid fa-circle-info text-sky-400"></i>
+        <span id="toast-message" class="text-sm font-medium">Thông báo</span>
+    </div>
+
+    <!-- TOP TOOLBAR FOR LIBRARY MODE (Shifted from bottom) -->
+    <div id="top-toolbar-container" class="hidden w-full py-3 px-4 z-40 transition-all duration-300">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <!-- Top Back Button -->
+            <button onclick="handleTopBackNav()" class="ant-top-back flex items-center gap-2 font-semibold text-sm px-3.5 py-2 rounded-xl transition-colors">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span id="top-back-label">Quay lại</span>
+            </button>
+
+            <!-- Function Tabs Moved To Top -->
+            <div class="ant-top-tabs rounded-full p-1 flex items-center gap-1 text-xs">
+                <button onclick="triggerTool('IMG EDIT')" class="ant-top-tab py-1.5 px-3 rounded-full transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span class="hidden md:inline" data-i18n="imageEdit">Chỉnh ảnh</span>
+                </button>
+                <button onclick="openLibraryView()" class="ant-top-tab py-1.5 px-3 rounded-full transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span data-i18n="library">Thư viện</span>
+                </button>
+                <button onclick="triggerTool('REQUEST')" class="ant-top-tab py-1.5 px-3 rounded-full transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span class="hidden md:inline" data-i18n="request">Yêu cầu ảnh</span>
+                </button>
+                <button onclick="triggerTool('AUTO FILL')" class="ant-top-tab py-1.5 px-3 rounded-full transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span class="hidden md:inline" data-i18n="autoFill">Tự điền file</span>
+                </button>
+                <button onclick="triggerTool('SETTING')" class="ant-top-tab py-1.5 px-3 rounded-full transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-gear"></i>
+                    <span class="hidden md:inline" data-i18n="settings">Cài đặt</span>
+                </button>
+            </div>
+
+            <!-- Context Info Badge -->
+            <div id="top-library-title" class="hidden sm:flex items-center gap-2 text-xs text-slate-400 font-medium">
+                <i class="fa-solid fa-layer-group text-sky-400"></i>
+                <span id="top-library-status">Chọn thương hiệu</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT AREA WRAPPER -->
+    <div id="main-scroll-container" class="relative flex-1 flex flex-col items-center justify-start p-4 md:p-8 overflow-y-auto no-scrollbar w-full max-w-7xl mx-auto">
+        <svg class="ant-home-art" viewBox="0 0 940 500" fill="none" aria-hidden="true" focusable="false">
+            <g stroke="#91b68d" stroke-width="1.25" opacity=".42">
+                <path d="M470 230C390 154 270 132 153 153M470 230C555 132 683 125 802 155M470 230C361 239 225 275 116 351M470 230C586 234 722 274 832 351M470 230C451 316 337 373 264 422M470 230C495 319 608 371 677 423" stroke-dasharray="4 8"/>
+                <circle cx="470" cy="230" r="92" opacity=".55"/>
+                <circle cx="470" cy="230" r="146" opacity=".28"/>
+            </g>
+            <g fill="#f9fcf8" stroke="#aac9a3" stroke-width="1.5" opacity=".7">
+                <rect x="414" y="174" width="112" height="112" rx="28"/>
+                <rect x="113" y="119" width="82" height="68" rx="14"/><rect x="764" y="121" width="82" height="68" rx="14"/>
+                <rect x="73" y="319" width="86" height="68" rx="14"/><rect x="797" y="319" width="86" height="68" rx="14"/>
+                <rect x="222" y="390" width="84" height="68" rx="14"/><rect x="635" y="390" width="84" height="68" rx="14"/>
+            </g>
+            <g stroke="#8eae89" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".52">
+                <path d="m444 221 26-13 26 13-26 13-26-13Zm0 16 26 13 26-13m-52 16 26 13 26-13"/>
+                <path d="M129 169h50l-16-19-11 11-7-7-16 15Zm0-34h50v36h-50v-36Zm15 9h.1"/>
+                <path d="M780 169h50l-16-19-11 11-7-7-16 15Zm0-34h50v36h-50v-36Z"/>
+                <path d="M89 369h54l-17-19-11 11-8-7-18 15Zm0-34h54v36H89v-36Zm724 34h54l-17-19-11 11-8-7-18 15Zm0-34h54v36h-54v-36Z"/>
+                <path d="M238 442h52l-17-19-11 11-8-7-16 15Zm0-36h52v38h-52v-38Zm413 36h52l-17-19-11 11-8-7-16 15Zm0-36h52v38h-52v-38Z"/>
+            </g>
+        </svg>
+
+        <!-- ==================== MAIN SEARCH VIEW (ORIGINAL PAGE 1 & PAGE 2) ==================== -->
+        <div id="search-view-wrapper" class="w-full flex flex-col items-center">
+            <button id="return-to-master" type="button" onclick="returnToMasterData()" class="hidden self-start items-center gap-2 rounded-full border border-emerald-200 bg-white px-4 py-2 text-sm font-semibold text-[#276221] hover:bg-emerald-50" data-i18n="backToMaster">Về master data</button>
+            
+            <!-- HEADER / WEB APP NAME -->
+            <header id="header-container" class="transition-all-custom w-full flex flex-col items-center mt-12 md:mt-20 mb-6">
+                <button onclick="resetToFrontPage()" class="group flex items-center gap-3 focus:outline-none">
+                    <div class="w-10 h-10 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-800 shadow-sm group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-layer-group text-lg"></i>
+                    </div>
+                    <h1 id="app-title" class="transition-all-custom text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900">
+                        A.N.T
+                    </h1>
+                </button>
+                <p id="app-subtitle" class="text-slate-400 text-xs md:text-sm mt-1 transition-all duration-300 font-medium">
+                    <span data-i18n="subtitle">Asset Nexus Technology · Không gian tìm kiếm tài sản sản phẩm</span>
+                </p>
+            </header>
+
+            <!-- SEARCH & UPLOAD BAR (SPLIT CAPSULE DESIGN) -->
+            <div id="search-container" class="transition-all-custom w-full max-w-4xl mb-8 z-30">
+                <div class="bg-white rounded-full p-1.5 md:p-2 shadow-xl shadow-slate-200/80 border border-slate-200 flex items-center relative hover:border-slate-300 transition-colors">
+                    
+                    <!-- Left Section: Search Input -->
+                    <div class="flex-1 flex items-center pl-4 pr-2">
+                        <button type="button" onclick="executeSearch()" class="md:hidden shrink-0 w-11 h-11 -ml-2 mr-1 rounded-full grid place-items-center text-emerald-900" aria-label="Tìm kiếm" data-i18n-aria="search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></button>
+                        <i class="hidden md:inline fa-solid fa-magnifying-glass text-slate-400 text-lg mr-3" aria-hidden="true"></i>
+                        <input 
+                            type="text" 
+                            id="search-input"
+                            placeholder="Nhập tên sản phẩm, mã EAN hoặc article code..." 
+                            data-i18n-placeholder="searchPlaceholder"
+                            aria-label="Nhập tên sản phẩm, mã EAN hoặc article code"
+                            class="w-full bg-transparent text-slate-800 placeholder-slate-400 text-sm md:text-base font-medium focus:outline-none"
+                            onkeydown="if(event.key === 'Enter') executeSearch()"
+                            oninput="hideSearchFeedback()"
+                        />
+                        <button onclick="executeSearch()" class="hidden md:flex items-center justify-center px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-full transition-colors ml-2">
+                            <span data-i18n="search">Tìm kiếm</span>
+                        </button>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="h-8 w-[1px] bg-slate-200 my-auto"></div>
+
+                    <!-- Right Section: Upload File Split Box -->
+                    <div class="relative pl-2 pr-1">
+                        <input type="file" id="file-upload" class="hidden" accept=".csv,.txt,text/csv,text/plain" onchange="handleFileUpload(event)">
+                        <button 
+                            onclick="document.getElementById('file-upload').click()"
+                            class="flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200/80 text-slate-700 text-xs md:text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+                            title="Tải danh sách CSV hoặc TXT"
+                            aria-label="Tải file"
+                            data-i18n-aria="upload"
+                        >
+                            <i class="fa-solid fa-cloud-arrow-up text-sky-600 text-base"></i>
+                            <span class="hidden sm:inline" data-i18n="upload">Tải file</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="search-feedback" class="hidden mt-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-slate-800" role="status" aria-live="polite">
+                    <span id="search-feedback-text"></span>
+                    <button type="button" onclick="tryDemoSearch()" class="ml-2 font-bold text-emerald-900 underline underline-offset-2" data-i18n="tryDemo">Thử EAN mẫu</button>
+                </div>
+
+                <!-- Expand if many products indicator (Visible in Result Page) -->
+                <button id="expand-indicator" type="button" class="hidden w-full flex-col items-center mt-3 cursor-pointer" onclick="toggleMultiProducts()" aria-expanded="false" aria-controls="multi-product-panel">
+                    <span class="inline-flex min-h-11 items-center gap-2 text-xs font-semibold text-emerald-900 bg-white border border-emerald-200 px-4 py-2 rounded-full shadow-sm hover:bg-emerald-50">
+                        <i class="fa-solid fa-chevron-down text-sky-500"></i>
+                        <span id="expand-label" data-i18n="expandProducts">Mở danh sách sản phẩm</span>
+                        <span id="product-count-badge" class="bg-sky-100 text-sky-700 font-bold text-[10px] px-1.5 py-0.5 rounded-full">3</span>
+                    </span>
+                </button>
+            </div>
+
+            <!-- MULTI-PRODUCT EXPAND PANEL (Collapsible) -->
+            <div id="multi-product-panel" class="hidden w-full max-w-4xl mb-6 bg-white/90 backdrop-blur rounded-2xl p-4 border border-slate-200 shadow-md transition-all">
+                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-1" data-i18n="relatedProducts">Các sản phẩm liên quan tìm thấy:</div>
+                <div id="multi-product-list" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <!-- Dynamic product thumbnails generated here -->
+                </div>
+            </div>
+
+            <!-- RESULT CONTENT PAGE -->
+            <div id="result-page" class="hidden w-full max-w-5xl flex-1 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-start mb-24 transition-opacity duration-500 opacity-0">
+                
+                <!-- LEFT COLUMN: VISUAL CONTAINER (WITH NEXT IMG OVERLAY) -->
+                <div class="md:col-span-5 flex flex-col items-center">
+                    <div class="relative w-full aspect-square bg-white rounded-3xl overflow-hidden shadow-xl border border-slate-200/80 group">
+                        <img id="visual-image" src="" alt="Product Visual" class="w-full h-full object-cover transition-all duration-300">
+                        <div class="absolute top-4 left-4 bg-slate-900/75 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full font-medium flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span id="visual-tag">Ảnh sản phẩm</span>
+                        </div>
+                        <div class="absolute bottom-4 left-4 bg-slate-900/60 backdrop-blur-md text-white text-[11px] px-2.5 py-1 rounded-full font-medium" id="img-counter">
+                            1 / 3
+                        </div>
+
+                        <!-- NEXT IMAGE OVERLAY BUTTON -->
+                        <button 
+                            onclick="nextImage()"
+                            class="ant-next-button absolute z-20"
+                            aria-label="Ảnh tiếp theo"
+                            title="Hình ảnh tiếp theo"
+                        >
+                            <i class="fa-solid fa-chevron-right text-xs" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <span class="text-xs text-slate-400 mt-2 font-medium" data-i18n="moreImagesHint">Bấm nút bên phải để xem thêm ảnh</span>
+                </div>
+
+                <!-- RIGHT COLUMN: PRODUCT DETAILS -->
+                <div class="md:col-span-7 bg-white rounded-3xl p-6 md:p-8 shadow-xl shadow-slate-200/50 border border-slate-200 flex flex-col justify-between min-h-[380px]">
+                    <div>
+                        <div class="flex items-center justify-between gap-4 mb-3">
+                            <span id="detail-category" class="text-xs font-bold uppercase tracking-wider text-sky-600 bg-sky-50 px-3 py-1 rounded-full border border-sky-100">
+                                Danh mục
+                            </span>
+                            <div id="detail-rating-block" class="flex items-center gap-1 text-amber-400 text-sm">
+                                <i class="fa-solid fa-star"></i>
+                                <span id="detail-rating" class="font-bold text-slate-700 text-xs ml-1">4.9 (128 đánh giá)</span>
+                            </div>
+                        </div>
+
+                        <h2 id="detail-title" class="text-xl md:text-2xl font-bold text-slate-900 mb-2 leading-snug">
+                            Tên sản phẩm chi tiết
+                        </h2>
+
+                        <div id="detail-price" class="text-2xl font-black text-slate-900 mb-6">
+                            0 VNĐ
+                        </div>
+
+                        <div class="space-y-3.5 border-t border-slate-100 pt-5 text-sm">
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                                <div>
+                                    <span id="detail-desc-label" class="font-semibold text-slate-700" data-i18n="description">Mô tả sản phẩm: </span>
+                                    <span id="detail-desc" class="text-slate-600">Thông tin chi tiết về đặc tính và công năng sử dụng...</span>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-cube text-sky-500 mt-0.5"></i>
+                                <div>
+                                    <span id="detail-specs-label" class="font-semibold text-slate-700" data-i18n="specifications">Chất liệu & Thông số: </span>
+                                    <span id="detail-specs" class="text-slate-600">Cao cấp, độ bền vượt trội, tiêu chuẩn quốc tế.</span>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-shield-halved text-sky-500 mt-0.5"></i>
+                                <div>
+                                    <span id="detail-origin-label" class="font-semibold text-slate-700" data-i18n="origin">Bảo hành & Xuất xứ: </span>
+                                    <span id="detail-origin" class="text-slate-600">Chính hãng 12 tháng - Nhập khẩu.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="detail-actions" class="flex items-center gap-3 mt-8 pt-4 border-t border-slate-100">
+                        <button onclick="showToast(t('addedToOrder'))" class="flex-1 py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-semibold text-sm transition-all shadow-lg shadow-slate-900/20 active:scale-95 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span data-i18n="addToOrder">Thêm vào đơn hàng</span>
+                        </button>
+                        <button onclick="showToast(t('saved'))" class="p-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl transition-colors" data-i18n-aria="saved" aria-label="Lưu">
+                            <i class="fa-regular fa-bookmark text-lg" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==================== MOCKUP 1: BRAND SELECTION VIEW ==================== -->
+        <div id="lib-brand-selection-view" class="hidden w-full max-w-5xl my-4 flex-col items-center animate-fadeIn">
+            <div class="text-center mb-6">
+                <h2 class="text-xl md:text-2xl font-bold text-slate-800" data-i18n="chooseBrand">Chọn thương hiệu</h2>
+                <p class="text-xs md:text-sm text-slate-500 mt-1" data-i18n="chooseBrandHint">Chọn logo để xem thư viện ảnh của thương hiệu</p>
+            </div>
+
+            <input id="brand-filter" type="search" oninput="brandVisibleCount=48; renderBrandCards()" class="w-full max-w-md mb-5 px-4 py-2.5 rounded-xl border border-emerald-200 bg-white outline-none focus:border-emerald-500" placeholder="Tìm thương hiệu..." aria-label="Tìm thương hiệu">
+            <p id="brand-match-count" class="w-full max-w-md text-xs font-medium text-slate-600 -mt-2 mb-4" aria-live="polite"></p>
+            <div id="brand-cards-grid" class="grid gap-3 w-full mb-8">
+                <!-- Dynamically Populated -->
+            </div>
+            <button id="brand-more-button" type="button" onclick="loadMoreBrands()" class="hidden mb-10 rounded-full bg-[#276221] px-5 py-3 text-sm font-semibold text-white hover:bg-[#1d4d19]" data-i18n="showMoreBrands">Xem thêm thương hiệu</button>
+        </div>
+
+        <!-- Wide library panel with a square thumbnail grid. -->
+        <div id="lib-brand-grid-view" class="hidden w-full max-w-6xl my-2 flex-col items-center animate-fadeIn">
+            <div class="w-full flex items-center justify-between gap-4 mb-5">
+                <div>
+                    <h3 id="selected-brand-title" class="text-xl font-bold text-slate-900"></h3>
+                    <p id="selected-brand-desc" class="text-sm text-slate-600 mt-1"></p>
+                </div>
+            </div>
+            <div class="ant-library-preview" aria-label="Brand library preview">
+                <section class="ant-library-main" aria-label="Image grid">
+                    <div class="flex items-center justify-between mb-3"><strong data-i18n="imageLibrary">Thư viện ảnh</strong><span id="brand-photo-count" class="text-xs text-slate-500"></span></div>
+                    <div id="brand-product-squares-grid"></div>
+                </section>
+                <section class="ant-library-side" aria-label="Brand preview">
+                    <img id="selected-brand-logo" class="ant-brand-logo" alt="" hidden>
+                    <span id="selected-brand-logo-pending" class="ant-logo-placeholder" hidden aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="12" r="2"/><path d="m6 23 7-7 5 5 4-4 4 5"/></svg></span>
+                    <div id="brand-feature-image" class="ant-feature-image" role="button" tabindex="0" onclick="openBrandFeature()" onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openBrandFeature(); }" aria-label="Xem ảnh nổi bật"></div>
+                    <p id="brand-feature-name" class="font-semibold text-sm leading-snug"></p>
+                    <p id="selected-brand-story" class="text-xs text-slate-600 leading-relaxed"></p>
+                </section>
+            </div>
+            <section class="ant-master-bar" aria-labelledby="master-bar-title">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+                    <h4 id="master-bar-title" class="text-sm font-bold text-slate-800" data-i18n="brandMasterData">Master data · thương hiệu</h4>
+                    <div class="ant-master-actions">
+                        <span class="text-[10px] font-bold px-2 py-1 rounded-full bg-emerald-50 text-emerald-800" data-i18n="demoData">Dữ liệu demo</span>
+                        <button type="button" id="master-view-button" class="ant-master-action" onclick="toggleMasterData()" aria-expanded="false" aria-controls="master-table-wrap"><i class="fa-regular fa-eye" aria-hidden="true"></i><span data-i18n="viewMaster">Xem dữ liệu</span></button>
+                        <button type="button" class="ant-master-action" onclick="downloadMasterData()"><i class="fa-solid fa-download" aria-hidden="true"></i><span data-i18n="downloadMaster">Tải CSV</span></button>
+                    </div>
+                </div>
+                <dl class="ant-master-fields">
+                    <div><dt data-i18n="canonicalBrand">Tên chuẩn</dt><dd id="master-brand-name"></dd></div>
+                    <div><dt data-i18n="brandCode">Mã brand</dt><dd id="master-brand-code"></dd></div>
+                    <div><dt data-i18n="brandAliases">Tên gốc / bí danh</dt><dd id="master-brand-aliases"></dd></div>
+                    <div><dt data-i18n="masterStatus">Dữ liệu sản phẩm</dt><dd id="master-data-status"></dd></div>
+                </dl>
+                <div class="ant-master-search">
+                    <i class="fa-solid fa-magnifying-glass text-emerald-700" aria-hidden="true"></i>
+                    <input id="master-search-input" type="search" autocomplete="off" data-i18n-placeholder="masterSearchPlaceholder" placeholder="Tìm tên hoặc mã sản phẩm trong brand..." aria-label="Tìm sản phẩm trong master data" oninput="filterMasterRows()" onkeydown="if(event.key === 'Enter') searchMasterData()">
+                    <button type="button" onclick="searchMasterData()" data-i18n="search">Tìm kiếm</button>
+                </div>
+                <p id="master-search-feedback" class="hidden mt-2 text-xs text-amber-800" role="status"></p>
+                <div id="master-search-suggestions" class="hidden mt-2 grid gap-2" aria-live="polite"></div>
+                <div id="master-table-wrap" class="ant-master-table-wrap hidden">
+                    <table class="ant-master-table">
+                        <thead><tr><th data-i18n="productName">Sản phẩm</th><th data-i18n="articleCode">Article code</th><th>EAN</th><th data-i18n="category">Danh mục</th><th data-i18n="dimensions">Kích thước</th><th data-i18n="weight">Khối lượng</th><th data-i18n="masterStatus">Trạng thái</th><th data-i18n="preview">Xem ảnh</th></tr></thead>
+                        <tbody id="master-table-body"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- ==================== MOCKUP 3: PRODUCT DETAIL IMAGE VIEWER ==================== -->
+        <div id="lib-product-detail-view" class="hidden w-full max-w-4xl my-2 flex-col items-center animate-fadeIn">
+            
+            <!-- Top Nav Row with Back Button -->
+            <div class="w-full flex items-center justify-between mb-4">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest" data-i18n="singleViewer">Xem ảnh sản phẩm</span>
+            </div>
+
+            <!-- Main Big Square Image Frame with Overlay Next Button (Mockup 3) -->
+            <div class="ant-image-frame relative w-full max-w-2xl aspect-square bg-white rounded-3xl overflow-hidden border shadow-xl group my-2">
+                
+                <!-- Expanded Image -->
+                <img id="lib-detail-img" src="" alt="Product Detail" class="w-full h-full object-cover bg-white transition-all duration-300">
+                
+                <!-- Overlay Next Button on Right Edge (Mockup 3) -->
+                <button 
+                    onclick="nextLibDetailImage()"
+                    class="ant-next-button absolute z-20"
+                    aria-label="Ảnh tiếp theo"
+                >
+                    <i class="fa-solid fa-chevron-right text-xs" aria-hidden="true"></i>
+                </button>
+
+                <!-- Image Sub-index Badge -->
+                <div class="absolute bottom-4 left-4 bg-slate-900/80 backdrop-blur text-white text-xs px-3 py-1.5 rounded-full font-semibold border border-slate-700" id="lib-img-badge">
+                    Image 1 / 3
+                </div>
+            </div>
+
+            <!-- Underline & Product Name Display (Mockup 3) -->
+            <div class="w-full max-w-2xl text-center mt-6">
+                <div class="h-1 w-full bg-emerald-200 rounded-full mb-4"></div>
+                <h2 id="lib-detail-product-name" class="text-lg md:text-xl font-black uppercase tracking-wide text-slate-900">
+                    PRODUCT NAME
+                </h2>
+                <p id="lib-detail-product-brand" class="text-xs font-bold text-sky-600 mt-1 uppercase tracking-widest"></p>
+            </div>
+        </div>
+
+        <div id="tool-view" class="hidden w-full my-2" aria-live="polite">
+            <div class="ant-workspace-card" id="tool-card">
+                <div class="ant-workspace-head">
+                    <div>
+                        <h2 id="tool-title" class="text-base font-bold text-emerald-950"></h2>
+                        <p id="tool-description" class="text-xs text-slate-500 mt-1"></p>
+                    </div>
+                    <button type="button" onclick="closeToolView()" class="rounded-full bg-white border border-emerald-200 px-4 py-2 text-xs font-semibold text-emerald-900" data-i18n="backToSearch">Về tìm kiếm</button>
+                </div>
+                <iframe id="image-edit-frame" class="ant-workspace-frame hidden" data-src="/PROJECT_UNITY/project-m2/" title="MINIMA image editor" allow="clipboard-read; clipboard-write"></iframe>
+                <iframe id="auto-fill-frame" class="ant-workspace-frame hidden" data-src="/PROJECT_UNITY/auto-fill/" title="PROJECT_AUTO file autofill"></iframe>
+                <div id="tool-placeholder" class="ant-workspace-placeholder hidden"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BOTTOM FLOATING TOOLBAR (ORIGINAL MOCKUP TOOLBAR) -->
+    <div id="bottom-toolbar-container" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-full max-w-2xl px-4 transition-all duration-300">
+        <div class="bg-slate-900/95 backdrop-blur-md text-white rounded-full p-1.5 shadow-2xl border border-slate-700/60 flex items-center justify-between text-xs font-medium">
+            
+            <button onclick="triggerTool('IMG EDIT')" data-short-vi="Ảnh" data-short-en="Edit" class="flex-1 py-2 px-2 hover:bg-slate-800 rounded-full transition-colors flex flex-col sm:flex-row items-center justify-center gap-1.5 group">
+                <i class="fa-solid fa-wand-magic-sparkles text-sky-400 group-hover:scale-110 transition-transform"></i>
+                <span class="text-[11px] sm:text-xs" data-i18n="imageEdit">CHỈNH ẢNH</span>
+            </button>
+
+            <div class="h-4 w-[1px] bg-slate-700"></div>
+
+            <button onclick="openLibraryView()" data-short-vi="Thư viện" data-short-en="Library" class="flex-1 py-2 px-2 bg-amber-500/20 hover:bg-amber-500/30 rounded-full transition-colors flex flex-col sm:flex-row items-center justify-center gap-1.5 group border border-amber-500/30">
+                <i class="fa-solid fa-folder-open text-amber-400 group-hover:scale-110 transition-transform"></i>
+                <span class="text-[11px] sm:text-xs font-bold text-amber-300" data-i18n="library">THƯ VIỆN</span>
+            </button>
+
+            <div class="h-4 w-[1px] bg-slate-700"></div>
+
+            <button onclick="triggerTool('REQUEST')" data-short-vi="Yêu cầu" data-short-en="Request" class="flex-1 py-2 px-2 hover:bg-slate-800 rounded-full transition-colors flex flex-col sm:flex-row items-center justify-center gap-1.5 group">
+                <i class="fa-solid fa-paper-plane text-emerald-400 group-hover:scale-110 transition-transform"></i>
+                <span class="text-[11px] sm:text-xs" data-i18n="request">YÊU CẦU ẢNH</span>
+            </button>
+
+            <div class="h-4 w-[1px] bg-slate-700"></div>
+
+            <button onclick="triggerTool('AUTO FILL')" data-short-vi="Tự điền" data-short-en="Auto fill" class="flex-1 py-2 px-2 hover:bg-slate-800 rounded-full transition-colors flex flex-col sm:flex-row items-center justify-center gap-1.5 group">
+                <i class="fa-solid fa-bolt text-purple-400 group-hover:scale-110 transition-transform"></i>
+                <span class="text-[11px] sm:text-xs" data-i18n="autoFill">TỰ ĐIỀN FILE</span>
+            </button>
+
+            <div class="h-4 w-[1px] bg-slate-700"></div>
+
+            <button onclick="triggerTool('SETTING')" data-short-vi="Cài đặt" data-short-en="Settings" class="flex-1 py-2 px-2 hover:bg-slate-800 rounded-full transition-colors flex flex-col sm:flex-row items-center justify-center gap-1.5 group">
+                <i class="fa-solid fa-gear text-slate-400 group-hover:scale-110 transition-transform"></i>
+                <span class="text-[11px] sm:text-xs" data-i18n="settings">CÀI ĐẶT</span>
+            </button>
+
+        </div>
+    </div>
+
+    <script src="logos/distributor-logos.js"></script>
+    <script src="logos/popular-logos.js"></script>
+    <script src="logos/community-logos.js"></script>
+    <script src="brands.js"></script>
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const translations = {
+            vi: {
+                subtitle: 'Asset Nexus Technology · Không gian tìm kiếm tài sản sản phẩm', searchPlaceholder: 'Nhập tên sản phẩm, mã EAN hoặc article code...', search: 'Tìm kiếm', upload: 'Tải file', viewMaster: 'Xem dữ liệu', downloadMaster: 'Tải CSV', masterSearchPlaceholder: 'Tìm tên hoặc mã sản phẩm trong brand...', productName: 'Sản phẩm', articleCode: 'Article code', category: 'Danh mục', dimensions: 'Kích thước', weight: 'Khối lượng', preview: 'Xem ảnh', backToMaster: 'Về master data', demoProduct: 'Sản phẩm mẫu', demoUnavailable: 'Dữ liệu thật chưa được kết nối', noMasterMatch: 'Không tìm thấy sản phẩm mẫu trong brand này.', sampleStatus: 'Minh họa', imageInfo: 'Thông tin ảnh: ', lookupCode: 'Mã tra cứu: ', dataSource: 'Nguồn dữ liệu: ',
+                expandProducts: 'Mở danh sách sản phẩm', collapseProducts: 'Đóng danh sách sản phẩm', relatedProducts: 'Các sản phẩm liên quan tìm thấy:', imageEdit: 'Chỉnh ảnh', library: 'Thư viện', request: 'Yêu cầu ảnh', autoFill: 'Tự điền file', settings: 'Cài đặt',
+                next: 'Tiếp', moreImagesHint: 'Bấm nút bên phải để xem thêm ảnh', description: 'Mô tả sản phẩm: ', specifications: 'Chất liệu & Thông số: ', origin: 'Bảo hành & Xuất xứ: ', addToOrder: 'Thêm vào đơn hàng',
+                chooseBrand: 'Chọn thương hiệu', chooseBrandHint: 'Tìm tên brand và chọn logo để xem thư viện', nextPage: 'Trang tiếp', backToBrands: 'Về thương hiệu', brandOverview: 'Tổng quan thương hiệu', imageLibrary: 'Thư viện ảnh', featuredImage: 'Ảnh nổi bật', featureHint: 'Chọn ảnh để xem đầy đủ', swipeHint: 'Vuốt ngang để xem ba phần của thư viện.', brandFilter: 'Tìm thương hiệu...', demoAssets: 'Ảnh minh họa bố cục · chưa có dữ liệu thật của brand', demoImage: 'Ảnh mẫu', brandMasterData: 'Master data · thương hiệu', demoData: 'Dữ liệu demo', canonicalBrand: 'Tên chuẩn', brandCode: 'Mã tra cứu', brandAliases: 'Tên gốc / bí danh', masterStatus: 'Dữ liệu sản phẩm', notConnected: 'Chưa kết nối', pendingLogo: 'Logo đang chờ xác minh',
+                back: 'Quay lại', singleViewer: 'Xem ảnh sản phẩm', products: 'sản phẩm', brandSelection: 'Chọn thương hiệu', backToSearch: 'Về tìm kiếm', backToGrid: 'Về thư viện', image: 'Ảnh', brandLibrary: 'Thư viện', viewing: 'Đang xem', receivedFile: 'Đã nhận file', fileMatches: 'Sản phẩm demo khớp trong file', noFileMatches: 'Không có mã hoặc tên nào trong file khớp với sản phẩm demo. Hỗ trợ danh sách CSV/TXT.', toolReady: 'Sẵn sàng', noResult: 'Không tìm thấy sản phẩm phù hợp', noResultHelp: 'Không tìm thấy sản phẩm. Thử tên khác, mã EAN hoặc article code.', tryDemo: 'Thử EAN mẫu', noBrands: 'Không tìm thấy thương hiệu. Thử tên khác hoặc tên viết tắt.', showMoreBrands: 'Xem thêm thương hiệu', addedToOrder: 'Đã thêm vào đơn hàng', saved: 'Đã lưu', nextPageReady: 'Đây là bản xem trước thư viện', imageEditHint: 'MINIMA Resize Studio · chỉnh sửa và xuất ảnh', autoFillHint: 'Grand Archives · xử lý và điền file Excel', comingSoon: 'Chức năng này đang được chuẩn bị.'
+            },
+            en: {
+                subtitle: 'Asset Nexus Technology · Product asset workspace', searchPlaceholder: 'Search by product name, EAN, or article code...', search: 'Search', upload: 'Import file', viewMaster: 'View data', downloadMaster: 'Download CSV', masterSearchPlaceholder: 'Search a product name or code in this brand...', productName: 'Product', articleCode: 'Article code', category: 'Category', dimensions: 'Dimensions', weight: 'Weight', preview: 'View image', backToMaster: 'Back to master data', demoProduct: 'Sample product', demoUnavailable: 'Real product data is not connected', noMasterMatch: 'No sample product found in this brand.', sampleStatus: 'Preview', imageInfo: 'Image information: ', lookupCode: 'Lookup code: ', dataSource: 'Data source: ',
+                expandProducts: 'Expand product list', collapseProducts: 'Close product list', relatedProducts: 'Related products found:', imageEdit: 'Image edit', library: 'Library', request: 'Image request', autoFill: 'Auto fill', settings: 'Settings',
+                next: 'Next', moreImagesHint: 'Use the button on the right to see more images', description: 'Description: ', specifications: 'Materials & specifications: ', origin: 'Warranty & origin: ', addToOrder: 'Add to order',
+                chooseBrand: 'Choose a brand', chooseBrandHint: 'Search a brand name and select its logo to view the library', nextPage: 'Next page', backToBrands: 'Back to brands', brandOverview: 'Brand overview', imageLibrary: 'Image library', featuredImage: 'Featured image', featureHint: 'Select the image to view it fully', swipeHint: 'Swipe sideways to explore the three library panels.', brandFilter: 'Find a brand...', demoAssets: 'Layout preview · real brand assets have not been added', demoImage: 'Sample image', brandMasterData: 'Brand master data', demoData: 'Demo data', canonicalBrand: 'Standard name', brandCode: 'Search key', brandAliases: 'Source names / aliases', masterStatus: 'Product data', notConnected: 'Not connected', pendingLogo: 'Logo awaiting verification',
+                back: 'Back', singleViewer: 'Product image viewer', products: 'products', brandSelection: 'Brand selection', backToSearch: 'Back to search', backToGrid: 'Back to library', image: 'Image', brandLibrary: 'Library', viewing: 'Viewing', receivedFile: 'File received', fileMatches: 'Matching demo products in file', noFileMatches: 'No code or name in this file matches a demo product. CSV/TXT lists are supported.', toolReady: 'Ready', noResult: 'No matching product found', noResultHelp: 'No product found. Try another name, EAN, or article code.', tryDemo: 'Try a sample EAN', noBrands: 'No brands found. Try another name or abbreviation.', showMoreBrands: 'Show more brands', addedToOrder: 'Added to order', saved: 'Saved', nextPageReady: 'This is a library preview', imageEditHint: 'MINIMA Resize Studio · edit and export images', autoFillHint: 'Grand Archives · process and fill Excel files', comingSoon: 'This function is being prepared.'
+            }
+        };
+        let language = localStorage.getItem('ant-language') === 'en' ? 'en' : 'vi';
+        const t = key => translations[language][key] || key;
+        const productContentEn = {
+            1: { category: 'Premium furniture', desc: 'A Scandinavian-inspired sofa with an oak frame and supportive high-density cushions.', specs: '200 × 85 × 75 cm. Oak frame and premium upholstery.', origin: 'Scandinavian Design · 24-month warranty.' },
+            2: { category: 'Audio equipment', desc: 'Wireless over-ear headphones with active noise cancellation and up to 40 hours of battery life.', specs: '40 mm dynamic drivers, Bluetooth 5.3, Hi-Res Audio / LDAC.', origin: 'Official distribution · 12-month warranty.' },
+            3: { category: 'Technology accessories', desc: 'A smartwatch with a bright AMOLED display, health tracking, and 100+ workout modes.', specs: '466 × 466 AMOLED display, 5ATM water resistance, titanium case.', origin: 'Official distribution · 12-month warranty.' }
+        };
+        function setLanguage(next) {
+            language = next === 'en' ? 'en' : 'vi';
+            localStorage.setItem('ant-language', language);
+            document.documentElement.lang = language;
+            document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+            document.querySelectorAll('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
+            document.getElementById('brand-filter').placeholder = t('brandFilter');
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.dataset.i18nPlaceholder); });
+            document.getElementById('search-input').setAttribute('aria-label', t('searchPlaceholder'));
+            document.getElementById('master-search-input').setAttribute('aria-label', t('masterSearchPlaceholder'));
+            document.getElementById('brand-feature-image').setAttribute('aria-label', t('featuredImage'));
+            if (!document.getElementById('search-feedback').classList.contains('hidden')) document.getElementById('search-feedback-text').textContent = t(searchFeedbackKey);
+            document.getElementById('expand-label').textContent = t(document.getElementById('expand-indicator').getAttribute('aria-expanded') === 'true' ? 'collapseProducts' : 'expandProducts');
+            if (currentView === 'TOOL') updateToolLabels();
+            document.querySelectorAll('#language-switch button').forEach(el => { el.setAttribute('aria-pressed', String(el.dataset.lang === language)); });
+            renderBrandCards();
+            if (currentView === 'LIB_BRANDS') showBrandSelectionView();
+            if (currentView === 'LIB_GRID') showBrandGridView();
+            if (currentView === 'LIB_PRODUCT_DETAIL') showLibProductDetailView();
+            if (isResultPageVisible) { renderProductText(); updateImageVisual(); }
+        }
+        // Brands & Library Database
+        function demoPackshot(brandIndex, imageIndex) {
+            const hues = [132, 158, 85, 179, 106, 142, 73, 165];
+            const hue = hues[(brandIndex + imageIndex) % hues.length];
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><rect width="600" height="600" fill="hsl(${hue} 29% 94%)"/><ellipse cx="300" cy="520" rx="145" ry="19" fill="hsl(${hue} 16% 80%)"/><rect x="231" y="106" width="138" height="51" rx="9" fill="hsl(${hue} 12% 33%)"/><rect x="198" y="151" width="204" height="354" rx="29" fill="hsl(${hue} 24% 97%)" stroke="hsl(${hue} 18% 71%)" stroke-width="5"/><rect x="214" y="246" width="172" height="162" rx="3" fill="hsl(${hue} 23% 83%)"/><text x="300" y="320" text-anchor="middle" fill="hsl(${hue} 25% 29%)" font-family="Arial" font-weight="bold" font-size="25">A.N.T</text><text x="300" y="354" text-anchor="middle" fill="hsl(${hue} 18% 38%)" font-family="Arial" font-size="16">DEMO ${String(imageIndex + 1).padStart(2, '0')}</text></svg>`;
+            return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+        }
+        const brandsDatabase = brandCatalog.map((brand, brandIndex) => ({
+            ...brand,
+            products: Array.from({ length: 8 }, (_, imageIndex) => ({
+                id: `${brand.id}-sample-${imageIndex}`,
+                name: `Demo ${String(imageIndex + 1).padStart(2, '0')}`,
+                images: [0, 1, 2].map(offset => demoPackshot(brandIndex, imageIndex + offset))
+            }))
+        }));
+
+        // Original Search Products Database
+        const productsDatabase = [
+            {
+                id: 1,
+                ean: '8809000000001',
+                articleCode: 'ANT-SOFA-01',
+                name: "Ghế Sofa Bọc Ni Ergonomic Minimalist",
+                category: "Nội Thất Cao Cấp",
+                price: "12,500,000 VNĐ",
+                rating: "4.9 (84 đánh giá)",
+                desc: "Thiết kế hiện đại mang phong cách Bắc Âu. Khung gỗ sồi tự nhiên kết hợp nệm bọt biển mật độ cao chống lún.",
+                specs: "Kích thước: 200cm x 85cm x 75cm. Khung gỗ sồi, vải nỉ cao cấp nhập khẩu.",
+                origin: "Chính hãng Scandinavian Design - BH 24 tháng.",
+                images: [
+                    "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            {
+                id: 2,
+                ean: '8809000000002',
+                articleCode: 'ANT-AUDIO-02',
+                name: "Tai Nghe Over-Ear Wireless Noise Cancelling",
+                category: "Thiết Bị Âm Thanh",
+                price: "6,890,000 VNĐ",
+                rating: "4.8 (210 đánh giá)",
+                desc: "Công nghệ chống ồn chủ động thông minh ANC. Thời lượng pin lên tới 40 giờ liên tục với sạc nhanh Type-C.",
+                specs: "Driver 40mm Dynamic, Bluetooth 5.3, Hỗ trợ Hi-Res Audio / LDAC.",
+                origin: "Nhập khẩu phân phối chính hãng - BH 12 tháng.",
+                images: [
+                    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1484704849700-f032a568e944?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            {
+                id: 3,
+                ean: '8809000000003',
+                articleCode: 'ANT-WATCH-03',
+                name: "Đồng Hồ Thông Minh Sport Edition V2",
+                category: "Phụ Kiện Công Nghệ",
+                price: "4,200,000 VNĐ",
+                rating: "4.7 (95 đánh giá)",
+                desc: "Màn hình AMOLED 1.4 inch sắc nét. Tích hợp đo nhịp tim, nồng độ SpO2 và 100+ chế độ luyện tập thể thao.",
+                specs: "Màn hình AMOLED 466x466 px, Chống nước 5ATM, Khung vỏ Titan.",
+                origin: "Phân phối chính hãng - BH 12 tháng.",
+                images: [
+                    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=800&q=80"
+                ]
+            }
+        ];
+
+        // View States tracking
+        let currentView = 'SEARCH_MAIN'; // 'SEARCH_MAIN', 'LIB_BRANDS', 'LIB_GRID', 'LIB_PRODUCT_DETAIL'
+        let selectedBrand = null;
+        let selectedLibProduct = null;
+        let currentLibProductImageIdx = 0;
+
+        let currentProductIndex = 0;
+        let activeResultProducts = productsDatabase;
+        let masterResultBrand = null;
+        let visibleProductIndexes = productsDatabase.map((_, index) => index);
+        let searchFeedbackKey = 'noResultHelp';
+        let currentImageIndex = 0;
+        let isResultPageVisible = false;
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            setLanguage(language);
+            for (const id of ['image-edit-frame', 'auto-fill-frame']) {
+                const frame = document.getElementById(id);
+                frame.addEventListener('load', () => styleToolFrame(frame));
+            }
+        });
+
+        // Navigation Handler for Top Back Button
+        function handleTopBackNav() {
+            if (currentView === 'TOOL') {
+                closeToolView();
+            } else if (currentView === 'LIB_PRODUCT_DETAIL') {
+                showBrandGridView();
+            } else if (currentView === 'LIB_GRID') {
+                showBrandSelectionView();
+            } else if (currentView === 'LIB_BRANDS') {
+                exitLibraryView();
+            }
+        }
+
+        // Enter Library Mode (Shift Toolbar to Top)
+        function openLibraryView() {
+            currentView = 'LIB_BRANDS';
+            document.body.classList.remove('ant-workspace-mode', 'ant-home');
+            document.getElementById('tool-view').classList.add('hidden');
+            
+            // Hide search elements
+            document.getElementById('search-view-wrapper').classList.add('hidden');
+            document.getElementById('bottom-toolbar-container').classList.add('hidden');
+            
+            // Show top toolbar
+            document.getElementById('top-toolbar-container').classList.remove('hidden');
+            document.getElementById('top-library-title').classList.remove('hidden');
+            setActiveTool('LIBRARY');
+            
+            showBrandSelectionView();
+        }
+
+        // Exit Library Mode back to main Search
+        function exitLibraryView() {
+            currentView = 'SEARCH_MAIN';
+            document.body.classList.remove('ant-workspace-mode');
+            document.body.classList.toggle('ant-home', !isResultPageVisible);
+            document.getElementById('tool-view').classList.add('hidden');
+            setActiveTool('');
+
+            // Hide Library views
+            document.getElementById('lib-brand-selection-view').classList.add('hidden');
+            document.getElementById('lib-brand-grid-view').classList.add('hidden');
+            document.getElementById('lib-product-detail-view').classList.add('hidden');
+            document.getElementById('top-toolbar-container').classList.add('hidden');
+
+            // Show Search view & bottom toolbar
+            document.getElementById('search-view-wrapper').classList.remove('hidden');
+            document.getElementById('bottom-toolbar-container').classList.remove('hidden');
+        }
+
+        // MOCKUP 1: Show Brand Selection
+        function showBrandSelectionView() {
+            currentView = 'LIB_BRANDS';
+            document.getElementById('top-library-status').innerText = t('brandSelection');
+            document.getElementById('top-back-label').innerText = t('backToSearch');
+
+            document.getElementById('lib-brand-selection-view').classList.remove('hidden');
+            document.getElementById('lib-brand-selection-view').classList.add('flex');
+            
+            document.getElementById('lib-brand-grid-view').classList.add('hidden');
+            document.getElementById('lib-brand-grid-view').classList.remove('flex');
+
+            document.getElementById('lib-product-detail-view').classList.add('hidden');
+            document.getElementById('lib-product-detail-view').classList.remove('flex');
+        }
+
+        // Render Mockup 1 Brand Cards Grid
+        let brandVisibleCount = 48;
+        function renderBrandCards() {
+            const container = document.getElementById('brand-cards-grid');
+            const query = brandSearchKey(document.getElementById('brand-filter').value.trim());
+            const matches = brandsDatabase.filter(brand =>
+                [brand.name, ...brand.aliases].some(name => brandSearchKey(name).includes(query)));
+            const shown = matches.slice(0, brandVisibleCount);
+            document.getElementById('brand-match-count').textContent = language === 'vi'
+                ? `Hiển thị ${shown.length}/${matches.length} thương hiệu`
+                : `Showing ${shown.length} of ${matches.length} brands`;
+            document.getElementById('brand-more-button').classList.toggle('hidden', shown.length >= matches.length);
+            container.innerHTML = shown.map(brand => `
+                <button type="button" onclick="selectBrand('${brand.id}')" class="ant-brand-card" aria-label="${brand.name}" title="${brand.name}${brand.logo ? '' : ` · ${t('pendingLogo')}`}">
+                    ${brand.logo ? `<img class="ant-brand-logo${brand.invertLogo ? ' logo-invert' : ''}" src="${brand.logo}" alt="" loading="lazy">` : `<span class="ant-logo-placeholder" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="12" r="2"/><path d="m6 23 7-7 5 5 4-4 4 5"/></svg></span>`}
+                </button>
+            `).join('') || `<p class="text-sm text-slate-600 col-span-full py-8 text-center">${t('noBrands')}</p>`;
+        }
+        function loadMoreBrands() {
+            const previousCount = brandVisibleCount;
+            brandVisibleCount += 48;
+            renderBrandCards();
+            document.querySelectorAll('#brand-cards-grid .ant-brand-card')[previousCount]?.focus();
+        }
+
+        // Select Brand -> Move to MOCKUP 2
+        function selectBrand(brandId) {
+            selectedBrand = brandsDatabase.find(b => b.id === brandId);
+            if (!selectedBrand) return;
+
+            showBrandGridView();
+        }
+
+        // MOCKUP 2: Show Brand Product Grid View
+        function showBrandGridView() {
+            currentView = 'LIB_GRID';
+            document.getElementById('top-library-status').innerText = `${selectedBrand.name} ${t('brandLibrary')}`;
+            document.getElementById('top-back-label').innerText = t('backToBrands');
+
+            const logo = document.getElementById('selected-brand-logo');
+            logo.hidden = !selectedBrand.logo;
+            logo.src = selectedBrand.logo || '';
+            logo.classList.toggle('logo-invert', selectedBrand.invertLogo);
+            logo.alt = selectedBrand.logo ? `${selectedBrand.name} logo` : '';
+            document.getElementById('selected-brand-logo-pending').hidden = !!selectedBrand.logo;
+            document.getElementById('selected-brand-title').innerText = `${selectedBrand.name} · ${t('imageLibrary')}`;
+            document.getElementById('selected-brand-desc').innerText = t('demoAssets');
+            document.getElementById('selected-brand-story').innerText = t('demoAssets');
+            document.getElementById('master-brand-name').innerText = selectedBrand.name;
+            document.getElementById('master-brand-code').innerText = selectedBrand.id.slice(6).toUpperCase();
+            document.getElementById('master-brand-aliases').innerText = selectedBrand.aliases.join(' · ') || '—';
+            document.getElementById('master-data-status').innerText = `${selectedBrand.products.length} ${t('demoProduct').toLowerCase()} · ${t('notConnected')}`;
+            document.getElementById('master-search-input').value = '';
+            document.getElementById('master-search-feedback').classList.add('hidden');
+            document.getElementById('master-search-suggestions').classList.add('hidden');
+            document.getElementById('master-table-wrap').classList.add('hidden');
+            document.getElementById('master-view-button').setAttribute('aria-expanded', 'false');
+            renderMasterRows();
+
+            // Render Product Squares inside the Big Rectangle Box
+            renderBrandSquaresGrid();
+
+            document.getElementById('lib-brand-selection-view').classList.add('hidden');
+            document.getElementById('lib-brand-selection-view').classList.remove('flex');
+
+            document.getElementById('lib-brand-grid-view').classList.remove('hidden');
+            document.getElementById('lib-brand-grid-view').classList.add('flex');
+
+            document.getElementById('lib-product-detail-view').classList.add('hidden');
+            document.getElementById('lib-product-detail-view').classList.remove('flex');
+        }
+
+        function brandProductCode(index) {
+            return `${selectedBrand.id.slice(6).toUpperCase()}-DEMO-${String(index + 1).padStart(2, '0')}`;
+        }
+        function brandProductName(index) {
+            return `${selectedBrand.name} · ${t('demoProduct')} ${String(index + 1).padStart(2, '0')}`;
+        }
+        function masterMatches() {
+            const query = document.getElementById('master-search-input').value.trim().toLocaleLowerCase();
+            return selectedBrand.products.map((_, index) => index).filter(index =>
+                !query || [brandProductName(index), brandProductCode(index), selectedBrand.products[index].name, selectedBrand.name, ...selectedBrand.aliases].some(value => value.toLocaleLowerCase().includes(query))
+            );
+        }
+        function renderMasterRows() {
+            const matches = masterMatches();
+            document.getElementById('master-table-body').innerHTML = matches.map(index => `
+                <tr><td>${brandProductName(index)}</td><td>${brandProductCode(index)}</td><td>—</td><td>—</td><td>—</td><td>—</td><td>${t('sampleStatus')}</td><td><button type="button" onclick="openMasterResult(${index})">${t('preview')} →</button></td></tr>
+            `).join('');
+            return matches;
+        }
+        function filterMasterRows() {
+            const matches = renderMasterRows();
+            const query = document.getElementById('master-search-input').value.trim();
+            const suggestions = document.getElementById('master-search-suggestions');
+            suggestions.classList.toggle('hidden', !query || !matches.length);
+            suggestions.innerHTML = query ? matches.slice(0, 4).map(index => `
+                <button type="button" onclick="openMasterResult(${index})" class="flex min-h-11 items-center gap-3 rounded-xl border border-emerald-100 bg-[#f8fcf6] p-2 text-left hover:bg-[#eaf5e5]">
+                    <img src="${selectedBrand.products[index].images[0]}" alt="" class="h-10 w-10 rounded-lg object-cover">
+                    <span class="min-w-0"><strong class="block truncate text-xs text-slate-800">${brandProductName(index)}</strong><small class="text-emerald-800">${brandProductCode(index)}</small></span>
+                </button>
+            `).join('') : '';
+            const feedback = document.getElementById('master-search-feedback');
+            feedback.textContent = query && !matches.length ? t('noMasterMatch') : '';
+            feedback.classList.toggle('hidden', !query || !!matches.length);
+        }
+        function toggleMasterData() {
+            const table = document.getElementById('master-table-wrap');
+            const expanded = table.classList.toggle('hidden') === false;
+            document.getElementById('master-view-button').setAttribute('aria-expanded', String(expanded));
+            if (expanded) renderMasterRows();
+        }
+        function downloadMasterData() {
+            if (!selectedBrand) return;
+            const rows = [['brand', 'product_name', 'article_code', 'ean', 'category', 'dimensions', 'weight', 'status'],
+                ...selectedBrand.products.map((_, index) => [selectedBrand.name, brandProductName(index), brandProductCode(index), '', '', '', '', 'DEMO'])];
+            const csv = '\uFEFF' + rows.map(row => row.map(value => `"${String(value).replaceAll('"', '""')}"`).join(',')).join('\r\n');
+            const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `ANT-${selectedBrand.id.slice(6)}-master-demo.csv`;
+            link.click();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+        function searchMasterData() {
+            const query = document.getElementById('master-search-input').value.trim();
+            if (!query) { document.getElementById('master-search-input').focus(); return; }
+            const matches = masterMatches();
+            if (!matches.length) { filterMasterRows(); return; }
+            openMasterResult(matches[0]);
+        }
+        function openMasterResult(index) {
+            masterResultBrand = selectedBrand.id;
+            activeResultProducts = selectedBrand.products.map((product, productIndex) => ({
+                ...product, demo: true, brandName: selectedBrand.name, articleCode: brandProductCode(productIndex), demoNumber: productIndex + 1
+            }));
+            visibleProductIndexes = masterMatches();
+            if (!visibleProductIndexes.length) visibleProductIndexes = [index];
+            currentView = 'SEARCH_MAIN';
+            document.body.classList.remove('ant-workspace-mode', 'ant-home');
+            for (const id of ['lib-brand-selection-view', 'lib-brand-grid-view', 'lib-product-detail-view', 'top-toolbar-container']) document.getElementById(id).classList.add('hidden');
+            document.getElementById('search-view-wrapper').classList.remove('hidden');
+            document.getElementById('bottom-toolbar-container').classList.remove('hidden');
+            setActiveTool('');
+            document.getElementById('return-to-master').classList.remove('hidden');
+            document.getElementById('return-to-master').classList.add('inline-flex');
+            document.getElementById('search-input').value = '';
+            loadProductData(index);
+            switchToResultPage();
+            document.getElementById('main-scroll-container').scrollTop = 0;
+        }
+        function returnToMasterData() {
+            const brandId = masterResultBrand;
+            masterResultBrand = null;
+            activeResultProducts = productsDatabase;
+            visibleProductIndexes = productsDatabase.map((_, index) => index);
+            document.getElementById('return-to-master').classList.add('hidden');
+            document.getElementById('return-to-master').classList.remove('inline-flex');
+            resetToFrontPage();
+            selectedBrand = brandsDatabase.find(brand => brand.id === brandId);
+            openLibraryView();
+            showBrandGridView();
+            document.getElementById('main-scroll-container').scrollTop = 0;
+        }
+
+        // Render Mockup 2 Neat Square Items
+        function renderBrandSquaresGrid() {
+            const container = document.getElementById('brand-product-squares-grid');
+            const products = selectedBrand.products;
+            document.getElementById('brand-photo-count').innerText = `${products.length} ${t('demoImage').toLowerCase()}`;
+            document.getElementById('brand-feature-image').innerHTML = `<img src="${products[0].images[0]}" alt="${t('demoImage')} 01">`;
+            document.getElementById('brand-feature-name').innerText = `${t('demoImage')} 01`;
+            container.innerHTML = products.map(prod => `
+                <button type="button" onclick="openLibProductDetail('${prod.id}')" class="square-grid-item cursor-pointer hover:ring-2 hover:ring-emerald-300 transition-all" aria-label="${t('demoImage')} ${prod.name.slice(-2)}">
+                    <img src="${prod.images[0]}" alt="${t('demoImage')} ${prod.name.slice(-2)}" loading="lazy">
+                </button>
+            `).join('');
+        }
+
+        function openBrandFeature() {
+            if (selectedBrand?.products?.length) openLibProductDetail(selectedBrand.products[0].id);
+        }
+
+        // Open MOCKUP 3: Single Product Detail Image Viewer
+        function openLibProductDetail(productId) {
+            selectedLibProduct = selectedBrand.products.find(p => p.id === productId) || selectedBrand.products[0];
+            currentLibProductImageIdx = 0;
+
+            showLibProductDetailView();
+        }
+
+        function showLibProductDetailView() {
+            currentView = 'LIB_PRODUCT_DETAIL';
+            document.getElementById('top-library-status').innerText = `${t('viewing')}: ${selectedLibProduct.name}`;
+            document.getElementById('top-back-label').innerText = t('backToGrid');
+
+            document.getElementById('lib-detail-product-name').innerText = selectedLibProduct.name;
+            document.getElementById('lib-detail-product-brand').innerText = selectedBrand.name;
+
+            updateLibDetailImageDisplay();
+
+            document.getElementById('lib-brand-grid-view').classList.add('hidden');
+            document.getElementById('lib-brand-grid-view').classList.remove('flex');
+
+            document.getElementById('lib-product-detail-view').classList.remove('hidden');
+            document.getElementById('lib-product-detail-view').classList.add('flex');
+        }
+
+        // Cycle next image inside MOCKUP 3
+        function nextLibDetailImage() {
+            if (!selectedLibProduct) return;
+            currentLibProductImageIdx = (currentLibProductImageIdx + 1) % selectedLibProduct.images.length;
+            updateLibDetailImageDisplay();
+        }
+
+        function updateLibDetailImageDisplay() {
+            const imgElem = document.getElementById('lib-detail-img');
+            imgElem.src = selectedLibProduct.images[currentLibProductImageIdx];
+
+            document.getElementById('lib-img-badge').innerText = `${t('image')} ${currentLibProductImageIdx + 1} / ${selectedLibProduct.images.length}`;
+        }
+
+        // ================= SEARCH APP LOGIC =================
+        function hideSearchFeedback() {
+            document.getElementById('search-feedback').classList.add('hidden');
+        }
+        function showSearchFeedback(key = 'noResultHelp') {
+            searchFeedbackKey = key;
+            document.getElementById('search-feedback-text').textContent = t(key);
+            document.getElementById('search-feedback').classList.remove('hidden');
+        }
+        function tryDemoSearch() {
+            document.getElementById('search-input').value = productsDatabase[0].ean;
+            executeSearch();
+        }
+        function executeSearch() {
+            const query = document.getElementById('search-input').value.trim();
+            const matches = productsDatabase.map((product, index) => ({ product, index }))
+                .filter(({ product }) => !query || [product.name, product.ean, product.articleCode].some(value => value?.toLowerCase().includes(query.toLowerCase())))
+                .map(({ index }) => index);
+            if (!matches.length) { showSearchFeedback(); return; }
+            activeResultProducts = productsDatabase;
+            masterResultBrand = null;
+            document.getElementById('return-to-master').classList.add('hidden');
+            document.getElementById('return-to-master').classList.remove('inline-flex');
+            visibleProductIndexes = matches;
+            loadProductData(visibleProductIndexes[0]);
+            hideSearchFeedback();
+            switchToResultPage();
+        }
+
+        function loadProductData(index) {
+            currentProductIndex = index;
+            currentImageIndex = 0;
+            renderProductText();
+            updateImageVisual();
+            renderMultiProductPanel();
+        }
+
+        function renderProductText() {
+            const product = activeResultProducts[currentProductIndex];
+            const copy = product.demo ? {
+                category: `${product.brandName} · ${t('demoData')}`,
+                desc: t('demoAssets'),
+                specs: product.articleCode,
+                origin: t('demoUnavailable')
+            } : language === 'en' ? productContentEn[product.id] : product;
+            document.getElementById('detail-title').innerText = product.demo ? `${product.brandName} · ${t('demoProduct')} ${String(product.demoNumber).padStart(2, '0')}` : product.name;
+            document.getElementById('detail-desc-label').textContent = t(product.demo ? 'imageInfo' : 'description');
+            document.getElementById('detail-specs-label').textContent = t(product.demo ? 'lookupCode' : 'specifications');
+            document.getElementById('detail-origin-label').textContent = t(product.demo ? 'dataSource' : 'origin');
+            document.getElementById('detail-category').innerText = copy.category;
+            document.getElementById('detail-price').innerText = product.price || '';
+            document.getElementById('detail-price').classList.toggle('hidden', !!product.demo);
+            document.getElementById('detail-rating-block').classList.toggle('hidden', !!product.demo);
+            document.getElementById('detail-actions').classList.toggle('hidden', !!product.demo);
+            if (!product.demo) document.getElementById('detail-rating').innerText = language === 'en' ? product.rating.replace('đánh giá', 'reviews') : product.rating;
+            document.getElementById('detail-desc').innerText = copy.desc;
+            document.getElementById('detail-specs').innerText = copy.specs;
+            document.getElementById('detail-origin').innerText = copy.origin;
+        }
+
+        function nextImage() {
+            const product = activeResultProducts[currentProductIndex];
+            currentImageIndex = (currentImageIndex + 1) % product.images.length;
+            updateImageVisual();
+        }
+
+        function updateImageVisual() {
+            const product = activeResultProducts[currentProductIndex];
+            const imgElement = document.getElementById('visual-image');
+            imgElement.src = product.images[currentImageIndex];
+            imgElement.alt = product.demo ? `${product.brandName} · ${t('demoProduct')} ${String(product.demoNumber).padStart(2, '0')}` : product.name;
+
+            document.getElementById('img-counter').innerText = `${currentImageIndex + 1} / ${product.images.length}`;
+            document.getElementById('visual-tag').innerText = `${t('image')} ${currentImageIndex + 1}: ${product.brandName || product.name.split(' ')[0]}`;
+        }
+
+        function switchToResultPage() {
+            if (isResultPageVisible) return;
+            isResultPageVisible = true;
+            document.body.classList.remove('ant-home');
+
+            const header = document.getElementById('header-container');
+            const appSubtitle = document.getElementById('app-subtitle');
+            const searchContainer = document.getElementById('search-container');
+            const resultPage = document.getElementById('result-page');
+            const expandIndicator = document.getElementById('expand-indicator');
+
+            header.classList.remove('mt-12', 'md:mt-20', 'mb-6');
+            header.classList.add('mt-2', 'mb-2');
+            appSubtitle.classList.add('hidden');
+
+            searchContainer.classList.remove('mb-8');
+            searchContainer.classList.add('mb-2');
+
+            expandIndicator.classList.toggle('hidden', visibleProductIndexes.length < 2);
+
+            resultPage.classList.remove('hidden');
+            setTimeout(() => {
+                resultPage.classList.remove('opacity-0');
+                resultPage.classList.add('opacity-100');
+            }, 50);
+        }
+
+        function resetToFrontPage() {
+            if (!isResultPageVisible) return;
+            isResultPageVisible = false;
+            document.body.classList.add('ant-home');
+
+            const header = document.getElementById('header-container');
+            const appSubtitle = document.getElementById('app-subtitle');
+            const searchContainer = document.getElementById('search-container');
+            const resultPage = document.getElementById('result-page');
+            const expandIndicator = document.getElementById('expand-indicator');
+            const multiPanel = document.getElementById('multi-product-panel');
+
+            header.classList.add('mt-12', 'md:mt-20', 'mb-6');
+            header.classList.remove('mt-2', 'mb-2');
+            appSubtitle.classList.remove('hidden');
+
+            searchContainer.classList.add('mb-8');
+            searchContainer.classList.remove('mb-2');
+
+            expandIndicator.classList.add('hidden');
+            expandIndicator.setAttribute('aria-expanded', 'false');
+            document.getElementById('expand-label').textContent = t('expandProducts');
+            multiPanel.classList.add('hidden');
+            hideSearchFeedback();
+
+            resultPage.classList.add('opacity-0');
+            setTimeout(() => {
+                if (!isResultPageVisible) resultPage.classList.add('hidden');
+            }, 300);
+
+            document.getElementById('search-input').value = '';
+        }
+
+        function toggleMultiProducts() {
+            const panel = document.getElementById('multi-product-panel');
+            const expanded = panel.classList.toggle('hidden') === false;
+            document.getElementById('expand-indicator').setAttribute('aria-expanded', String(expanded));
+            document.getElementById('expand-label').textContent = t(expanded ? 'collapseProducts' : 'expandProducts');
+            document.querySelector('#expand-indicator .fa-chevron-down').classList.toggle('rotate-180', expanded);
+        }
+
+        function renderMultiProductPanel() {
+            const container = document.getElementById('multi-product-list');
+            document.getElementById('product-count-badge').innerText = visibleProductIndexes.length;
+            document.getElementById('expand-indicator').classList.toggle('hidden', visibleProductIndexes.length < 2 || !isResultPageVisible);
+            if (visibleProductIndexes.length < 2) {
+                document.getElementById('multi-product-panel').classList.add('hidden');
+                document.getElementById('expand-indicator').setAttribute('aria-expanded', 'false');
+            }
+
+            container.innerHTML = visibleProductIndexes.map(idx => {
+                const prod = activeResultProducts[idx];
+                const productName = prod.demo ? `${prod.brandName} · ${t('demoProduct')} ${String(prod.demoNumber).padStart(2, '0')}` : prod.name;
+                return `
+                <button type="button" onclick="selectProduct(${idx})" aria-pressed="${idx === currentProductIndex}" class="min-h-11 text-left cursor-pointer bg-slate-50 border ${idx === currentProductIndex ? 'border-emerald-600 ring-2 ring-emerald-100' : 'border-slate-200'} rounded-xl p-2 hover:bg-white transition-all flex items-center gap-2">
+                    <img src="${prod.images[0]}" alt="" loading="lazy" class="w-10 h-10 object-cover rounded-lg">
+                    <div class="overflow-hidden">
+                        <div class="text-xs font-bold text-slate-800 truncate">${productName}</div>
+                        <div class="text-[10px] text-emerald-700 font-semibold">${prod.price || prod.articleCode}</div>
+                    </div>
+                </button>
+            `; }).join('');
+        }
+
+        function selectProduct(index) {
+            loadProductData(index);
+            document.querySelectorAll('#multi-product-list button')[visibleProductIndexes.indexOf(index)]?.focus();
+            const product = activeResultProducts[index];
+            showToast(`${t('viewing')}: ${product.demo ? `${product.brandName} · ${t('demoProduct')} ${String(product.demoNumber).padStart(2, '0')}` : product.name}`);
+        }
+
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const values = (await file.text()).split(/[\r\n,;\t]+/).map(value => value.trim().replace(/^"|"$/g, '').toLowerCase()).filter(value => value.length >= 3);
+            const matches = productsDatabase.map((product, index) => ({ product, index }))
+                .filter(({ product }) => values.some(value => [product.name, product.ean, product.articleCode].some(field => field?.toLowerCase().includes(value))))
+                .map(({ index }) => index);
+            event.target.value = '';
+            if (!matches.length) { showSearchFeedback('noFileMatches'); return; }
+            activeResultProducts = productsDatabase;
+            masterResultBrand = null;
+            document.getElementById('return-to-master').classList.add('hidden');
+            document.getElementById('return-to-master').classList.remove('inline-flex');
+            visibleProductIndexes = matches;
+            document.getElementById('search-input').value = '';
+            loadProductData(visibleProductIndexes[0]);
+            hideSearchFeedback();
+            switchToResultPage();
+            showToast(`${t('fileMatches')}: ${visibleProductIndexes.length}`);
+        }
+
+        let activeTool = '';
+        const toolKeys = { 'IMG EDIT': 'imageEdit', 'AUTO FILL': 'autoFill', 'REQUEST': 'request', 'SETTING': 'settings' };
+        function styleToolFrame(frame) {
+            const doc = frame.contentDocument;
+            if (!doc || doc.querySelector('link[data-ant-theme]')) return;
+            const link = doc.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = '/PROJECT_UNITY/tool-theme.css';
+            link.dataset.antTheme = '';
+            doc.head.appendChild(link);
+        }
+        function setActiveTool(toolName) {
+            document.querySelectorAll('#top-toolbar-container button, #bottom-toolbar-container button').forEach(button => {
+                const action = button.getAttribute('onclick') || '';
+                const active = toolName === 'LIBRARY' ? action === 'openLibraryView()' : action === `triggerTool('${toolName}')`;
+                button.classList.toggle('ant-tool-active', active);
+                if (action.startsWith('triggerTool(') || action === 'openLibraryView()') button.setAttribute('aria-current', active ? 'page' : 'false');
+                if (active && button.closest('#top-toolbar-container') && document.body.classList.contains('ant-workspace-mode')) {
+                    button.scrollIntoView({ block: 'nearest', inline: 'center' });
+                }
+            });
+        }
+        function updateToolLabels() {
+            document.getElementById('tool-title').textContent = t(toolKeys[activeTool]);
+            document.getElementById('tool-description').textContent = activeTool === 'IMG EDIT' ? t('imageEditHint') : activeTool === 'AUTO FILL' ? t('autoFillHint') : t('comingSoon');
+            document.getElementById('top-library-status').textContent = t(toolKeys[activeTool]);
+            document.getElementById('top-back-label').textContent = t('backToSearch');
+        }
+        function triggerTool(toolName) {
+            activeTool = toolName;
+            currentView = 'TOOL';
+            document.body.classList.remove('ant-home');
+            document.body.classList.toggle('ant-workspace-mode', toolName === 'IMG EDIT' || toolName === 'AUTO FILL');
+            for (const id of ['search-view-wrapper', 'lib-brand-selection-view', 'lib-brand-grid-view', 'lib-product-detail-view', 'bottom-toolbar-container']) {
+                document.getElementById(id).classList.add('hidden');
+            }
+            document.getElementById('top-toolbar-container').classList.remove('hidden');
+            document.getElementById('top-library-title').classList.remove('hidden');
+            const toolView = document.getElementById('tool-view');
+            toolView.classList.remove('hidden');
+            const card = document.getElementById('tool-card');
+            card.classList.remove('ant-box-enter');
+            void card.offsetWidth;
+            card.classList.add('ant-box-enter');
+            for (const [id, name] of [['image-edit-frame', 'IMG EDIT'], ['auto-fill-frame', 'AUTO FILL']]) {
+                const frame = document.getElementById(id);
+                frame.classList.toggle('hidden', toolName !== name);
+                if (toolName === name && !frame.src) frame.src = frame.dataset.src;
+            }
+            const placeholder = document.getElementById('tool-placeholder');
+            placeholder.classList.toggle('hidden', toolName === 'IMG EDIT' || toolName === 'AUTO FILL');
+            placeholder.textContent = t('comingSoon');
+            updateToolLabels();
+            setActiveTool(toolName);
+            document.getElementById('main-scroll-container').scrollTop = 0;
+        }
+        function closeToolView() {
+            activeTool = '';
+            currentView = 'SEARCH_MAIN';
+            document.body.classList.remove('ant-workspace-mode');
+            document.body.classList.toggle('ant-home', !isResultPageVisible);
+            document.getElementById('tool-view').classList.add('hidden');
+            document.getElementById('top-toolbar-container').classList.add('hidden');
+            document.getElementById('search-view-wrapper').classList.remove('hidden');
+            document.getElementById('bottom-toolbar-container').classList.remove('hidden');
+            setActiveTool('');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msgSpan = document.getElementById('toast-message');
+            msgSpan.innerText = message;
+
+            toast.classList.remove('translate-y-[-100px]', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-[-100px]', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

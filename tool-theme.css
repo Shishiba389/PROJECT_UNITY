@@ -1,0 +1,41 @@
+/* A.N.T button palette for the two same-origin integrated tools. */
+.minima-app button.bg-primary,
+.minima-app button.export-cta,
+.minima-app .rail button.active {
+  background: #276221 !important;
+  color: #fff !important;
+}
+.minima-app button.bg-primary:hover,
+.minima-app button.export-cta:hover,
+.minima-app .rail button.active:hover {
+  background: #1d4d19 !important;
+}
+.minima-app button.bg-secondary {
+  color: #276221 !important;
+}
+.minima-app .rail button:hover:not(.active) {
+  color: #276221 !important;
+}
+.app-shell .primary-button {
+  background: #276221 !important;
+  border-color: #276221 !important;
+  color: #fff !important;
+}
+.app-shell .primary-button:hover {
+  background: #1d4d19 !important;
+}
+.app-shell .secondary-button,
+.app-shell .text-action {
+  color: #276221 !important;
+  border-color: #276221 !important;
+}
+.app-shell .nav-item.active {
+  color: #276221 !important;
+}
+.app-shell .stepper-item.current .step-circle {
+  background: #276221 !important;
+  color: #fff !important;
+}
+.app-shell .workflow-card.selected {
+  border-color: #276221 !important;
+}
