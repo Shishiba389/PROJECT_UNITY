@@ -188,6 +188,11 @@
         .ant-lang button[aria-pressed="true"] { background: var(--primary); color: #fff; }
         .ant-theme-btn { width: 42px; height: 42px; display: grid; place-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); color: var(--text-2); transition: background-color .18s, color .18s; }
         .ant-theme-btn:hover { background: var(--surface-2); color: var(--text); }
+        .ant-conn { min-height: 42px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); color: var(--text-2); font-size: 12px; font-weight: 600; white-space: nowrap; transition: background-color .18s, color .18s; }
+        .ant-conn:hover { background: var(--surface-2); color: var(--text); }
+        .ant-conn::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--text-3); }
+        .ant-conn[data-state="online"]::before { background: var(--green); }
+        .ant-conn[data-state="offline"]::before { background: var(--red); }
         /* Floating controls step aside while a long search result is scrolled, so they never cover it. */
         #ant-controls { transition: opacity .2s, transform .2s; }
         body.ant-scrolled #ant-controls { opacity: 0; transform: translateY(-8px); pointer-events: none; }
@@ -525,6 +530,8 @@
             #ant-controls { top: 8px; right: 8px; }
             .ant-lang button { min-height: 40px; }
             .ant-theme-btn { width: 48px; height: 48px; }
+            .ant-conn { min-width: 48px; min-height: 48px; justify-content: center; padding: 0; }
+            .ant-conn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
             #top-toolbar-container > div { flex-direction: column; align-items: stretch; gap: 8px; padding: 36px 0 0; }
             #top-toolbar-container > div > button { align-self: flex-start; }
             #top-toolbar-container .ant-top-tabs { width: 100%; overflow-x: auto; white-space: nowrap; justify-content: space-between; }
@@ -555,6 +562,7 @@
 <body class="ant-home h-screen w-screen overflow-hidden flex flex-col justify-between antialiased relative">
 
     <div id="ant-controls" class="ant-controls">
+        <button type="button" id="live-conn" class="ant-conn" data-state="demo" onclick="retryLive()"><span></span></button>
         <button type="button" class="ant-theme-btn" onclick="toggleTheme()" aria-pressed="false" aria-label="Chế độ sáng" title="Chế độ sáng"><i class="fa-solid fa-sun" aria-hidden="true"></i></button>
         <div class="ant-lang" role="group" aria-label="Language / Ngôn ngữ">
             <button type="button" onclick="setLanguage('vi')" data-lang="vi" aria-pressed="true">VI</button>
@@ -683,6 +691,7 @@
         <div class="ant-nav-label" data-i18n="tools">Công cụ</div>
         <button type="button" class="ant-nav-item" onclick="triggerTool('IMG EDIT')"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i><span data-i18n="imageEdit">Chỉnh ảnh</span></button>
         <button type="button" class="ant-nav-item" onclick="triggerTool('AUTO FILL')"><i class="fa-solid fa-bolt" aria-hidden="true"></i><span data-i18n="autoFill">Tự điền file</span></button>
+        <button type="button" class="ant-nav-item" onclick="triggerTool('PRICE SYNC')"><i class="fa-solid fa-tags" aria-hidden="true"></i><span data-i18n="priceSync">Cập nhật giá</span></button>
         <button type="button" class="ant-nav-item" onclick="triggerTool('REQUEST')"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span data-i18n="request">Yêu cầu ảnh</span><span class="ant-tag" data-i18n="soon">Sắp có</span></button>
         <button type="button" class="ant-btn ant-btn-primary ant-side-cta" onclick="openSearchView(); document.getElementById('file-upload').click()"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i><span data-i18n="uploadLookup">Tải file tra cứu</span></button>
         <div class="ant-side-meter">
@@ -726,6 +735,10 @@
                 <button onclick="triggerTool('AUTO FILL')" class="ant-top-tab">
                     <i class="fa-solid fa-bolt" aria-hidden="true"></i>
                     <span class="hidden md:inline" data-i18n="autoFill">Tự điền file</span>
+                </button>
+                <button onclick="triggerTool('PRICE SYNC')" class="ant-top-tab">
+                    <i class="fa-solid fa-tags" aria-hidden="true"></i>
+                    <span class="hidden md:inline" data-i18n="priceSync">Cập nhật giá</span>
                 </button>
                 <button onclick="triggerTool('SETTING')" class="ant-top-tab">
                     <i class="fa-solid fa-gear" aria-hidden="true"></i>
@@ -835,9 +848,9 @@
                             <span class="flex items-center gap-3 w-full"><span class="ant-tile is-blue" aria-hidden="true"><i class="fa-solid fa-bolt"></i></span><span class="min-w-0"><strong data-i18n="autoFill">Tự điền file</strong><small>Grand Archives · Excel</small></span></span>
                             <span class="ant-shortcut-foot"><span class="ant-status is-ready" data-i18n="ready">Sẵn sàng</span></span>
                         </button>
-                        <button type="button" class="ant-shortcut" onclick="triggerTool('REQUEST')">
-                            <span class="flex items-center gap-3 w-full"><span class="ant-tile is-green" aria-hidden="true"><i class="fa-solid fa-paper-plane"></i></span><span class="min-w-0"><strong data-i18n="request">Yêu cầu ảnh</strong><small data-i18n="requestMeta">Giao và theo dõi ảnh cần chụp</small></span></span>
-                            <span class="ant-shortcut-foot"><span class="ant-status" data-i18n="soon">Sắp có</span></span>
+                        <button type="button" class="ant-shortcut" onclick="triggerTool('PRICE SYNC')">
+                            <span class="flex items-center gap-3 w-full"><span class="ant-tile is-green" aria-hidden="true"><i class="fa-solid fa-tags"></i></span><span class="min-w-0"><strong data-i18n="priceSync">Cập nhật giá</strong><small>PriceSync · Directo</small></span></span>
+                            <span class="ant-shortcut-foot"><span class="ant-status is-ready" data-i18n="ready">Sẵn sàng</span></span>
                         </button>
                     </div>
                 </section>
@@ -964,6 +977,7 @@
                                 <div id="live-image-filters" class="ant-chips" role="group" aria-label="Lọc ảnh"></div>
                                 <div class="flex flex-wrap gap-2">
                                     <button type="button" class="ant-btn ant-btn-secondary" onclick="liveSelectAll()"><i class="fa-regular fa-square-check" aria-hidden="true"></i><span id="live-select-label" data-i18n="liveSelectAll">Chọn tất cả</span></button>
+                                    <button type="button" class="ant-btn ant-btn-secondary" id="live-edit" onclick="liveEdit()" disabled><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i><span data-i18n="liveEdit">Chỉnh ảnh</span></button>
                                     <button type="button" class="ant-btn ant-btn-primary" id="live-download" onclick="liveDownload()" disabled><i class="fa-solid fa-download" aria-hidden="true"></i><span id="live-download-label" data-i18n="liveDownloadSelected">Tải ảnh đã chọn</span></button>
                                 </div>
                             </div>
@@ -982,6 +996,7 @@
                             <label for="live-viewer-cat" class="ant-muted text-xs" data-i18n="liveCategory">Nhóm ảnh</label>
                             <select id="live-viewer-cat" class="ant-select"></select>
                             <a id="live-viewer-download" class="ant-btn ant-btn-primary" download><i class="fa-solid fa-download" aria-hidden="true"></i><span data-i18n="liveDownloadOriginal">Tải ảnh gốc</span></a>
+                            <button type="button" id="live-viewer-edit" class="ant-btn ant-btn-secondary"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i><span data-i18n="liveEdit">Chỉnh ảnh</span></button>
                             <button type="button" class="ant-btn ant-btn-secondary" onclick="document.getElementById('live-viewer').close()" data-i18n="liveClose">Đóng</button>
                         </div>
                     </div>
@@ -1107,7 +1122,8 @@
                     <button type="button" onclick="closeToolView()" class="ant-btn ant-btn-secondary" data-i18n="backToSearch">Về tìm kiếm</button>
                 </div>
                 <iframe id="image-edit-frame" class="ant-workspace-frame hidden" data-src="/PROJECT_UNITY/project-m2/" title="MINIMA image editor" allow="clipboard-read; clipboard-write"></iframe>
-                <iframe id="auto-fill-frame" class="ant-workspace-frame hidden" data-src="/PROJECT_UNITY/auto-fill/" title="PROJECT_AUTO file autofill"></iframe>
+                <iframe id="auto-fill-frame" class="ant-workspace-frame hidden" data-src="/PROJECT_UNITY/auto-fill/" data-local="auto-fill/" title="PROJECT_AUTO file autofill" allow="local-network-access"></iframe>
+                <iframe id="price-sync-frame" class="ant-workspace-frame hidden" data-src="/PROJECT_UNITY/price-sync/app.html" data-local="price-sync/app.html" title="PriceSync Tracker" allow="local-network-access"></iframe>
                 <div id="tool-placeholder" class="ant-workspace-placeholder hidden"></div>
             </div>
         </div>
@@ -1133,6 +1149,10 @@
                 <i class="fa-solid fa-bolt ant-ico-blue" aria-hidden="true"></i>
                 <span data-i18n="autoFill">Tự điền file</span>
             </button>
+            <button onclick="triggerTool('PRICE SYNC')" data-short-vi="Giá" data-short-en="Price">
+                <i class="fa-solid fa-tags ant-ico-green" aria-hidden="true"></i>
+                <span data-i18n="priceSync">Cập nhật giá</span>
+            </button>
             <button onclick="triggerTool('SETTING')" data-short-vi="Cài đặt" data-short-en="Settings">
                 <i class="fa-solid fa-gear ant-ico-gray" aria-hidden="true"></i>
                 <span data-i18n="settings">Cài đặt</span>
@@ -1154,13 +1174,14 @@
                 expandProducts: 'Mở danh sách sản phẩm', collapseProducts: 'Đóng danh sách sản phẩm', relatedProducts: 'Các sản phẩm liên quan tìm thấy:', imageEdit: 'Chỉnh ảnh', library: 'Thư viện', request: 'Yêu cầu ảnh', autoFill: 'Tự điền file', settings: 'Cài đặt',
                 next: 'Tiếp', moreImagesHint: 'Bấm nút bên phải để xem thêm ảnh', description: 'Mô tả sản phẩm: ', specifications: 'Chất liệu & Thông số: ', origin: 'Bảo hành & Xuất xứ: ', addToOrder: 'Thêm vào đơn hàng',
                 chooseBrand: 'Chọn thương hiệu', chooseBrandHint: 'Tìm tên brand và chọn logo để xem thư viện', nextPage: 'Trang tiếp', backToBrands: 'Về thương hiệu', brandOverview: 'Tổng quan thương hiệu', imageLibrary: 'Thư viện ảnh', featuredImage: 'Ảnh nổi bật', featureHint: 'Chọn ảnh để xem đầy đủ', swipeHint: 'Vuốt ngang để xem ba phần của thư viện.', brandFilter: 'Tìm thương hiệu...', demoAssets: 'Ảnh minh họa bố cục · chưa có dữ liệu thật của brand', demoImage: 'Ảnh mẫu', brandMasterData: 'Master data · thương hiệu', demoData: 'Dữ liệu demo', canonicalBrand: 'Tên chuẩn', brandCode: 'Mã tra cứu', brandAliases: 'Tên gốc / bí danh', masterStatus: 'Dữ liệu sản phẩm', notConnected: 'Chưa kết nối', pendingLogo: 'Logo đang chờ xác minh',
-                back: 'Quay lại', singleViewer: 'Xem ảnh sản phẩm', products: 'sản phẩm', brandSelection: 'Chọn thương hiệu', backToSearch: 'Về tìm kiếm', backToGrid: 'Về thư viện', image: 'Ảnh', brandLibrary: 'Thư viện', viewing: 'Đang xem', receivedFile: 'Đã nhận file', fileMatches: 'Sản phẩm demo khớp trong file', noFileMatches: 'Không có mã hoặc tên nào trong file khớp với sản phẩm demo. Hỗ trợ danh sách CSV/TXT.', toolReady: 'Sẵn sàng', noResult: 'Không tìm thấy sản phẩm phù hợp', noResultHelp: 'Không tìm thấy sản phẩm. Thử tên khác, mã EAN hoặc article code.', tryDemo: 'Thử EAN mẫu', noBrands: 'Không tìm thấy thương hiệu. Thử tên khác hoặc tên viết tắt.', showMoreBrands: 'Xem thêm thương hiệu', addedToOrder: 'Đã thêm vào đơn hàng', saved: 'Đã lưu', nextPageReady: 'Đây là bản xem trước thư viện', imageEditHint: 'MINIMA Resize Studio · chỉnh sửa và xuất ảnh', autoFillHint: 'Grand Archives · xử lý và điền file Excel', comingSoon: 'Chức năng này đang được chuẩn bị.',
+                back: 'Quay lại', singleViewer: 'Xem ảnh sản phẩm', products: 'sản phẩm', brandSelection: 'Chọn thương hiệu', backToSearch: 'Về tìm kiếm', backToGrid: 'Về thư viện', image: 'Ảnh', brandLibrary: 'Thư viện', viewing: 'Đang xem', receivedFile: 'Đã nhận file', fileMatches: 'Sản phẩm demo khớp trong file', noFileMatches: 'Không có mã hoặc tên nào trong file khớp với sản phẩm demo. Hỗ trợ danh sách CSV/TXT.', toolReady: 'Sẵn sàng', noResult: 'Không tìm thấy sản phẩm phù hợp', noResultHelp: 'Không tìm thấy sản phẩm. Thử tên khác, mã EAN hoặc article code.', tryDemo: 'Thử EAN mẫu', noBrands: 'Không tìm thấy thương hiệu. Thử tên khác hoặc tên viết tắt.', showMoreBrands: 'Xem thêm thương hiệu', addedToOrder: 'Đã thêm vào đơn hàng', saved: 'Đã lưu', nextPageReady: 'Đây là bản xem trước thư viện', imageEditHint: 'MINIMA Resize Studio · chỉnh sửa và xuất ảnh', autoFillHint: 'Grand Archives · xử lý và điền file Excel', priceSync: 'Cập nhật giá', priceSyncHint: 'PriceSync Tracker · ghép formula với template thành file upload Directo',
+                connOnline: 'Dữ liệu thật', connOffline: 'Mất kết nối', connDemo: 'Dữ liệu demo', connOnlineHint: 'Đang dùng master data và ảnh SharePoint qua máy chủ A.N.T (serve.py).', connOfflineHint: 'Chưa kết nối được máy chủ A.N.T trên máy này. Chạy run-ant.bat trong thư mục ANT, A.N.T sẽ tự kết nối lại.', connDemoHint: 'Bản xem trước dùng dữ liệu demo. Mở link có ?local=1 trên máy đang chạy A.N.T để dùng dữ liệu thật.', comingSoon: 'Chức năng này đang được chuẩn bị.',
                 workspace: 'Không gian', tools: 'Công cụ', soon: 'Sắp có', uploadLookup: 'Tải file tra cứu', logoLibrary: 'Thư viện logo', shortcuts: 'Lối tắt', brandLibraryTitle: 'Thư viện thương hiệu',
                 mainPage: 'Trang chính', aboutAnt: 'Giới thiệu A.N.T', lightMode: 'Chế độ sáng', overview: 'Tổng quan', ready: 'Sẵn sàng', requestMeta: 'Giao và theo dõi ảnh cần chụp', suggestions: 'Thương hiệu gợi ý', viewAll: 'Xem tất cả', openLibrary: 'Mở thư viện', recent: 'Gần đây', recentEmpty: 'Chưa có hoạt động. Tìm một mã EAN hoặc mở một thương hiệu để bắt đầu.', colName: 'Tên', colType: 'Loại', colTime: 'Thời gian', typeSearch: 'Tìm kiếm', typeBrand: 'Thương hiệu', typeTool: 'Công cụ',
                 features: 'Tính năng', howItWorks: 'Cách hoạt động', openApp: 'Vào A.N.T', previewBadge: 'Bản xem trước · dữ liệu demo', heroTitle: 'Mọi hình ảnh và dữ liệu sản phẩm, ở một nơi.', heroLead: 'Nhập EAN, article code hoặc tên sản phẩm. A.N.T khớp master data rồi trả về packshot, thông tin sản phẩm và công cụ xử lý ảnh.', getStarted: 'Vào không gian làm việc', seeHow: 'Xem cách hoạt động', statBrands: 'thương hiệu', statLogos: 'logo đã chuẩn hóa', statAreas: 'khu vực làm việc',
                 featuresTitle: 'Mọi thứ cho tài sản sản phẩm', featuresLead: 'Bốn khu vực làm việc dùng chung một nguồn dữ liệu sản phẩm.', featSearchTitle: 'Tìm theo EAN, mã hoặc tên', featSearchText: 'Nhận diện loại mã, khớp master data rồi gom toàn bộ ảnh liên quan.', featLibraryText: 'Logo chuẩn hóa, ảnh và master data xếp theo từng thương hiệu.', featEditText: 'Resize theo preset, cắt, đặt ảnh lên nền trắng và xuất hàng loạt.', featFillText: 'Kiểm tra và điền file Excel theo mẫu của từng nhà bán lẻ.',
                 howLead: 'Master data là cầu nối: mọi giá trị nhập vào được đổi thành một sản phẩm trước khi tìm ảnh.', step1Title: 'Nhập hoặc tải file', step1Text: 'Một EAN, article code, tên sản phẩm hay cả danh sách CSV.', step2Title: 'Khớp master data', step2Text: 'Barcode, mã hàng, mã cũ và tên được quy về đúng sản phẩm.', step3Title: 'Nhận ảnh và thông tin', step3Text: 'Packshot, ảnh hộp, lifestyle cùng kích thước, pháp lý và nhà cung cấp.', ctaTitle: 'Sẵn sàng tìm ảnh?', ctaText: 'Mở không gian làm việc và thử với một mã EAN mẫu.',
-                liveNoProduct: 'Không có sản phẩm này trong master data. Thử EAN, article code hoặc tên khác.', liveNoFileMatch: 'Không mã nào trong file có trong master data.', liveFileMatches: 'Sản phẩm khớp trong file', liveNotFound: 'mã không thấy', liveSearching: 'Đang tìm ảnh trên SharePoint…', liveClassifying: 'Đang phân loại ảnh…', livePending: 'Đang phân loại', liveByPerson: 'Đã xác nhận', liveReview: 'Cần xem lại', liveSelect: 'Chọn', liveCategory: 'Nhóm ảnh', liveLearned: 'Đã lưu, A.N.T sẽ học từ ảnh này', liveZipping: 'Đang nén ảnh gốc…', liveFailed: 'Không thực hiện được', liveSelectAll: 'Chọn tất cả', liveClearAll: 'Bỏ chọn', liveDownloadSelected: 'Tải ảnh đã chọn', liveImages: 'ảnh', liveToReview: 'cần xem lại', liveSelectedCount: 'đã chọn', liveLoginNeeded: 'Phiên đăng nhập SharePoint đã hết hạn.', liveLoginButton: 'Đăng nhập SharePoint', liveLoginOpen: 'Mở trang đăng nhập và nhập mã', liveLoginDone: 'Đã đăng nhập SharePoint', liveNotInMaster: 'Không có trong master data · tìm ảnh theo đúng mã đã nhập', liveAllFields: 'Tất cả trường master data', liveDownloadOriginal: 'Tải ảnh gốc', liveClose: 'Đóng', liveNoImages: 'Không tìm thấy ảnh nào trên SharePoint cho sản phẩm này.',
+                liveNoProduct: 'Không có sản phẩm này trong master data. Thử EAN, article code hoặc tên khác.', liveNoFileMatch: 'Không mã nào trong file có trong master data.', liveFileMatches: 'Sản phẩm khớp trong file', liveNotFound: 'mã không thấy', liveSearching: 'Đang tìm ảnh trên SharePoint…', liveClassifying: 'Đang phân loại ảnh…', livePending: 'Đang phân loại', liveByPerson: 'Đã xác nhận', liveReview: 'Cần xem lại', liveSelect: 'Chọn', liveCategory: 'Nhóm ảnh', liveLearned: 'Đã lưu, A.N.T sẽ học từ ảnh này', liveZipping: 'Đang nén ảnh gốc…', liveFailed: 'Không thực hiện được', liveSelectAll: 'Chọn tất cả', liveClearAll: 'Bỏ chọn', liveDownloadSelected: 'Tải ảnh đã chọn', liveImages: 'ảnh', liveToReview: 'cần xem lại', liveSelectedCount: 'đã chọn', liveLoginNeeded: 'Phiên đăng nhập SharePoint đã hết hạn.', liveLoginButton: 'Đăng nhập SharePoint', liveLoginOpen: 'Mở trang đăng nhập và nhập mã', liveLoginDone: 'Đã đăng nhập SharePoint', liveNotInMaster: 'Không có trong master data · tìm ảnh theo đúng mã đã nhập', liveAllFields: 'Tất cả trường master data', liveDownloadOriginal: 'Tải ảnh gốc', liveEdit: 'Chỉnh ảnh', liveEditLoading: 'Đang lấy ảnh gốc cho Chỉnh ảnh', liveEditSent: 'Đã gửi sang Chỉnh ảnh', liveClose: 'Đóng', liveNoImages: 'Không tìm thấy ảnh nào trên SharePoint cho sản phẩm này.',
                 catPackshot: 'Packshot', catHuman: 'Có người', catScene: 'Dàn cảnh', catCollection: 'Bộ sưu tập', catColor: 'Nền màu', catArtwork: 'Artwork', catUncertain: 'Không rõ',
                 liveTabImages: 'Hình ảnh', liveTabInfo: 'Thông tin chi tiết', liveProductsWord: 'sản phẩm', liveProductWord: 'Sản phẩm', liveStatusFilter: 'Lọc theo trạng thái', liveFilterResults: 'Lọc theo tên, EAN, mã…', liveNoMatchFilter: 'Không có mục nào khớp bộ lọc.', groupAll: 'Tất cả', groupActive: 'Đang bán', groupUpcoming: 'Sắp ra mắt', groupInactive: 'Ngừng bán', liveCopy: 'Sao chép', liveCopied: 'Đã sao chép', liveCopyIngredients: 'Sao chép thành phần',
                 factVolume: 'Dung tích', factSize: 'Kích thước', factSizeHint: 'rộng × cao × sâu', factWeight: 'Khối lượng tịnh', factGross: 'cả bì', factCarton: 'Đóng thùng', factPerCarton: 'sp/thùng', factPerInner: 'sp/hộp trong', unitMonths: 'tháng',
@@ -1173,13 +1194,14 @@
                 expandProducts: 'Expand product list', collapseProducts: 'Close product list', relatedProducts: 'Related products found:', imageEdit: 'Image edit', library: 'Library', request: 'Image request', autoFill: 'Auto fill', settings: 'Settings',
                 next: 'Next', moreImagesHint: 'Use the button on the right to see more images', description: 'Description: ', specifications: 'Materials & specifications: ', origin: 'Warranty & origin: ', addToOrder: 'Add to order',
                 chooseBrand: 'Choose a brand', chooseBrandHint: 'Search a brand name and select its logo to view the library', nextPage: 'Next page', backToBrands: 'Back to brands', brandOverview: 'Brand overview', imageLibrary: 'Image library', featuredImage: 'Featured image', featureHint: 'Select the image to view it fully', swipeHint: 'Swipe sideways to explore the three library panels.', brandFilter: 'Find a brand...', demoAssets: 'Layout preview · real brand assets have not been added', demoImage: 'Sample image', brandMasterData: 'Brand master data', demoData: 'Demo data', canonicalBrand: 'Standard name', brandCode: 'Search key', brandAliases: 'Source names / aliases', masterStatus: 'Product data', notConnected: 'Not connected', pendingLogo: 'Logo awaiting verification',
-                back: 'Back', singleViewer: 'Product image viewer', products: 'products', brandSelection: 'Brand selection', backToSearch: 'Back to search', backToGrid: 'Back to library', image: 'Image', brandLibrary: 'Library', viewing: 'Viewing', receivedFile: 'File received', fileMatches: 'Matching demo products in file', noFileMatches: 'No code or name in this file matches a demo product. CSV/TXT lists are supported.', toolReady: 'Ready', noResult: 'No matching product found', noResultHelp: 'No product found. Try another name, EAN, or article code.', tryDemo: 'Try a sample EAN', noBrands: 'No brands found. Try another name or abbreviation.', showMoreBrands: 'Show more brands', addedToOrder: 'Added to order', saved: 'Saved', nextPageReady: 'This is a library preview', imageEditHint: 'MINIMA Resize Studio · edit and export images', autoFillHint: 'Grand Archives · process and fill Excel files', comingSoon: 'This function is being prepared.',
+                back: 'Back', singleViewer: 'Product image viewer', products: 'products', brandSelection: 'Brand selection', backToSearch: 'Back to search', backToGrid: 'Back to library', image: 'Image', brandLibrary: 'Library', viewing: 'Viewing', receivedFile: 'File received', fileMatches: 'Matching demo products in file', noFileMatches: 'No code or name in this file matches a demo product. CSV/TXT lists are supported.', toolReady: 'Ready', noResult: 'No matching product found', noResultHelp: 'No product found. Try another name, EAN, or article code.', tryDemo: 'Try a sample EAN', noBrands: 'No brands found. Try another name or abbreviation.', showMoreBrands: 'Show more brands', addedToOrder: 'Added to order', saved: 'Saved', nextPageReady: 'This is a library preview', imageEditHint: 'MINIMA Resize Studio · edit and export images', autoFillHint: 'Grand Archives · process and fill Excel files', priceSync: 'Price update', priceSyncHint: 'PriceSync Tracker · build the Directo upload file from formula and template',
+                connOnline: 'Live data', connOffline: 'Disconnected', connDemo: 'Demo data', connOnlineHint: 'Using master data and SharePoint images through the A.N.T server (serve.py).', connOfflineHint: 'Cannot reach the A.N.T server on this computer. Run run-ant.bat in the ANT folder; A.N.T reconnects by itself.', connDemoHint: 'This preview uses demo data. Open the link with ?local=1 on a computer running A.N.T for live data.', comingSoon: 'This function is being prepared.',
                 workspace: 'Workspace', tools: 'Tools', soon: 'Soon', uploadLookup: 'Upload lookup file', logoLibrary: 'Logo library', shortcuts: 'Shortcuts', brandLibraryTitle: 'Brand library',
                 mainPage: 'Home', aboutAnt: 'About A.N.T', lightMode: 'Light mode', overview: 'Overview', ready: 'Ready', requestMeta: 'Assign and follow the photos you need', suggestions: 'Suggested brands', viewAll: 'View all', openLibrary: 'Open library', recent: 'Recent', recentEmpty: 'No activity yet. Search an EAN or open a brand to get started.', colName: 'Name', colType: 'Type', colTime: 'Time', typeSearch: 'Search', typeBrand: 'Brand', typeTool: 'Tool',
                 features: 'Features', howItWorks: 'How it works', openApp: 'Open A.N.T', previewBadge: 'Preview · demo data', heroTitle: 'Every product image and record, in one place.', heroLead: 'Type an EAN, article code or product name. A.N.T matches it against master data and returns the packshots, product details and image tools.', getStarted: 'Open the workspace', seeHow: 'See how it works', statBrands: 'brands', statLogos: 'standardised logos', statAreas: 'workspaces',
                 featuresTitle: 'Everything for product assets', featuresLead: 'Four workspaces sharing one source of product data.', featSearchTitle: 'Search by EAN, code or name', featSearchText: 'Recognises the kind of code, matches master data and gathers every related image.', featLibraryText: 'Standardised logos, images and master data, organised by brand.', featEditText: 'Resize with presets, crop, place images on white and export in bulk.', featFillText: 'Check and fill Excel files to each retailer’s template.',
                 howLead: 'Master data is the bridge: every input is resolved to one product before images are fetched.', step1Title: 'Type or upload a file', step1Text: 'One EAN, article code, product name, or a whole CSV list.', step2Title: 'Match master data', step2Text: 'Barcodes, article codes, old codes and names resolve to the right product.', step3Title: 'Get images and details', step3Text: 'Packshots, box and lifestyle shots with dimensions, compliance and supplier data.', ctaTitle: 'Ready to find images?', ctaText: 'Open the workspace and try it with a sample EAN.',
-                liveNoProduct: 'This product is not in master data. Try another EAN, article code or name.', liveNoFileMatch: 'No code in the file is in master data.', liveFileMatches: 'Products matched in the file', liveNotFound: 'codes not found', liveSearching: 'Searching SharePoint for images…', liveClassifying: 'Classifying images…', livePending: 'Classifying', liveByPerson: 'Confirmed', liveReview: 'Check', liveSelect: 'Select', liveCategory: 'Image type', liveLearned: 'Saved; A.N.T will learn from this image', liveZipping: 'Zipping the originals…', liveFailed: 'That did not work', liveSelectAll: 'Select all', liveClearAll: 'Clear selection', liveDownloadSelected: 'Download selected', liveImages: 'images', liveToReview: 'to check', liveSelectedCount: 'selected', liveLoginNeeded: 'The SharePoint session has expired.', liveLoginButton: 'Sign in to SharePoint', liveLoginOpen: 'Open the sign-in page and enter the code', liveLoginDone: 'Signed in to SharePoint', liveNotInMaster: 'Not in master data · searching images for the code as typed', liveAllFields: 'All master data fields', liveDownloadOriginal: 'Download original', liveClose: 'Close', liveNoImages: 'No images found on SharePoint for this product.',
+                liveNoProduct: 'This product is not in master data. Try another EAN, article code or name.', liveNoFileMatch: 'No code in the file is in master data.', liveFileMatches: 'Products matched in the file', liveNotFound: 'codes not found', liveSearching: 'Searching SharePoint for images…', liveClassifying: 'Classifying images…', livePending: 'Classifying', liveByPerson: 'Confirmed', liveReview: 'Check', liveSelect: 'Select', liveCategory: 'Image type', liveLearned: 'Saved; A.N.T will learn from this image', liveZipping: 'Zipping the originals…', liveFailed: 'That did not work', liveSelectAll: 'Select all', liveClearAll: 'Clear selection', liveDownloadSelected: 'Download selected', liveImages: 'images', liveToReview: 'to check', liveSelectedCount: 'selected', liveLoginNeeded: 'The SharePoint session has expired.', liveLoginButton: 'Sign in to SharePoint', liveLoginOpen: 'Open the sign-in page and enter the code', liveLoginDone: 'Signed in to SharePoint', liveNotInMaster: 'Not in master data · searching images for the code as typed', liveAllFields: 'All master data fields', liveDownloadOriginal: 'Download original', liveEdit: 'Edit', liveEditLoading: 'Fetching originals for Image edit', liveEditSent: 'Sent to Image edit', liveClose: 'Close', liveNoImages: 'No images found on SharePoint for this product.',
                 catPackshot: 'Packshot', catHuman: 'With people', catScene: 'Scene setup', catCollection: 'Collection', catColor: 'Color background', catArtwork: 'Artwork', catUncertain: 'Unclear',
                 liveTabImages: 'Images', liveTabInfo: 'Details', liveProductsWord: 'products', liveProductWord: 'Product', liveStatusFilter: 'Filter by status', liveFilterResults: 'Filter by name, EAN, code…', liveNoMatchFilter: 'Nothing matches the filter.', groupAll: 'All', groupActive: 'On sale', groupUpcoming: 'Upcoming', groupInactive: 'Discontinued', liveCopy: 'Copy', liveCopied: 'Copied', liveCopyIngredients: 'Copy ingredients',
                 factVolume: 'Volume', factSize: 'Size', factSizeHint: 'width × height × depth', factWeight: 'Net weight', factGross: 'gross', factCarton: 'Carton', factPerCarton: 'per carton', factPerInner: 'per inner box', unitMonths: 'months',
@@ -1215,6 +1237,7 @@
             updateThemeButtons();
             renderSuggestions();
             renderRecent();
+            renderConnection();
             if (liveMode && liveKey) { renderLiveResults(); renderLiveProduct(); renderLiveInfo(); renderBoard(); updateLiveStatus(); }
             if (currentView === 'LIB_BRANDS') showBrandSelectionView();
             if (currentView === 'LIB_GRID') showBrandGridView();
@@ -1315,7 +1338,7 @@
             scroller.addEventListener('scroll', () => {
                 document.body.classList.toggle('ant-scrolled', currentView === 'SEARCH_MAIN' && scroller.scrollTop > 80);
             }, { passive: true });
-            for (const id of ['image-edit-frame', 'auto-fill-frame']) {
+            for (const [id] of Object.values(TOOL_FRAMES)) {
                 const frame = document.getElementById(id);
                 frame.addEventListener('load', () => styleToolFrame(frame));
             }
@@ -1418,7 +1441,7 @@
         function escapeHtml(value) {
             return String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
         }
-        const recentIcons = { search: 'fa-magnifying-glass ant-ico-blue', brand: 'fa-folder-open ant-ico-yellow', 'IMG EDIT': 'fa-wand-magic-sparkles ant-ico-red', 'AUTO FILL': 'fa-bolt ant-ico-blue' };
+        const recentIcons = { search: 'fa-magnifying-glass ant-ico-blue', brand: 'fa-folder-open ant-ico-yellow', 'IMG EDIT': 'fa-wand-magic-sparkles ant-ico-red', 'AUTO FILL': 'fa-bolt ant-ico-blue', 'PRICE SYNC': 'fa-tags ant-ico-green' };
         function renderRecent() {
             const items = loadRecent();
             const container = document.getElementById('recent-list');
@@ -1745,7 +1768,7 @@
         function showSearchFeedback(key = 'noResultHelp') {
             searchFeedbackKey = key;
             document.getElementById('search-feedback-text').textContent = t(key);
-            document.querySelector('#search-feedback button').classList.toggle('hidden', liveMode);
+            document.querySelector('#search-feedback button').classList.toggle('hidden', liveMode || liveOptIn);
             document.getElementById('search-feedback').classList.remove('hidden');
         }
         function tryDemoSearch() {
@@ -1754,8 +1777,9 @@
         }
         async function executeSearch() {
             const query = document.getElementById('search-input').value.trim();
-            await liveReady;
+            await ensureLive();
             if (liveMode) return liveSearch(query);
+            if (liveOptIn) { showSearchFeedback('connOfflineHint'); return; }
             const matches = productsDatabase.map((product, index) => ({ product, index }))
                 .filter(({ product }) => !query || [product.name, product.ean, product.articleCode].some(value => value?.toLowerCase().includes(query.toLowerCase())))
                 .map(({ index }) => index);
@@ -1916,8 +1940,9 @@
         async function handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
-            await liveReady;
+            await ensureLive();
             if (liveMode) { event.target.value = ''; return liveLookup(file); }
+            if (liveOptIn) { event.target.value = ''; showSearchFeedback('connOfflineHint'); return; }
             const values = (await file.text()).split(/[\r\n,;\t]+/).map(value => value.trim().replace(/^"|"$/g, '').toLowerCase()).filter(value => value.length >= 3);
             const matches = productsDatabase.map((product, index) => ({ product, index }))
                 .filter(({ product }) => values.some(value => [product.name, product.ean, product.articleCode].some(field => field?.toLowerCase().includes(value))))
@@ -1937,7 +1962,9 @@
         }
 
         let activeTool = '';
-        const toolKeys = { 'IMG EDIT': 'imageEdit', 'AUTO FILL': 'autoFill', 'REQUEST': 'request', 'SETTING': 'settings' };
+        const toolKeys = { 'IMG EDIT': 'imageEdit', 'AUTO FILL': 'autoFill', 'PRICE SYNC': 'priceSync', 'REQUEST': 'request', 'SETTING': 'settings' };
+        // Tools that open in a frame: [frame id, description key].
+        const TOOL_FRAMES = { 'IMG EDIT': ['image-edit-frame', 'imageEditHint'], 'AUTO FILL': ['auto-fill-frame', 'autoFillHint'], 'PRICE SYNC': ['price-sync-frame', 'priceSyncHint'] };
         function styleToolFrame(frame) {
             const doc = frame.contentDocument;
             if (!doc || doc.querySelector('link[data-ant-theme]')) return;
@@ -1962,16 +1989,16 @@
         }
         function updateToolLabels() {
             document.getElementById('tool-title').textContent = t(toolKeys[activeTool]);
-            document.getElementById('tool-description').textContent = activeTool === 'IMG EDIT' ? t('imageEditHint') : activeTool === 'AUTO FILL' ? t('autoFillHint') : t('comingSoon');
+            document.getElementById('tool-description').textContent = t(TOOL_FRAMES[activeTool]?.[1] || 'comingSoon');
             document.getElementById('top-library-status').textContent = t(toolKeys[activeTool]);
             document.getElementById('top-back-label').textContent = t('backToSearch');
         }
         function triggerTool(toolName) {
-            if (toolName === 'IMG EDIT' || toolName === 'AUTO FILL') pushRecent('tool', toolName, toolName);
+            if (TOOL_FRAMES[toolName]) pushRecent('tool', toolName, toolName);
             activeTool = toolName;
             currentView = 'TOOL';
             document.body.classList.remove('ant-home');
-            document.body.classList.toggle('ant-workspace-mode', toolName === 'IMG EDIT' || toolName === 'AUTO FILL');
+            document.body.classList.toggle('ant-workspace-mode', !!TOOL_FRAMES[toolName]);
             for (const id of ['search-view-wrapper', 'lib-brand-selection-view', 'lib-brand-grid-view', 'lib-product-detail-view', 'bottom-toolbar-container']) {
                 document.getElementById(id).classList.add('hidden');
             }
@@ -1983,13 +2010,15 @@
             card.classList.remove('ant-box-enter');
             void card.offsetWidth;
             card.classList.add('ant-box-enter');
-            for (const [id, name] of [['image-edit-frame', 'IMG EDIT'], ['auto-fill-frame', 'AUTO FILL']]) {
+            for (const [name, [id]] of Object.entries(TOOL_FRAMES)) {
                 const frame = document.getElementById(id);
                 frame.classList.toggle('hidden', toolName !== name);
-                if (toolName === name && !frame.src) frame.src = frame.dataset.src;
+                // Hosted copy talking to serve.py on this computer: the local-only tools come from serve.py too.
+                const src = frame.dataset.local && IMG_API === LOCAL_IMG_API ? `${LOCAL_ORIGIN}/${frame.dataset.local}` : frame.dataset.src;
+                if (toolName === name && frame.getAttribute('src') !== src) frame.src = src;
             }
             const placeholder = document.getElementById('tool-placeholder');
-            placeholder.classList.toggle('hidden', toolName === 'IMG EDIT' || toolName === 'AUTO FILL');
+            placeholder.classList.toggle('hidden', !!TOOL_FRAMES[toolName]);
             placeholder.textContent = t('comingSoon');
             updateToolLabels();
             setActiveTool(toolName);
@@ -2013,7 +2042,8 @@
         // the viewer's own computer once they open the page with ?local=1
         // (remembered; others are never asked for local network access).
         // Without either, search stays on demo data.
-        const LOCAL_IMG_API = 'http://127.0.0.1:8020/api/images';
+        const LOCAL_ORIGIN = 'http://127.0.0.1:8020';
+        const LOCAL_IMG_API = `${LOCAL_ORIGIN}/api/images`;
         let IMG_API = '/api/images';
         const CAT_ORDER = ['01_packshot', '02_lifestyle_human', '02_lifestyle_scene_setup', '02_lifestyle_collection',
             '02_lifestyle_color_background_or_packshot_low_priority', '03_artwork', '99_uncertain'];
@@ -2065,28 +2095,70 @@
         const dimsOf = (...values) => values.every(Boolean) ? values.map(num).join(' × ') : '';
         const formatField = (key, value) => (key === 'SHELF LIFE' || key === 'PAO') ? months(value) : value;
 
-        const liveReady = (async () => {
-            const healthy = async base => {
-                try {
-                    const response = await fetch(`${base}/health`);
-                    return response.ok && (await response.json()).ok === true;
-                } catch (e) { return false; }
-            };
-            if (await healthy(IMG_API)) { liveMode = true; return; }
-            let optIn = new URLSearchParams(location.search).has('local');
+        // Connection: liveMode = this page uses the live UI (stays on once connected);
+        // liveOnline = serve.py answered the last check. While disconnected the page re-checks
+        // on every search and every 10 s, so serve.py started (or restarted) after the page is picked up.
+        const localParam = new URLSearchParams(location.search).get('local');  // ?local=1 turns on, ?local=0 off
+        let liveOptIn = localParam !== null && localParam !== '0';
+        try {
+            if (localParam === '0') localStorage.removeItem('ant-local-backend');
+            else if (liveOptIn) localStorage.setItem('ant-local-backend', '1');
+            else liveOptIn = localStorage.getItem('ant-local-backend') === '1';
+        } catch (e) { /* storage blocked: only the ?local=1 link works */ }
+        let liveOnline = false;
+        let liveSameOrigin = true;  // false once this host has no /api/images (static hosting such as GitHub Pages)
+        async function liveHealthy(base) {
             try {
-                if (optIn) localStorage.setItem('ant-local-backend', '1');
-                optIn = optIn || localStorage.getItem('ant-local-backend') === '1';
-            } catch (e) { /* storage blocked: only the ?local=1 link works */ }
-            if (optIn && await healthy(LOCAL_IMG_API)) { IMG_API = LOCAL_IMG_API; liveMode = true; }
-        })();
+                const response = await fetch(`${base}/health`, { cache: 'no-store' });
+                return response.ok && (await response.json()).ok === true;
+            } catch (e) { return false; }
+        }
+        async function probeLive() {
+            const candidates = liveMode ? [IMG_API] : [...(liveSameOrigin ? [IMG_API] : []), ...(liveOptIn ? [LOCAL_IMG_API] : [])];
+            let base = null;
+            for (const candidate of candidates) {
+                if (await liveHealthy(candidate)) { base = candidate; break; }
+                if (!liveMode && candidate === '/api/images') liveSameOrigin = false;
+            }
+            if (base) { IMG_API = base; liveMode = true; }
+            liveOnline = !!base;
+            renderConnection();
+            return liveOnline;
+        }
+        let liveReady = probeLive();
+        function ensureLive() {
+            if (!liveOnline) liveReady = liveReady.then(probeLive);
+            return liveReady;
+        }
+        const reconnectLive = () => { if (!liveOnline && (liveMode || liveOptIn) && !document.hidden) ensureLive(); };
+        setInterval(reconnectLive, 10000);
+        document.addEventListener('visibilitychange', reconnectLive);
+        function setLiveOffline() {
+            liveOnline = false;
+            renderConnection();
+        }
+        function renderConnection() {
+            const state = liveOnline ? 'online' : liveMode || liveOptIn ? 'offline' : 'demo';
+            const pill = document.getElementById('live-conn');
+            const key = { online: 'connOnline', offline: 'connOffline', demo: 'connDemo' }[state];
+            pill.dataset.state = state;
+            pill.querySelector('span').textContent = t(key);
+            pill.title = t(`${key}Hint`);
+            pill.setAttribute('aria-label', `${t(key)}. ${t(`${key}Hint`)}`);
+        }
+        async function retryLive() {
+            showToast(t(await ensureLive() ? 'connOnlineHint' : liveMode || liveOptIn ? 'connOfflineHint' : 'connDemoHint'));
+        }
 
         function resultView() {
             return document.getElementById(liveMode ? 'live-result' : 'result-page');
         }
         async function api(path, body) {
-            const response = await fetch(`${IMG_API}/${path}`, body === undefined ? undefined
-                : { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            let response;
+            try {
+                response = await fetch(`${IMG_API}/${path}`, body === undefined ? undefined
+                    : { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            } catch (e) { setLiveOffline(); throw new Error(t('connOfflineHint')); }
             const data = await response.json().catch(() => ({}));
             if (response.status === 401) throw Object.assign(new Error('login_required'), { login: true });
             if (!response.ok) throw new Error(data.detail || data.error || response.statusText);
@@ -2326,6 +2398,7 @@
                 liveSelected.size && `${liveSelected.size} ${t('liveSelectedCount')}`,
             ].filter(Boolean).join(' · ');
             document.getElementById('live-download').disabled = !liveSelected.size;
+            document.getElementById('live-edit').disabled = !liveSelected.size;
             document.getElementById('live-download-label').textContent = t('liveDownloadSelected') + (liveSelected.size ? ` (${liveSelected.size})` : '');
             document.getElementById('live-select-label').textContent = t(liveImages.length && liveSelected.size === liveImages.length ? 'liveClearAll' : 'liveSelectAll');
         }
@@ -2371,6 +2444,7 @@
             select.disabled = !img.result;
             select.onchange = () => relabelLive([i], select.value);
             document.getElementById('live-viewer-download').href = `${IMG_API}/file/${img.id}`;
+            document.getElementById('live-viewer-edit').onclick = () => { document.getElementById('live-viewer').close(); liveEdit([img.id]); };
             document.getElementById('live-viewer').showModal();
         }
 
@@ -2393,6 +2467,40 @@
             const url = URL.createObjectURL(await response.blob());
             downloadUrl(url, `${liveDetail?.ean || liveKey}.zip`);
             setTimeout(() => URL.revokeObjectURL(url), 5000);
+        }
+
+        // Originals → Chỉnh ảnh (MINIMA). Its frame is same-origin, so the files go straight into its import input.
+        async function liveEdit(ids = [...liveSelected]) {
+            const picked = liveImages.filter(img => ids.includes(img.id));
+            if (!picked.length) return;
+            showToast(`${t('liveEditLoading')} (${picked.length})`);
+            let files;
+            try {
+                files = await Promise.all(picked.map(async img => {
+                    const response = await fetch(`${IMG_API}/file/${img.id}`);
+                    if (!response.ok) throw new Error(response.status === 401 ? t('liveLoginNeeded') : response.statusText);
+                    const blob = await response.blob();
+                    return new File([blob], img.name, { type: blob.type });
+                }));
+            } catch (e) {
+                if (e instanceof TypeError) setLiveOffline();
+                showToast(`${t('liveFailed')}: ${e instanceof TypeError ? t('connOfflineHint') : e.message}`);
+                return;
+            }
+            triggerTool('IMG EDIT');
+            const frame = document.getElementById('image-edit-frame');
+            let input = null;
+            for (let tries = 0; !input && tries < 150; tries++) {  // up to 15 s for a first load of the editor
+                input = frame.contentDocument?.querySelector('input[type=file]:not([webkitdirectory])');
+                if (!input) await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            if (!input) { showToast(t('liveFailed')); return; }
+            const win = frame.contentWindow;
+            const transfer = new win.DataTransfer();
+            files.forEach(file => transfer.items.add(file));
+            input.files = transfer.files;
+            input.dispatchEvent(new win.Event('change', { bubbles: true }));
+            showToast(`${t('liveEditSent')}: ${files.length}`);
         }
 
         function showLiveError(error) {
