@@ -379,7 +379,33 @@
         body.ant-workspace-mode #top-library-title { visibility: hidden; }
         body.ant-workspace-mode .ant-box-enter { animation: ant-workspace-enter .24s ease-out both; }
         @keyframes ant-workspace-enter { from { opacity: .55; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+        /* Main page motion: staggered entrance each time the page is shown,
+           meters that fill, a slow drifting glow, and cards that lift on hover.
+           "backwards" fill only holds the start frame during the delay, so the
+           hover transforms still apply once the entrance is over. */
+        @keyframes ant-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+        @keyframes ant-meter-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+        @keyframes ant-glow-drift {
+            0% { transform: translateX(-50%) scale(1); opacity: .85; }
+            50% { transform: translateX(-46%) translateY(18px) scale(1.06); opacity: 1; }
+            100% { transform: translateX(-54%) translateY(-10px) scale(.97); opacity: .8; }
+        }
+        body.ant-intro .ant-rise { animation: ant-rise .45s cubic-bezier(.2, .8, .2, 1) backwards; animation-delay: calc(var(--i, 0) * 45ms); }
+        body.ant-intro .ant-meter > span { transform-origin: left center; animation: ant-meter-fill .9s cubic-bezier(.2, .8, .2, 1) .35s backwards; }
+        body.ant-home #main-scroll-container::after { animation: ant-glow-drift 14s ease-in-out infinite alternate; }
+        .ant-shortcut, .ant-suggest-grid .ant-brand-card { transition: background-color .18s, border-color .18s, transform .22s cubic-bezier(.2, .8, .2, 1); }
+        .ant-shortcut:hover, .ant-suggest-grid .ant-brand-card:hover { transform: translateY(-3px); }
+        .ant-shortcut:active, .ant-suggest-grid .ant-brand-card:active { transform: translateY(-1px) scale(.99); }
+        .ant-shortcut .ant-tile { transition: transform .22s cubic-bezier(.2, .8, .2, 1); }
+        .ant-shortcut:hover .ant-tile { transform: scale(1.08); }
+        .ant-suggest-grid .ant-brand-logo { transition: transform .3s cubic-bezier(.2, .8, .2, 1); }
+        .ant-suggest-grid .ant-brand-card:hover .ant-brand-logo { transform: scale(1.05); }
+        .ant-suggest-grid small { transition: color .18s; }
+        .ant-suggest-grid .ant-brand-card:hover small { color: var(--primary-ink); }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+            body.ant-intro .ant-rise, body.ant-intro .ant-meter > span, body.ant-home #main-scroll-container::after { animation: none !important; }
+        }
 
         @media (max-width: 900px) {
             .ant-shortcuts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1119,6 +1145,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             setLanguage(language);
             showRoute();
+            syncHomeIntro();
             for (const id of ['image-edit-frame', 'auto-fill-frame']) {
                 const frame = document.getElementById(id);
                 frame.addEventListener('load', () => styleToolFrame(frame));
@@ -1182,6 +1209,23 @@
             location.hash = 'app';
         }
         window.addEventListener('hashchange', showRoute);
+
+        // Replay the main page entrance whenever it comes into view (first load,
+        // back from a tool, the library, a result or the landing page).
+        let homeShown = false;
+        function playHomeIntro() {
+            document.querySelectorAll('#app-subtitle, #search-container .ant-searchbar, #home-dashboard .ant-section-title, #home-dashboard .ant-link, #home-dashboard .ant-shortcut, #suggest-grid > *, #recent-list')
+                .forEach((el, index) => { el.classList.add('ant-rise'); el.style.setProperty('--i', Math.min(index, 14)); });
+            document.body.classList.remove('ant-intro');
+            void document.body.offsetWidth; // restart the animations
+            document.body.classList.add('ant-intro');
+        }
+        function syncHomeIntro() {
+            const shown = document.body.classList.contains('ant-home') && !document.body.classList.contains('ant-landing');
+            if (shown && !homeShown) playHomeIntro();
+            homeShown = shown;
+        }
+        new MutationObserver(syncHomeIntro).observe(document.body, { attributes: true, attributeFilter: ['class'] });
 
         // Recent activity for the main page (this browser only).
         const RECENT_KEY = 'ant-recent';
