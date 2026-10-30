@@ -325,6 +325,47 @@
         .ant-next-button i { position: relative; z-index: 1; }
         #lib-detail-img, #visual-image { display: block; width: 100%; height: 100%; object-fit: cover; background: var(--plate); }
 
+        /* Live image search (real data through serve.py) */
+        .ant-live-products { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 12px; }
+        .ant-live-products:empty { display: none; }
+        .ant-live-products .ant-mini-card { flex: none; width: 250px; }
+        .ant-live-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px; }
+        .ant-live-head h2 { font-size: 20px; font-weight: 600; line-height: 1.3; }
+        .ant-live-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .ant-live-all { display: grid; grid-template-columns: minmax(140px, 220px) 1fr; gap: 6px 16px; margin-top: 10px; font-size: 12.5px; }
+        .ant-live-all dt { color: var(--text-3); }
+        .ant-live-all dd { color: var(--text); overflow-wrap: anywhere; }
+        .ant-live-product summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; color: var(--primary-ink); font-size: 13px; font-weight: 600; }
+        .ant-live-toolbar { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-top: 14px; padding: 10px 0; background: var(--bg); border-bottom: 1px solid var(--line); }
+        .ant-board-section { margin-top: 22px; }
+        .ant-board-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .ant-board-head .ant-tile { width: 30px; height: 30px; font-size: 13px; }
+        .ant-tile.is-gray { background: var(--surface-3); color: var(--text-2); }
+        .ant-board-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: 12px; }
+        .ant-img-card { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); transition: border-color .18s, box-shadow .18s; }
+        .ant-img-card.is-selected { border-color: var(--primary-ink); box-shadow: inset 0 0 0 1px var(--primary-ink); }
+        .ant-img-thumb { display: block; width: 100%; aspect-ratio: 1; overflow: hidden; border-radius: var(--radius-sm); background: var(--plate); cursor: zoom-in; }
+        .ant-img-thumb img { width: 100%; height: 100%; object-fit: contain; }
+        .ant-img-check { position: absolute; top: 12px; left: 12px; z-index: 1; width: 36px; height: 36px; display: grid; place-items: center; border-radius: var(--radius-sm); background: rgba(18, 19, 24, .72); cursor: pointer; }
+        .ant-img-check input { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
+        .ant-img-name { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 12px; color: var(--text); }
+        .ant-img-meta { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 11px; color: var(--text-3); }
+        .ant-badge { padding: 2px 8px; border-radius: 999px; background: var(--surface-2); color: var(--text-2); font-size: 10.5px; font-weight: 600; white-space: nowrap; }
+        .ant-badge.is-person { background: var(--primary-soft); color: var(--primary-ink); }
+        .ant-badge.is-review { background: rgba(242, 193, 46, .16); color: var(--yellow-ink); }
+        .ant-select { width: 100%; min-height: 36px; padding: 0 8px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-2); color: var(--text); font-size: 12px; }
+        .ant-viewer { width: min(1100px, 94vw); max-width: none; padding: 0; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); color: var(--text); }
+        .ant-viewer::backdrop { background: rgba(0, 0, 0, .6); }
+        .ant-viewer-body { display: grid; grid-template-columns: minmax(0, 1fr) 280px; }
+        .ant-viewer-body > img { width: 100%; max-height: 82vh; object-fit: contain; background: var(--plate); }
+        .ant-viewer-side { display: flex; flex-direction: column; gap: 10px; padding: 18px; }
+        .ant-viewer-side h3 { font-size: 15px; font-weight: 600; overflow-wrap: anywhere; }
+        @media (max-width: 700px) {
+            .ant-viewer-body { grid-template-columns: 1fr; }
+            .ant-board-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .ant-live-all { grid-template-columns: 1fr; }
+        }
+
         /* Library */
         #brand-cards-grid { grid-template-columns: repeat(auto-fill, minmax(156px, 1fr)); }
         .ant-brand-card { display: flex; flex-direction: column; gap: 10px; padding: 10px; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); transition: background-color .18s, border-color .18s; }
@@ -837,6 +878,33 @@
                 </div>
 
             </div>
+
+            <!-- LIVE RESULT: real master data and SharePoint images through serve.py; the demo result above is used without a backend -->
+            <section id="live-result" class="hidden w-full max-w-6xl mb-24 transition-opacity duration-500 opacity-0" aria-live="polite">
+                <div id="live-products" class="ant-live-products"></div>
+                <div id="live-product" class="ant-card ant-live-product p-5"></div>
+                <div class="ant-live-toolbar">
+                    <span id="live-status" class="ant-muted text-sm"></span>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" class="ant-btn ant-btn-secondary" onclick="liveSelectAll()"><i class="fa-regular fa-square-check" aria-hidden="true"></i><span id="live-select-label" data-i18n="liveSelectAll">Chọn tất cả</span></button>
+                        <button type="button" class="ant-btn ant-btn-primary" id="live-download" onclick="liveDownload()" disabled><i class="fa-solid fa-download" aria-hidden="true"></i><span id="live-download-label" data-i18n="liveDownloadSelected">Tải ảnh đã chọn</span></button>
+                    </div>
+                </div>
+                <div id="live-board"></div>
+                <dialog id="live-viewer" class="ant-viewer" aria-labelledby="live-viewer-name">
+                    <div class="ant-viewer-body">
+                        <img id="live-viewer-img" alt="">
+                        <div class="ant-viewer-side">
+                            <h3 id="live-viewer-name"></h3>
+                            <p id="live-viewer-meta" class="ant-muted text-xs"></p>
+                            <label for="live-viewer-cat" class="ant-muted text-xs" data-i18n="liveCategory">Nhóm ảnh</label>
+                            <select id="live-viewer-cat" class="ant-select"></select>
+                            <a id="live-viewer-download" class="ant-btn ant-btn-primary" download><i class="fa-solid fa-download" aria-hidden="true"></i><span data-i18n="liveDownloadOriginal">Tải ảnh gốc</span></a>
+                            <button type="button" class="ant-btn ant-btn-secondary" onclick="document.getElementById('live-viewer').close()" data-i18n="liveClose">Đóng</button>
+                        </div>
+                    </div>
+                </dialog>
+            </section>
         </div>
 
         <!-- ==================== MOCKUP 1: BRAND SELECTION VIEW ==================== -->
@@ -1009,7 +1077,9 @@
                 mainPage: 'Trang chính', aboutAnt: 'Giới thiệu A.N.T', lightMode: 'Chế độ sáng', overview: 'Tổng quan', ready: 'Sẵn sàng', requestMeta: 'Giao và theo dõi ảnh cần chụp', suggestions: 'Thương hiệu gợi ý', viewAll: 'Xem tất cả', openLibrary: 'Mở thư viện', recent: 'Gần đây', recentEmpty: 'Chưa có hoạt động. Tìm một mã EAN hoặc mở một thương hiệu để bắt đầu.', colName: 'Tên', colType: 'Loại', colTime: 'Thời gian', typeSearch: 'Tìm kiếm', typeBrand: 'Thương hiệu', typeTool: 'Công cụ',
                 features: 'Tính năng', howItWorks: 'Cách hoạt động', openApp: 'Vào A.N.T', previewBadge: 'Bản xem trước · dữ liệu demo', heroTitle: 'Mọi hình ảnh và dữ liệu sản phẩm, ở một nơi.', heroLead: 'Nhập EAN, article code hoặc tên sản phẩm. A.N.T khớp master data rồi trả về packshot, thông tin sản phẩm và công cụ xử lý ảnh.', getStarted: 'Vào không gian làm việc', seeHow: 'Xem cách hoạt động', statBrands: 'thương hiệu', statLogos: 'logo đã chuẩn hóa', statAreas: 'khu vực làm việc',
                 featuresTitle: 'Mọi thứ cho tài sản sản phẩm', featuresLead: 'Bốn khu vực làm việc dùng chung một nguồn dữ liệu sản phẩm.', featSearchTitle: 'Tìm theo EAN, mã hoặc tên', featSearchText: 'Nhận diện loại mã, khớp master data rồi gom toàn bộ ảnh liên quan.', featLibraryText: 'Logo chuẩn hóa, ảnh và master data xếp theo từng thương hiệu.', featEditText: 'Resize theo preset, cắt, đặt ảnh lên nền trắng và xuất hàng loạt.', featFillText: 'Kiểm tra và điền file Excel theo mẫu của từng nhà bán lẻ.',
-                howLead: 'Master data là cầu nối: mọi giá trị nhập vào được đổi thành một sản phẩm trước khi tìm ảnh.', step1Title: 'Nhập hoặc tải file', step1Text: 'Một EAN, article code, tên sản phẩm hay cả danh sách CSV.', step2Title: 'Khớp master data', step2Text: 'Barcode, mã hàng, mã cũ và tên được quy về đúng sản phẩm.', step3Title: 'Nhận ảnh và thông tin', step3Text: 'Packshot, ảnh hộp, lifestyle cùng kích thước, pháp lý và nhà cung cấp.', ctaTitle: 'Sẵn sàng tìm ảnh?', ctaText: 'Mở không gian làm việc và thử với một mã EAN mẫu.'
+                howLead: 'Master data là cầu nối: mọi giá trị nhập vào được đổi thành một sản phẩm trước khi tìm ảnh.', step1Title: 'Nhập hoặc tải file', step1Text: 'Một EAN, article code, tên sản phẩm hay cả danh sách CSV.', step2Title: 'Khớp master data', step2Text: 'Barcode, mã hàng, mã cũ và tên được quy về đúng sản phẩm.', step3Title: 'Nhận ảnh và thông tin', step3Text: 'Packshot, ảnh hộp, lifestyle cùng kích thước, pháp lý và nhà cung cấp.', ctaTitle: 'Sẵn sàng tìm ảnh?', ctaText: 'Mở không gian làm việc và thử với một mã EAN mẫu.',
+                liveNoProduct: 'Không có sản phẩm này trong master data. Thử EAN, article code hoặc tên khác.', liveNoFileMatch: 'Không mã nào trong file có trong master data.', liveFileMatches: 'Sản phẩm khớp trong file', liveNotFound: 'mã không thấy', liveSearching: 'Đang tìm ảnh trên SharePoint…', liveClassifying: 'Đang phân loại ảnh…', livePending: 'Đang phân loại', liveByPerson: 'Người xác nhận', liveReview: 'Cần xem lại', liveSelect: 'Chọn', liveCategory: 'Nhóm ảnh', liveLearned: 'Đã lưu, A.N.T sẽ học từ ảnh này', liveZipping: 'Đang nén ảnh gốc…', liveFailed: 'Không thực hiện được', liveSelectAll: 'Chọn tất cả', liveClearAll: 'Bỏ chọn', liveDownloadSelected: 'Tải ảnh đã chọn', liveImages: 'ảnh', liveToReview: 'cần xem lại', liveSelectedCount: 'đã chọn', liveLoginNeeded: 'Phiên đăng nhập SharePoint đã hết hạn.', liveLoginButton: 'Đăng nhập SharePoint', liveLoginOpen: 'Mở trang đăng nhập và nhập mã', liveLoginDone: 'Đã đăng nhập SharePoint', liveNotInMaster: 'Không có trong master data · tìm ảnh theo đúng mã đã nhập', liveAllFields: 'Tất cả trường master data', liveDownloadOriginal: 'Tải ảnh gốc', liveClose: 'Đóng', liveNoImages: 'Không tìm thấy ảnh nào trên SharePoint cho sản phẩm này.',
+                catPackshot: 'Packshot', catHuman: 'Có người', catScene: 'Dàn cảnh', catCollection: 'Bộ sưu tập', catColor: 'Nền màu', catArtwork: 'Artwork', catUncertain: 'Không rõ'
             },
             en: {
                 subtitle: 'Asset Nexus Technology · Product asset workspace', searchPlaceholder: 'Search by product name, EAN, or article code...', search: 'Search', upload: 'Import file', viewMaster: 'View data', downloadMaster: 'Download CSV', masterSearchPlaceholder: 'Search a product name or code in this brand...', productName: 'Product', articleCode: 'Article code', category: 'Category', dimensions: 'Dimensions', weight: 'Weight', preview: 'View image', backToMaster: 'Back to master data', demoProduct: 'Sample product', demoUnavailable: 'Real product data is not connected', noMasterMatch: 'No sample product found in this brand.', sampleStatus: 'Preview', imageInfo: 'Image information: ', lookupCode: 'Lookup code: ', dataSource: 'Data source: ',
@@ -1021,7 +1091,9 @@
                 mainPage: 'Home', aboutAnt: 'About A.N.T', lightMode: 'Light mode', overview: 'Overview', ready: 'Ready', requestMeta: 'Assign and follow the photos you need', suggestions: 'Suggested brands', viewAll: 'View all', openLibrary: 'Open library', recent: 'Recent', recentEmpty: 'No activity yet. Search an EAN or open a brand to get started.', colName: 'Name', colType: 'Type', colTime: 'Time', typeSearch: 'Search', typeBrand: 'Brand', typeTool: 'Tool',
                 features: 'Features', howItWorks: 'How it works', openApp: 'Open A.N.T', previewBadge: 'Preview · demo data', heroTitle: 'Every product image and record, in one place.', heroLead: 'Type an EAN, article code or product name. A.N.T matches it against master data and returns the packshots, product details and image tools.', getStarted: 'Open the workspace', seeHow: 'See how it works', statBrands: 'brands', statLogos: 'standardised logos', statAreas: 'workspaces',
                 featuresTitle: 'Everything for product assets', featuresLead: 'Four workspaces sharing one source of product data.', featSearchTitle: 'Search by EAN, code or name', featSearchText: 'Recognises the kind of code, matches master data and gathers every related image.', featLibraryText: 'Standardised logos, images and master data, organised by brand.', featEditText: 'Resize with presets, crop, place images on white and export in bulk.', featFillText: 'Check and fill Excel files to each retailer’s template.',
-                howLead: 'Master data is the bridge: every input is resolved to one product before images are fetched.', step1Title: 'Type or upload a file', step1Text: 'One EAN, article code, product name, or a whole CSV list.', step2Title: 'Match master data', step2Text: 'Barcodes, article codes, old codes and names resolve to the right product.', step3Title: 'Get images and details', step3Text: 'Packshots, box and lifestyle shots with dimensions, compliance and supplier data.', ctaTitle: 'Ready to find images?', ctaText: 'Open the workspace and try it with a sample EAN.'
+                howLead: 'Master data is the bridge: every input is resolved to one product before images are fetched.', step1Title: 'Type or upload a file', step1Text: 'One EAN, article code, product name, or a whole CSV list.', step2Title: 'Match master data', step2Text: 'Barcodes, article codes, old codes and names resolve to the right product.', step3Title: 'Get images and details', step3Text: 'Packshots, box and lifestyle shots with dimensions, compliance and supplier data.', ctaTitle: 'Ready to find images?', ctaText: 'Open the workspace and try it with a sample EAN.',
+                liveNoProduct: 'This product is not in master data. Try another EAN, article code or name.', liveNoFileMatch: 'No code in the file is in master data.', liveFileMatches: 'Products matched in the file', liveNotFound: 'codes not found', liveSearching: 'Searching SharePoint for images…', liveClassifying: 'Classifying images…', livePending: 'Classifying', liveByPerson: 'Confirmed', liveReview: 'Check', liveSelect: 'Select', liveCategory: 'Image type', liveLearned: 'Saved; A.N.T will learn from this image', liveZipping: 'Zipping the originals…', liveFailed: 'That did not work', liveSelectAll: 'Select all', liveClearAll: 'Clear selection', liveDownloadSelected: 'Download selected', liveImages: 'images', liveToReview: 'to check', liveSelectedCount: 'selected', liveLoginNeeded: 'The SharePoint session has expired.', liveLoginButton: 'Sign in to SharePoint', liveLoginOpen: 'Open the sign-in page and enter the code', liveLoginDone: 'Signed in to SharePoint', liveNotInMaster: 'Not in master data · searching images for the code as typed', liveAllFields: 'All master data fields', liveDownloadOriginal: 'Download original', liveClose: 'Close', liveNoImages: 'No images found on SharePoint for this product.',
+                catPackshot: 'Packshot', catHuman: 'With people', catScene: 'Scene setup', catCollection: 'Collection', catColor: 'Color background', catArtwork: 'Artwork', catUncertain: 'Unclear'
             }
         };
         let language = localStorage.getItem('ant-language') === 'en' ? 'en' : 'vi';
@@ -1051,6 +1123,7 @@
             updateThemeButtons();
             renderSuggestions();
             renderRecent();
+            if (liveMode && liveKey) { renderLiveProducts(); renderLiveProduct(); renderBoard(); updateLiveStatus(); }
             if (currentView === 'LIB_BRANDS') showBrandSelectionView();
             if (currentView === 'LIB_GRID') showBrandGridView();
             if (currentView === 'LIB_PRODUCT_DETAIL') showLibProductDetailView();
@@ -1576,14 +1649,17 @@
         function showSearchFeedback(key = 'noResultHelp') {
             searchFeedbackKey = key;
             document.getElementById('search-feedback-text').textContent = t(key);
+            document.querySelector('#search-feedback button').classList.toggle('hidden', liveMode);
             document.getElementById('search-feedback').classList.remove('hidden');
         }
         function tryDemoSearch() {
             document.getElementById('search-input').value = productsDatabase[0].ean;
             executeSearch();
         }
-        function executeSearch() {
+        async function executeSearch() {
             const query = document.getElementById('search-input').value.trim();
+            await liveReady;
+            if (liveMode) return liveSearch(query);
             const matches = productsDatabase.map((product, index) => ({ product, index }))
                 .filter(({ product }) => !query || [product.name, product.ean, product.articleCode].some(value => value?.toLowerCase().includes(query.toLowerCase())))
                 .map(({ index }) => index);
@@ -1654,7 +1730,7 @@
             const header = document.getElementById('header-container');
             const appSubtitle = document.getElementById('app-subtitle');
             const searchContainer = document.getElementById('search-container');
-            const resultPage = document.getElementById('result-page');
+            const resultPage = resultView();
             const expandIndicator = document.getElementById('expand-indicator');
 
             header.classList.remove('mt-12', 'md:mt-20', 'mb-6');
@@ -1664,7 +1740,7 @@
             searchContainer.classList.remove('mb-8');
             searchContainer.classList.add('mb-2');
 
-            expandIndicator.classList.toggle('hidden', visibleProductIndexes.length < 2);
+            expandIndicator.classList.toggle('hidden', liveMode || visibleProductIndexes.length < 2);
 
             resultPage.classList.remove('hidden');
             setTimeout(() => {
@@ -1681,7 +1757,7 @@
             const header = document.getElementById('header-container');
             const appSubtitle = document.getElementById('app-subtitle');
             const searchContainer = document.getElementById('search-container');
-            const resultPage = document.getElementById('result-page');
+            const resultPage = resultView();
             const expandIndicator = document.getElementById('expand-indicator');
             const multiPanel = document.getElementById('multi-product-panel');
 
@@ -1744,6 +1820,8 @@
         async function handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
+            await liveReady;
+            if (liveMode) { event.target.value = ''; return liveLookup(file); }
             const values = (await file.text()).split(/[\r\n,;\t]+/).map(value => value.trim().replace(/^"|"$/g, '').toLowerCase()).filter(value => value.length >= 3);
             const matches = productsDatabase.map((product, index) => ({ product, index }))
                 .filter(({ product }) => values.some(value => [product.name, product.ean, product.articleCode].some(field => field?.toLowerCase().includes(value))))
@@ -1831,6 +1909,248 @@
             document.getElementById('search-view-wrapper').classList.remove('hidden');
             document.getElementById('bottom-toolbar-container').classList.remove('hidden');
             setActiveTool('');
+        }
+
+        // ================= LIVE IMAGE SEARCH (serve.py /api/images) =================
+        // Master data + v8-style SharePoint search + CLIP image type. Without
+        // that backend (GitHub Pages, plain static server) search stays on demo data.
+        const IMG_API = '/api/images';
+        const CAT_ORDER = ['01_packshot', '02_lifestyle_human', '02_lifestyle_scene_setup', '02_lifestyle_collection',
+            '02_lifestyle_color_background_or_packshot_low_priority', '03_artwork', '99_uncertain'];
+        const CAT_META = {
+            '01_packshot': ['catPackshot', 'is-blue', 'fa-box'],
+            '02_lifestyle_human': ['catHuman', 'is-red', 'fa-user'],
+            '02_lifestyle_scene_setup': ['catScene', 'is-green', 'fa-leaf'],
+            '02_lifestyle_collection': ['catCollection', 'is-yellow', 'fa-layer-group'],
+            '02_lifestyle_color_background_or_packshot_low_priority': ['catColor', 'is-yellow', 'fa-palette'],
+            '03_artwork': ['catArtwork', 'is-gray', 'fa-pen-ruler'],
+            '99_uncertain': ['catUncertain', 'is-gray', 'fa-circle-question'],
+            pending: ['livePending', 'is-gray', 'fa-spinner'],
+        };
+        const KEY_FIELDS = ['UNIT/VOLUME', 'STATUS', 'WEIGHT', 'GROSS WEIGHT', 'CARTON QTY', 'INNER BOX QTY', 'CN8 CODE', 'CPNP NUMBER', 'SUPPLIER NAME', 'SHELF LIFE', 'PAO'];
+        let liveMode = false, liveProducts = [], liveIndex = 0, liveKey = '', liveImages = [], liveToken = 0;
+        const liveSelected = new Set();
+        const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+        const catName = code => t((CAT_META[code] || CAT_META['99_uncertain'])[0]);
+        const liveReady = (async () => {
+            try {
+                const response = await fetch(`${IMG_API}/health`);
+                liveMode = response.ok && (await response.json()).ok === true;
+            } catch (e) { liveMode = false; }
+        })();
+
+        function resultView() {
+            return document.getElementById(liveMode ? 'live-result' : 'result-page');
+        }
+        async function api(path, body) {
+            const response = await fetch(`${IMG_API}/${path}`, body === undefined ? undefined
+                : { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            const data = await response.json().catch(() => ({}));
+            if (response.status === 401) throw Object.assign(new Error('login_required'), { login: true });
+            if (!response.ok) throw new Error(data.detail || data.error || response.statusText);
+            return data;
+        }
+
+        async function liveSearch(query) {
+            if (!query) { document.getElementById('search-input').focus(); return; }
+            hideSearchFeedback();
+            let data;
+            try { data = await api(`search?q=${encodeURIComponent(query)}`); } catch (e) { return showLiveError(e); }
+            if (!data.products.length) { showSearchFeedback('liveNoProduct'); return; }
+            pushRecent('search', query, query);
+            showLiveProducts(data.products);
+        }
+        async function liveLookup(file) {
+            const codes = (await file.text()).split(/[\r\n,;\t]+/).map(v => v.trim().replace(/^"|"$/g, '')).filter(Boolean);
+            let data;
+            try { data = await api('lookup', { codes }); } catch (e) { return showLiveError(e); }
+            const products = [], seen = new Set();
+            for (const row of data.results) for (const p of row.products) if (!seen.has(p.key)) { seen.add(p.key); products.push(p); }
+            const missing = data.results.filter(row => !row.products.length).length;
+            if (!products.length) { showSearchFeedback('liveNoFileMatch'); return; }
+            document.getElementById('search-input').value = '';
+            showLiveProducts(products);
+            showToast(`${t('liveFileMatches')}: ${products.length}` + (missing ? ` · ${missing} ${t('liveNotFound')}` : ''));
+        }
+        function showLiveProducts(products) {
+            liveProducts = products;
+            switchToResultPage();
+            selectLiveProduct(0);
+        }
+
+        async function selectLiveProduct(index) {
+            liveIndex = index;
+            const product = liveProducts[index];
+            const token = ++liveToken;
+            liveKey = product.key;
+            liveImages = [];
+            liveSelected.clear();
+            renderLiveProducts();
+            renderLiveProduct();
+            renderBoard(t('liveSearching'));
+            updateLiveStatus(t('liveSearching'));
+            let data;
+            try { data = await api(`product?key=${encodeURIComponent(product.key)}`); } catch (e) { if (token === liveToken) showLiveError(e); return; }
+            if (token !== liveToken) return;
+            liveImages = data.images.map(img => ({ ...img, result: img.result || null }));
+            renderBoard(t('liveNoImages'));
+            const pending = liveImages.filter(img => !img.result).map(img => img.id);
+            if (!pending.length) return updateLiveStatus();
+            updateLiveStatus(t('liveClassifying'));
+            try {
+                const { results } = await api('classify', { ids: pending });
+                if (token !== liveToken) return;
+                for (const img of liveImages) if (results[img.id]) img.result = results[img.id];
+            } catch (e) { if (token === liveToken) showLiveError(e); return; }
+            renderBoard();
+            updateLiveStatus();
+        }
+
+        function renderLiveProducts() {
+            document.getElementById('live-products').innerHTML = liveProducts.length < 2 ? '' : liveProducts.map((p, i) => `
+                <button type="button" class="ant-mini-card" aria-pressed="${i === liveIndex}" onclick="selectLiveProduct(${i})">
+                    <span class="min-w-0"><strong>${esc(p.name || p.key)}</strong><small>${esc(p.ean || p.code)}${p.status ? ` · ${esc(p.status)}` : ''}</small></span>
+                </button>`).join('');
+        }
+        function renderLiveProduct() {
+            const p = liveProducts[liveIndex];
+            if (!p) return;
+            // Master data writes numbers as "150.0000"; show 150.
+            const f = Object.fromEntries(Object.entries(p.fields || {}).map(([k, v]) => [k, /^-?\d+\.\d+$/.test(v) ? String(parseFloat(v)) : v]));
+            const dims = ['WIDTH', 'HEIGHT', 'DEPTH'].map(k => f[k]).filter(v => v && Number(v) > 0);
+            const chips = [p.ean && `EAN ${p.ean}`, p.code && `CODE ${p.code}`, p.brand, p.volume].filter(Boolean)
+                .map(v => `<span class="ant-chip is-muted">${esc(v)}</span>`).join('');
+            const keyFields = [...(dims.length === 3 ? [[t('dimensions'), dims.join(' × ') + ' mm']] : []), ...KEY_FIELDS.filter(k => f[k] && f[k] !== '0').map(k => [k, f[k]])];
+            const all = Object.entries(f).filter(([k]) => k !== 'NAME');
+            document.getElementById('live-product').innerHTML = `
+                <div class="ant-live-head">
+                    <div class="min-w-0"><h2>${esc(p.name || p.key)}</h2><div class="ant-live-chips">${chips}</div></div>
+                    ${p.status ? `<span class="ant-chip">${esc(p.status)}</span>` : ''}
+                </div>
+                ${p.notInMaster ? `<p class="ant-muted text-sm mt-3">${t('liveNotInMaster')}</p>` : ''}
+                ${keyFields.length ? `<dl class="ant-master-fields mt-4">${keyFields.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>` : ''}
+                ${all.length ? `<details class="mt-2"><summary>${t('liveAllFields')} (${all.length})</summary><dl class="ant-live-all">${all.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl></details>` : ''}`;
+        }
+
+        function renderBoard(emptyText = '') {
+            const board = document.getElementById('live-board');
+            if (!liveImages.length) { board.innerHTML = `<p class="ant-recent-empty">${esc(emptyText)}</p>`; return; }
+            const groups = {};
+            liveImages.forEach((img, i) => (groups[img.result ? img.result.category : 'pending'] ||= []).push(i));
+            board.innerHTML = ['pending', ...CAT_ORDER].filter(c => groups[c]).map(c => {
+                const [, tile, icon] = CAT_META[c] || CAT_META['99_uncertain'];
+                return `<section class="ant-board-section">
+                    <div class="ant-board-head"><span class="ant-tile ${tile}" aria-hidden="true"><i class="fa-solid ${icon}${c === 'pending' ? ' fa-spin' : ''}"></i></span><h3 class="font-semibold">${c === 'pending' ? t('livePending') : catName(c)}</h3><span class="ant-chip is-muted">${groups[c].length}</span></div>
+                    <div class="ant-board-grid">${groups[c].map(imageCard).join('')}</div>
+                </section>`;
+            }).join('');
+        }
+        function imageCard(i) {
+            const img = liveImages[i], r = img.result, selected = liveSelected.has(img.id);
+            const badge = !r ? `<span class="ant-badge">${t('livePending')}</span>`
+                : r.source === 'person' ? `<span class="ant-badge is-person">${t('liveByPerson')}</span>`
+                : r.review ? `<span class="ant-badge is-review">${t('liveReview')} · ${Math.round(r.confidence * 100)}%</span>`
+                : `<span class="ant-badge">${Math.round(r.confidence * 100)}%</span>`;
+            return `<div class="ant-img-card${selected ? ' is-selected' : ''}" data-i="${i}">
+                <label class="ant-img-check"><input type="checkbox"${selected ? ' checked' : ''} onchange="toggleLiveSelect(${i})" aria-label="${t('liveSelect')} ${esc(img.name)}"></label>
+                <button type="button" class="ant-img-thumb" onclick="openLiveViewer(${i})" aria-label="${esc(img.name)}"><img src="${IMG_API}/thumb/${img.id}" alt="" loading="lazy"></button>
+                <div class="ant-img-name" title="${esc(img.name)}">${esc(img.name)}</div>
+                <div class="ant-img-meta">${badge}<span>${(img.size / 1e6).toFixed(1)} MB</span></div>
+                ${r ? `<select class="ant-select" aria-label="${t('liveCategory')}" onchange="relabelLive(${i}, this.value)">${categoryOptions(r.category)}</select>` : ''}
+            </div>`;
+        }
+        const categoryOptions = current => CAT_ORDER.map(c => `<option value="${c}"${c === current ? ' selected' : ''}>${catName(c)}</option>`).join('');
+
+        function updateLiveStatus(text) {
+            const toReview = liveImages.filter(img => img.result && img.result.review).length;
+            document.getElementById('live-status').textContent = text || [
+                `${liveImages.length} ${t('liveImages')}`,
+                toReview && `${toReview} ${t('liveToReview')}`,
+                liveSelected.size && `${liveSelected.size} ${t('liveSelectedCount')}`,
+            ].filter(Boolean).join(' · ');
+            const download = document.getElementById('live-download');
+            download.disabled = !liveSelected.size;
+            document.getElementById('live-download-label').textContent = t('liveDownloadSelected') + (liveSelected.size ? ` (${liveSelected.size})` : '');
+            document.getElementById('live-select-label').textContent = t(liveImages.length && liveSelected.size === liveImages.length ? 'liveClearAll' : 'liveSelectAll');
+        }
+        function toggleLiveSelect(i) {
+            const id = liveImages[i].id;
+            liveSelected.has(id) ? liveSelected.delete(id) : liveSelected.add(id);
+            document.querySelector(`.ant-img-card[data-i="${i}"]`)?.classList.toggle('is-selected', liveSelected.has(id));
+            updateLiveStatus();
+        }
+        function liveSelectAll() {
+            const all = liveImages.length && liveSelected.size === liveImages.length;
+            liveSelected.clear();
+            if (!all) liveImages.forEach(img => liveSelected.add(img.id));
+            renderBoard();
+            updateLiveStatus();
+        }
+
+        async function relabelLive(i, category) {
+            const img = liveImages[i];
+            try { await api('label', { id: img.id, category }); } catch (e) { return showLiveError(e); }
+            img.result = { category, confidence: 1, source: 'person', review: false };
+            renderBoard();
+            updateLiveStatus();
+            showToast(t('liveLearned'));
+        }
+
+        function openLiveViewer(i) {
+            const img = liveImages[i];
+            document.getElementById('live-viewer-img').src = `${IMG_API}/thumb/${img.id}?size=c1600x1600`;
+            document.getElementById('live-viewer-name').textContent = img.name;
+            document.getElementById('live-viewer-meta').textContent = `${(img.size / 1e6).toFixed(1)} MB · ${img.reason} · ${img.folder}`;
+            const select = document.getElementById('live-viewer-cat');
+            select.innerHTML = categoryOptions(img.result ? img.result.category : '');
+            select.disabled = !img.result;
+            select.onchange = () => relabelLive(i, select.value);
+            document.getElementById('live-viewer-download').href = `${IMG_API}/file/${img.id}`;
+            document.getElementById('live-viewer').showModal();
+        }
+
+        function downloadUrl(href, name) {
+            const link = document.createElement('a');
+            link.href = href;
+            link.download = name || '';
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        }
+        async function liveDownload() {
+            const ids = liveImages.filter(img => liveSelected.has(img.id)).map(img => img.id);
+            if (!ids.length) return;
+            if (ids.length === 1) return downloadUrl(`${IMG_API}/file/${ids[0]}`);
+            showToast(t('liveZipping'));
+            const categories = Object.fromEntries(liveImages.filter(img => liveSelected.has(img.id) && img.result).map(img => [img.id, img.result.category]));
+            const response = await fetch(`${IMG_API}/zip`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids, key: liveKey, categories }) });
+            if (!response.ok) { showToast(t('liveFailed')); return; }
+            const url = URL.createObjectURL(await response.blob());
+            downloadUrl(url, `${liveKey}.zip`);
+            setTimeout(() => URL.revokeObjectURL(url), 5000);
+        }
+
+        function showLiveError(error) {
+            if (!error.login) { showToast(`${t('liveFailed')}: ${error.message}`); return; }
+            if (!isResultPageVisible) switchToResultPage();
+            updateLiveStatus(t('liveLoginNeeded'));
+            document.getElementById('live-board').innerHTML = `<div class="ant-feedback p-4 mt-4 text-sm">
+                <p>${t('liveLoginNeeded')}</p>
+                <button type="button" class="ant-btn ant-btn-primary mt-3" onclick="startLiveLogin()">${t('liveLoginButton')}</button>
+                <p id="live-login-code" class="mt-3"></p></div>`;
+        }
+        async function startLiveLogin() {
+            let state;
+            try { state = await api('login', {}); } catch (e) { return showToast(`${t('liveFailed')}: ${e.message}`); }
+            document.getElementById('live-login-code').innerHTML = `${t('liveLoginOpen')}: <a class="ant-link" href="${esc(state.uri)}" target="_blank" rel="noopener">${esc(state.uri)}</a> · <b>${esc(state.code)}</b>`;
+            const poll = setInterval(async () => {
+                const now = await api('login').catch(() => ({}));
+                if (now.status === 'pending') return;
+                clearInterval(poll);
+                if (now.status !== 'ok') return showToast(t('liveFailed'));
+                showToast(t('liveLoginDone'));
+                if (liveProducts.length) selectLiveProduct(liveIndex);
+            }, 3000);
         }
 
         function showToast(message) {
