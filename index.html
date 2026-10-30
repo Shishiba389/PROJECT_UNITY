@@ -188,6 +188,9 @@
         .ant-lang button[aria-pressed="true"] { background: var(--primary); color: #fff; }
         .ant-theme-btn { width: 42px; height: 42px; display: grid; place-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); color: var(--text-2); transition: background-color .18s, color .18s; }
         .ant-theme-btn:hover { background: var(--surface-2); color: var(--text); }
+        /* Floating controls step aside while a long search result is scrolled, so they never cover it. */
+        #ant-controls { transition: opacity .2s, transform .2s; }
+        body.ant-scrolled #ant-controls { opacity: 0; transform: translateY(-8px); pointer-events: none; }
         #toast { top: 62px; right: 18px; max-width: min(360px, calc(100vw - 36px)); background: var(--surface-2); border: 1px solid var(--line-strong); color: var(--text); }
         #main-scroll-container { padding-bottom: 116px; }
 
@@ -325,23 +328,81 @@
         .ant-next-button i { position: relative; z-index: 1; }
         #lib-detail-img, #visual-image { display: block; width: 100%; height: 100%; object-fit: cover; background: var(--plate); }
 
-        /* Live image search (real data through serve.py) */
-        .ant-live-products { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 12px; }
-        .ant-live-products:empty { display: none; }
-        .ant-live-products .ant-mini-card { flex: none; width: 250px; }
+        /* Live image search (real data through serve.py).
+           Layout: result list | product (header, facts, tabs: images / details). */
+        .ant-live-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start; }
+        .ant-live-layout.has-list { grid-template-columns: 320px minmax(0, 1fr); }
+        .ant-results { position: sticky; top: 0; display: flex; flex-direction: column; max-height: calc(100vh - 140px); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; }
+        .ant-results[hidden] { display: none; }
+        .ant-results-head { padding: 14px 14px 10px; border-bottom: 1px solid var(--line); }
+        .ant-results-head strong { font-size: 15px; font-weight: 600; }
+        .ant-results-head p { margin-top: 2px; overflow-wrap: anywhere; font-size: 12px; color: var(--text-3); }
+        .ant-results-tools { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+        .ant-results-tools .ant-input { min-height: 40px; background: var(--surface-2); font-size: 13px; }
+        .ant-results-list { flex: 1; min-height: 0; overflow-y: auto; padding: 6px; }
+        .ant-result-item { width: 100%; min-height: 56px; display: flex; flex-direction: column; gap: 3px; padding: 9px 10px; border-radius: var(--radius); text-align: left; transition: background-color .15s; }
+        .ant-result-item:hover { background: var(--surface-2); }
+        .ant-result-item[aria-current="true"] { background: var(--primary-soft); box-shadow: inset 3px 0 0 var(--primary); }
+        .ant-result-name { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 13px; font-weight: 600; line-height: 1.35; color: var(--text); }
+        .ant-result-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 11.5px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+        .ant-results-empty { padding: 18px 12px; font-size: 13px; color: var(--text-3); }
+        .ant-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+        .ant-filter-chip { min-height: 32px; display: inline-flex; align-items: center; gap: 6px; padding: 0 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--text-2); font-size: 12px; font-weight: 600; transition: background-color .15s, color .15s, border-color .15s; }
+        .ant-filter-chip:hover { color: var(--text); border-color: var(--line-strong); }
+        .ant-filter-chip[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: #fff; }
+        .ant-filter-chip span { font-variant-numeric: tabular-nums; opacity: .85; }
+        .ant-status { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--text-2); white-space: nowrap; }
+        .ant-status::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--text-3); }
+        .ant-status.is-active::before { background: var(--green); }
+        .ant-status.is-upcoming::before { background: var(--primary-ink); }
+        .ant-status.is-pill { min-height: 28px; padding: 0 12px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); }
+        .ant-eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--primary-ink); }
         .ant-live-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px; }
-        .ant-live-head h2 { font-size: 20px; font-weight: 600; line-height: 1.3; }
-        .ant-live-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-        .ant-live-all { display: grid; grid-template-columns: minmax(140px, 220px) 1fr; gap: 6px 16px; margin-top: 10px; font-size: 12.5px; }
-        .ant-live-all dt { color: var(--text-3); }
-        .ant-live-all dd { color: var(--text); overflow-wrap: anywhere; }
-        .ant-live-product summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; color: var(--primary-ink); font-size: 13px; font-weight: 600; }
-        .ant-live-toolbar { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-top: 14px; padding: 10px 0; background: var(--bg); border-bottom: 1px solid var(--line); }
-        .ant-board-section { margin-top: 22px; }
-        .ant-board-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .ant-live-head h2 { margin-top: 4px; font-size: 22px; font-weight: 600; line-height: 1.3; text-wrap: balance; }
+        .ant-id-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+        .ant-copy { min-height: 32px; display: inline-flex; align-items: center; gap: 6px; padding: 0 10px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-2); color: var(--text-3); font-size: 12px; transition: border-color .15s, color .15s; }
+        .ant-copy b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+        .ant-copy i { font-size: 11px; }
+        .ant-copy:hover { border-color: var(--line-strong); color: var(--text-2); }
+        .ant-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+        .ant-fact { padding: 12px; border-radius: var(--radius); background: var(--surface-2); }
+        .ant-fact dt { display: flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600; color: var(--text-3); }
+        .ant-fact dd { margin-top: 4px; font-size: 15px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+        .ant-fact small { display: block; margin-top: 1px; font-size: 11.5px; font-weight: 500; color: var(--text-3); }
+        .ant-tabs { display: flex; gap: 4px; margin-top: 18px; border-bottom: 1px solid var(--line); }
+        .ant-tab { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; padding: 0 14px; border-bottom: 2px solid transparent; margin-bottom: -1px; color: var(--text-3); font-size: 14px; font-weight: 600; transition: color .15s, border-color .15s; }
+        .ant-tab:hover { color: var(--text); }
+        .ant-tab[aria-selected="true"] { color: var(--text); border-bottom-color: var(--primary); }
+        .ant-tab .ant-tab-count { padding: 1px 8px; border-radius: 999px; background: var(--surface-2); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+        .ant-info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 16px; }
+        .ant-info-card { padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); }
+        .ant-info-card.is-wide { grid-column: 1 / -1; }
+        .ant-info-card h3 { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 14px; font-weight: 600; }
+        .ant-info-card h3 i { width: 16px; color: var(--primary-ink); text-align: center; }
+        .ant-kv { display: grid; grid-template-columns: minmax(120px, 38%) 1fr; gap: 8px 14px; font-size: 13px; }
+        .ant-kv dt { color: var(--text-3); }
+        .ant-kv dd { overflow-wrap: anywhere; color: var(--text); font-variant-numeric: tabular-nums; }
+        .ant-info-empty { font-size: 13px; color: var(--text-3); }
+        .ant-pack { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+        .ant-pack th, .ant-pack td { padding: 9px 10px; border-top: 1px solid var(--line); text-align: left; }
+        .ant-pack thead th { border-top: 0; color: var(--text-3); font-size: 11.5px; font-weight: 600; }
+        .ant-pack tbody th { color: var(--text); font-weight: 600; white-space: nowrap; }
+        .ant-pack td { color: var(--text-2); }
+        .ant-inci { max-width: 75ch; font-size: 13px; line-height: 1.65; color: var(--text-2); }
+        .ant-info-card summary { min-height: 32px; display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; list-style: none; }
+        .ant-info-card summary::-webkit-details-marker { display: none; }
+        .ant-info-card summary h3 { margin: 0; }
+        .ant-info-card summary::after { content: '\f078'; font: 900 11px 'Font Awesome 6 Free'; color: var(--text-3); transition: transform .2s; }
+        .ant-info-card[open] summary::after { transform: rotate(180deg); }
+        .ant-live-toolbar { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 0; background: var(--bg); border-bottom: 1px solid var(--line); }
+        .ant-board-section { margin-top: 20px; }
+        .ant-board-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .ant-board-head h3 { font-size: 15px; font-weight: 600; }
         .ant-board-head .ant-tile { width: 30px; height: 30px; font-size: 13px; }
+        .ant-board-actions { display: flex; gap: 6px; margin-left: auto; }
+        .ant-board-actions .ant-btn { min-height: 34px; padding: 0 10px; font-size: 12px; }
         .ant-tile.is-gray { background: var(--surface-3); color: var(--text-2); }
-        .ant-board-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: 12px; }
+        .ant-board-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 12px; }
         .ant-img-card { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); transition: border-color .18s, box-shadow .18s; }
         .ant-img-card.is-selected { border-color: var(--primary-ink); box-shadow: inset 0 0 0 1px var(--primary-ink); }
         .ant-img-thumb { display: block; width: 100%; aspect-ratio: 1; overflow: hidden; border-radius: var(--radius-sm); background: var(--plate); cursor: zoom-in; }
@@ -349,10 +410,10 @@
         .ant-img-check { position: absolute; top: 12px; left: 12px; z-index: 1; width: 36px; height: 36px; display: grid; place-items: center; border-radius: var(--radius-sm); background: rgba(18, 19, 24, .72); cursor: pointer; }
         .ant-img-check input { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
         .ant-img-name { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 12px; color: var(--text); }
-        .ant-img-meta { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 11px; color: var(--text-3); }
+        .ant-img-meta { min-height: 20px; display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 11px; color: var(--text-3); font-variant-numeric: tabular-nums; }
         .ant-badge { padding: 2px 8px; border-radius: 999px; background: var(--surface-2); color: var(--text-2); font-size: 10.5px; font-weight: 600; white-space: nowrap; }
         .ant-badge.is-person { background: var(--primary-soft); color: var(--primary-ink); }
-        .ant-badge.is-review { background: rgba(242, 193, 46, .16); color: var(--yellow-ink); }
+        .ant-badge.is-review { background: transparent; border: 1px solid rgba(242, 193, 46, .55); color: var(--yellow-ink); }
         .ant-select { width: 100%; min-height: 36px; padding: 0 8px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-2); color: var(--text); font-size: 12px; }
         .ant-viewer { width: min(1100px, 94vw); max-width: none; padding: 0; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); color: var(--text); }
         .ant-viewer::backdrop { background: rgba(0, 0, 0, .6); }
@@ -360,10 +421,19 @@
         .ant-viewer-body > img { width: 100%; max-height: 82vh; object-fit: contain; background: var(--plate); }
         .ant-viewer-side { display: flex; flex-direction: column; gap: 10px; padding: 18px; }
         .ant-viewer-side h3 { font-size: 15px; font-weight: 600; overflow-wrap: anywhere; }
+        @media (max-width: 1100px) {
+            .ant-live-layout.has-list { grid-template-columns: minmax(0, 1fr); }
+            .ant-results { position: static; max-height: 46vh; }
+            .ant-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
         @media (max-width: 700px) {
             .ant-viewer-body { grid-template-columns: 1fr; }
             .ant-board-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .ant-live-all { grid-template-columns: 1fr; }
+            .ant-info-grid { grid-template-columns: 1fr; }
+            .ant-kv { grid-template-columns: 1fr; gap: 2px; }
+            .ant-kv dd { margin-bottom: 8px; }
+            .ant-pack { font-size: 12px; }
+            .ant-live-head h2 { font-size: 19px; }
         }
 
         /* Library */
@@ -880,17 +950,29 @@
             </div>
 
             <!-- LIVE RESULT: real master data and SharePoint images through serve.py; the demo result above is used without a backend -->
-            <section id="live-result" class="hidden w-full max-w-6xl mb-24 transition-opacity duration-500 opacity-0" aria-live="polite">
-                <div id="live-products" class="ant-live-products"></div>
-                <div id="live-product" class="ant-card ant-live-product p-5"></div>
-                <div class="ant-live-toolbar">
-                    <span id="live-status" class="ant-muted text-sm"></span>
-                    <div class="flex flex-wrap gap-2">
-                        <button type="button" class="ant-btn ant-btn-secondary" onclick="liveSelectAll()"><i class="fa-regular fa-square-check" aria-hidden="true"></i><span id="live-select-label" data-i18n="liveSelectAll">Chọn tất cả</span></button>
-                        <button type="button" class="ant-btn ant-btn-primary" id="live-download" onclick="liveDownload()" disabled><i class="fa-solid fa-download" aria-hidden="true"></i><span id="live-download-label" data-i18n="liveDownloadSelected">Tải ảnh đã chọn</span></button>
+            <section id="live-result" class="hidden w-full mb-24 transition-opacity duration-500 opacity-0" aria-live="polite">
+                <div id="live-layout" class="ant-live-layout">
+                    <aside id="live-results" class="ant-results" aria-label="Kết quả tìm kiếm" hidden></aside>
+                    <div class="min-w-0">
+                        <div id="live-product" class="ant-card p-5"></div>
+                        <div class="ant-tabs" role="tablist">
+                            <button type="button" role="tab" id="live-tab-images" class="ant-tab" aria-selected="true" aria-controls="live-panel-images" onclick="setLiveTab('images')"><i class="fa-regular fa-images" aria-hidden="true"></i><span data-i18n="liveTabImages">Hình ảnh</span><span id="live-count-images" class="ant-tab-count">0</span></button>
+                            <button type="button" role="tab" id="live-tab-info" class="ant-tab" aria-selected="false" aria-controls="live-panel-info" onclick="setLiveTab('info')"><i class="fa-regular fa-rectangle-list" aria-hidden="true"></i><span data-i18n="liveTabInfo">Thông tin chi tiết</span></button>
+                        </div>
+                        <div id="live-panel-images" role="tabpanel" aria-labelledby="live-tab-images">
+                            <div class="ant-live-toolbar">
+                                <div id="live-image-filters" class="ant-chips" role="group" aria-label="Lọc ảnh"></div>
+                                <div class="flex flex-wrap gap-2">
+                                    <button type="button" class="ant-btn ant-btn-secondary" onclick="liveSelectAll()"><i class="fa-regular fa-square-check" aria-hidden="true"></i><span id="live-select-label" data-i18n="liveSelectAll">Chọn tất cả</span></button>
+                                    <button type="button" class="ant-btn ant-btn-primary" id="live-download" onclick="liveDownload()" disabled><i class="fa-solid fa-download" aria-hidden="true"></i><span id="live-download-label" data-i18n="liveDownloadSelected">Tải ảnh đã chọn</span></button>
+                                </div>
+                            </div>
+                            <p id="live-status" class="ant-muted text-sm mt-3" role="status"></p>
+                            <div id="live-board"></div>
+                        </div>
+                        <div id="live-panel-info" role="tabpanel" aria-labelledby="live-tab-info" hidden></div>
                     </div>
                 </div>
-                <div id="live-board"></div>
                 <dialog id="live-viewer" class="ant-viewer" aria-labelledby="live-viewer-name">
                     <div class="ant-viewer-body">
                         <img id="live-viewer-img" alt="">
@@ -1078,8 +1160,13 @@
                 features: 'Tính năng', howItWorks: 'Cách hoạt động', openApp: 'Vào A.N.T', previewBadge: 'Bản xem trước · dữ liệu demo', heroTitle: 'Mọi hình ảnh và dữ liệu sản phẩm, ở một nơi.', heroLead: 'Nhập EAN, article code hoặc tên sản phẩm. A.N.T khớp master data rồi trả về packshot, thông tin sản phẩm và công cụ xử lý ảnh.', getStarted: 'Vào không gian làm việc', seeHow: 'Xem cách hoạt động', statBrands: 'thương hiệu', statLogos: 'logo đã chuẩn hóa', statAreas: 'khu vực làm việc',
                 featuresTitle: 'Mọi thứ cho tài sản sản phẩm', featuresLead: 'Bốn khu vực làm việc dùng chung một nguồn dữ liệu sản phẩm.', featSearchTitle: 'Tìm theo EAN, mã hoặc tên', featSearchText: 'Nhận diện loại mã, khớp master data rồi gom toàn bộ ảnh liên quan.', featLibraryText: 'Logo chuẩn hóa, ảnh và master data xếp theo từng thương hiệu.', featEditText: 'Resize theo preset, cắt, đặt ảnh lên nền trắng và xuất hàng loạt.', featFillText: 'Kiểm tra và điền file Excel theo mẫu của từng nhà bán lẻ.',
                 howLead: 'Master data là cầu nối: mọi giá trị nhập vào được đổi thành một sản phẩm trước khi tìm ảnh.', step1Title: 'Nhập hoặc tải file', step1Text: 'Một EAN, article code, tên sản phẩm hay cả danh sách CSV.', step2Title: 'Khớp master data', step2Text: 'Barcode, mã hàng, mã cũ và tên được quy về đúng sản phẩm.', step3Title: 'Nhận ảnh và thông tin', step3Text: 'Packshot, ảnh hộp, lifestyle cùng kích thước, pháp lý và nhà cung cấp.', ctaTitle: 'Sẵn sàng tìm ảnh?', ctaText: 'Mở không gian làm việc và thử với một mã EAN mẫu.',
-                liveNoProduct: 'Không có sản phẩm này trong master data. Thử EAN, article code hoặc tên khác.', liveNoFileMatch: 'Không mã nào trong file có trong master data.', liveFileMatches: 'Sản phẩm khớp trong file', liveNotFound: 'mã không thấy', liveSearching: 'Đang tìm ảnh trên SharePoint…', liveClassifying: 'Đang phân loại ảnh…', livePending: 'Đang phân loại', liveByPerson: 'Người xác nhận', liveReview: 'Cần xem lại', liveSelect: 'Chọn', liveCategory: 'Nhóm ảnh', liveLearned: 'Đã lưu, A.N.T sẽ học từ ảnh này', liveZipping: 'Đang nén ảnh gốc…', liveFailed: 'Không thực hiện được', liveSelectAll: 'Chọn tất cả', liveClearAll: 'Bỏ chọn', liveDownloadSelected: 'Tải ảnh đã chọn', liveImages: 'ảnh', liveToReview: 'cần xem lại', liveSelectedCount: 'đã chọn', liveLoginNeeded: 'Phiên đăng nhập SharePoint đã hết hạn.', liveLoginButton: 'Đăng nhập SharePoint', liveLoginOpen: 'Mở trang đăng nhập và nhập mã', liveLoginDone: 'Đã đăng nhập SharePoint', liveNotInMaster: 'Không có trong master data · tìm ảnh theo đúng mã đã nhập', liveAllFields: 'Tất cả trường master data', liveDownloadOriginal: 'Tải ảnh gốc', liveClose: 'Đóng', liveNoImages: 'Không tìm thấy ảnh nào trên SharePoint cho sản phẩm này.',
-                catPackshot: 'Packshot', catHuman: 'Có người', catScene: 'Dàn cảnh', catCollection: 'Bộ sưu tập', catColor: 'Nền màu', catArtwork: 'Artwork', catUncertain: 'Không rõ'
+                liveNoProduct: 'Không có sản phẩm này trong master data. Thử EAN, article code hoặc tên khác.', liveNoFileMatch: 'Không mã nào trong file có trong master data.', liveFileMatches: 'Sản phẩm khớp trong file', liveNotFound: 'mã không thấy', liveSearching: 'Đang tìm ảnh trên SharePoint…', liveClassifying: 'Đang phân loại ảnh…', livePending: 'Đang phân loại', liveByPerson: 'Đã xác nhận', liveReview: 'Cần xem lại', liveSelect: 'Chọn', liveCategory: 'Nhóm ảnh', liveLearned: 'Đã lưu, A.N.T sẽ học từ ảnh này', liveZipping: 'Đang nén ảnh gốc…', liveFailed: 'Không thực hiện được', liveSelectAll: 'Chọn tất cả', liveClearAll: 'Bỏ chọn', liveDownloadSelected: 'Tải ảnh đã chọn', liveImages: 'ảnh', liveToReview: 'cần xem lại', liveSelectedCount: 'đã chọn', liveLoginNeeded: 'Phiên đăng nhập SharePoint đã hết hạn.', liveLoginButton: 'Đăng nhập SharePoint', liveLoginOpen: 'Mở trang đăng nhập và nhập mã', liveLoginDone: 'Đã đăng nhập SharePoint', liveNotInMaster: 'Không có trong master data · tìm ảnh theo đúng mã đã nhập', liveAllFields: 'Tất cả trường master data', liveDownloadOriginal: 'Tải ảnh gốc', liveClose: 'Đóng', liveNoImages: 'Không tìm thấy ảnh nào trên SharePoint cho sản phẩm này.',
+                catPackshot: 'Packshot', catHuman: 'Có người', catScene: 'Dàn cảnh', catCollection: 'Bộ sưu tập', catColor: 'Nền màu', catArtwork: 'Artwork', catUncertain: 'Không rõ',
+                liveTabImages: 'Hình ảnh', liveTabInfo: 'Thông tin chi tiết', liveProductsWord: 'sản phẩm', liveProductWord: 'Sản phẩm', liveStatusFilter: 'Lọc theo trạng thái', liveFilterResults: 'Lọc theo tên, EAN, mã…', liveNoMatchFilter: 'Không có mục nào khớp bộ lọc.', groupAll: 'Tất cả', groupActive: 'Đang bán', groupUpcoming: 'Sắp ra mắt', groupInactive: 'Ngừng bán', liveCopy: 'Sao chép', liveCopied: 'Đã sao chép', liveCopyIngredients: 'Sao chép thành phần',
+                factVolume: 'Dung tích', factSize: 'Kích thước', factSizeHint: 'rộng × cao × sâu', factWeight: 'Khối lượng tịnh', factGross: 'cả bì', factCarton: 'Đóng thùng', factPerCarton: 'sp/thùng', factPerInner: 'sp/hộp trong', unitMonths: 'tháng',
+                infoIdentity: 'Định danh', infoCompliance: 'Pháp lý & hạn dùng', infoSupply: 'Nhà cung cấp & sản xuất', infoNotes: 'Mô tả & ghi chú', infoPacking: 'Kích thước & đóng gói', infoIngredients: 'Thành phần (INCI)', infoOther: 'Trường khác', infoNoData: 'Master data chưa có thông tin này.',
+                packProduct: 'Sản phẩm', packInner: 'Hộp trong', packCarton: 'Thùng', packSize: 'Kích thước (mm)', packWeight: 'Khối lượng (g)', packQty: 'Số lượng', packNet: 'tịnh', packGross: 'cả bì', packPerLayer: '/lớp',
+                imgFilterAll: 'Tất cả', imgFilterReview: 'Cần xem lại', imgFilterConfirmed: 'Đã xác nhận', liveSelectGroup: 'Chọn nhóm', liveConfirmGroup: 'Xác nhận cả nhóm', liveConfirmGroupHint: 'Đánh dấu các ảnh này đúng nhóm để A.N.T học'
             },
             en: {
                 subtitle: 'Asset Nexus Technology · Product asset workspace', searchPlaceholder: 'Search by product name, EAN, or article code...', search: 'Search', upload: 'Import file', viewMaster: 'View data', downloadMaster: 'Download CSV', masterSearchPlaceholder: 'Search a product name or code in this brand...', productName: 'Product', articleCode: 'Article code', category: 'Category', dimensions: 'Dimensions', weight: 'Weight', preview: 'View image', backToMaster: 'Back to master data', demoProduct: 'Sample product', demoUnavailable: 'Real product data is not connected', noMasterMatch: 'No sample product found in this brand.', sampleStatus: 'Preview', imageInfo: 'Image information: ', lookupCode: 'Lookup code: ', dataSource: 'Data source: ',
@@ -1093,7 +1180,12 @@
                 featuresTitle: 'Everything for product assets', featuresLead: 'Four workspaces sharing one source of product data.', featSearchTitle: 'Search by EAN, code or name', featSearchText: 'Recognises the kind of code, matches master data and gathers every related image.', featLibraryText: 'Standardised logos, images and master data, organised by brand.', featEditText: 'Resize with presets, crop, place images on white and export in bulk.', featFillText: 'Check and fill Excel files to each retailer’s template.',
                 howLead: 'Master data is the bridge: every input is resolved to one product before images are fetched.', step1Title: 'Type or upload a file', step1Text: 'One EAN, article code, product name, or a whole CSV list.', step2Title: 'Match master data', step2Text: 'Barcodes, article codes, old codes and names resolve to the right product.', step3Title: 'Get images and details', step3Text: 'Packshots, box and lifestyle shots with dimensions, compliance and supplier data.', ctaTitle: 'Ready to find images?', ctaText: 'Open the workspace and try it with a sample EAN.',
                 liveNoProduct: 'This product is not in master data. Try another EAN, article code or name.', liveNoFileMatch: 'No code in the file is in master data.', liveFileMatches: 'Products matched in the file', liveNotFound: 'codes not found', liveSearching: 'Searching SharePoint for images…', liveClassifying: 'Classifying images…', livePending: 'Classifying', liveByPerson: 'Confirmed', liveReview: 'Check', liveSelect: 'Select', liveCategory: 'Image type', liveLearned: 'Saved; A.N.T will learn from this image', liveZipping: 'Zipping the originals…', liveFailed: 'That did not work', liveSelectAll: 'Select all', liveClearAll: 'Clear selection', liveDownloadSelected: 'Download selected', liveImages: 'images', liveToReview: 'to check', liveSelectedCount: 'selected', liveLoginNeeded: 'The SharePoint session has expired.', liveLoginButton: 'Sign in to SharePoint', liveLoginOpen: 'Open the sign-in page and enter the code', liveLoginDone: 'Signed in to SharePoint', liveNotInMaster: 'Not in master data · searching images for the code as typed', liveAllFields: 'All master data fields', liveDownloadOriginal: 'Download original', liveClose: 'Close', liveNoImages: 'No images found on SharePoint for this product.',
-                catPackshot: 'Packshot', catHuman: 'With people', catScene: 'Scene setup', catCollection: 'Collection', catColor: 'Color background', catArtwork: 'Artwork', catUncertain: 'Unclear'
+                catPackshot: 'Packshot', catHuman: 'With people', catScene: 'Scene setup', catCollection: 'Collection', catColor: 'Color background', catArtwork: 'Artwork', catUncertain: 'Unclear',
+                liveTabImages: 'Images', liveTabInfo: 'Details', liveProductsWord: 'products', liveProductWord: 'Product', liveStatusFilter: 'Filter by status', liveFilterResults: 'Filter by name, EAN, code…', liveNoMatchFilter: 'Nothing matches the filter.', groupAll: 'All', groupActive: 'On sale', groupUpcoming: 'Upcoming', groupInactive: 'Discontinued', liveCopy: 'Copy', liveCopied: 'Copied', liveCopyIngredients: 'Copy ingredients',
+                factVolume: 'Volume', factSize: 'Size', factSizeHint: 'width × height × depth', factWeight: 'Net weight', factGross: 'gross', factCarton: 'Carton', factPerCarton: 'per carton', factPerInner: 'per inner box', unitMonths: 'months',
+                infoIdentity: 'Identity', infoCompliance: 'Compliance & shelf life', infoSupply: 'Supplier & manufacturer', infoNotes: 'Description & notes', infoPacking: 'Size & packing', infoIngredients: 'Ingredients (INCI)', infoOther: 'Other fields', infoNoData: 'Master data has nothing here yet.',
+                packProduct: 'Product', packInner: 'Inner box', packCarton: 'Carton', packSize: 'Size (mm)', packWeight: 'Weight (g)', packQty: 'Quantity', packNet: 'net', packGross: 'gross', packPerLayer: 'per layer',
+                imgFilterAll: 'All', imgFilterReview: 'To check', imgFilterConfirmed: 'Confirmed', liveSelectGroup: 'Select group', liveConfirmGroup: 'Confirm group', liveConfirmGroupHint: 'Mark these images as correctly sorted so A.N.T learns'
             }
         };
         let language = localStorage.getItem('ant-language') === 'en' ? 'en' : 'vi';
@@ -1123,7 +1215,7 @@
             updateThemeButtons();
             renderSuggestions();
             renderRecent();
-            if (liveMode && liveKey) { renderLiveProducts(); renderLiveProduct(); renderBoard(); updateLiveStatus(); }
+            if (liveMode && liveKey) { renderLiveResults(); renderLiveProduct(); renderLiveInfo(); renderBoard(); updateLiveStatus(); }
             if (currentView === 'LIB_BRANDS') showBrandSelectionView();
             if (currentView === 'LIB_GRID') showBrandGridView();
             if (currentView === 'LIB_PRODUCT_DETAIL') showLibProductDetailView();
@@ -1219,6 +1311,10 @@
             setLanguage(language);
             showRoute();
             syncHomeIntro();
+            const scroller = document.getElementById('main-scroll-container');
+            scroller.addEventListener('scroll', () => {
+                document.body.classList.toggle('ant-scrolled', currentView === 'SEARCH_MAIN' && scroller.scrollTop > 80);
+            }, { passive: true });
             for (const id of ['image-edit-frame', 'auto-fill-frame']) {
                 const frame = document.getElementById(id);
                 frame.addEventListener('load', () => styleToolFrame(frame));
@@ -1931,11 +2027,44 @@
             '99_uncertain': ['catUncertain', 'is-gray', 'fa-circle-question'],
             pending: ['livePending', 'is-gray', 'fa-spinner'],
         };
-        const KEY_FIELDS = ['UNIT/VOLUME', 'STATUS', 'WEIGHT', 'GROSS WEIGHT', 'CARTON QTY', 'INNER BOX QTY', 'CN8 CODE', 'CPNP NUMBER', 'SUPPLIER NAME', 'SHELF LIFE', 'PAO'];
-        let liveMode = false, liveProducts = [], liveIndex = 0, liveKey = '', liveImages = [], liveToken = 0;
+        // Product details, grouped. Labels per language; values come from master data columns.
+        const FIELD_LABELS = {
+            vi: { 'CODE': 'Mã hàng', 'BAR CODE': 'EAN', 'INNER BOX EAN': 'EAN hộp trong', 'OUTER BOX EAN': 'EAN thùng', 'OBJECT': 'Thương hiệu', 'UNIT/VOLUME': 'Dung tích', 'CN8 CODE': 'Mã HS (CN8)', 'STATUS': 'Trạng thái',
+                'CPNP NUMBER': 'Số CPNP', 'CPNP STATUS': 'Trạng thái CPNP', 'SCPN NUMBER': 'Số SCPN (UK)', 'SHELF LIFE': 'Hạn sử dụng', 'PAO': 'Hạn dùng sau khi mở', 'VEGAN CERTIFIED?': 'Thuần chay', 'EU RESPONSIBLE PERSON': 'Người chịu trách nhiệm EU', 'UK RESPONSIBLE PERSON': 'Người chịu trách nhiệm UK',
+                'SUPPLIER NAME': 'Nhà cung cấp', 'SUPPLIER': 'Mã nhà cung cấp', 'MANUFACTURER INFORMATION': 'Nhà sản xuất', 'DESCRIPTION': 'Mô tả', 'WARNING': 'Ghi chú Directo' },
+            en: { 'CODE': 'Article code', 'BAR CODE': 'EAN', 'INNER BOX EAN': 'Inner box EAN', 'OUTER BOX EAN': 'Carton EAN', 'OBJECT': 'Brand', 'UNIT/VOLUME': 'Volume', 'CN8 CODE': 'HS code (CN8)', 'STATUS': 'Status',
+                'CPNP NUMBER': 'CPNP number', 'CPNP STATUS': 'CPNP status', 'SCPN NUMBER': 'SCPN number (UK)', 'SHELF LIFE': 'Shelf life', 'PAO': 'Period after opening', 'VEGAN CERTIFIED?': 'Vegan certified', 'EU RESPONSIBLE PERSON': 'EU responsible person', 'UK RESPONSIBLE PERSON': 'UK responsible person',
+                'SUPPLIER NAME': 'Supplier', 'SUPPLIER': 'Supplier code', 'MANUFACTURER INFORMATION': 'Manufacturer', 'DESCRIPTION': 'Description', 'WARNING': 'Directo note' },
+        };
+        const INFO_SECTIONS = [
+            ['infoIdentity', 'fa-barcode', ['CODE', 'BAR CODE', 'INNER BOX EAN', 'OUTER BOX EAN', 'OBJECT', 'UNIT/VOLUME', 'CN8 CODE', 'STATUS']],
+            ['infoCompliance', 'fa-shield-halved', ['CPNP NUMBER', 'CPNP STATUS', 'SCPN NUMBER', 'SHELF LIFE', 'PAO', 'VEGAN CERTIFIED?', 'EU RESPONSIBLE PERSON', 'UK RESPONSIBLE PERSON']],
+            ['infoSupply', 'fa-industry', ['SUPPLIER NAME', 'SUPPLIER', 'MANUFACTURER INFORMATION']],
+            ['infoNotes', 'fa-note-sticky', ['DESCRIPTION', 'WARNING']],
+        ];
+        const PACK_FIELDS = ['WIDTH', 'HEIGHT', 'DEPTH', 'WEIGHT', 'GROSS WEIGHT', 'INNER BOX LENGTH', 'INNER BOX WIDTH', 'INNER BOX HEIGHT', 'INNER BOX G.WEIGHT', 'INNER BOX QTY',
+            'OUTER BOX LENGTH', 'OUTER BOX WIDTH', 'OUTER BOX HEIGHT', 'OUTER BOX G.WEIGHT', 'CARTON QTY', 'CARTON QTY PER LAYER'];
+        const SHOWN_FIELDS = new Set(['NAME', 'INGREDIENTS', ...PACK_FIELDS, ...INFO_SECTIONS.flatMap(s => s[2])]);
+        const EMPTY_VALUES = new Set(['', '-', '--', 'x', 'tbu', 'tbc', 'n/a', 'na', 'n/v', 'none', 'not given', 'nan']);
+
+        let liveMode = false, liveProducts = [], liveIndex = 0, liveKey = '', liveDetail = null, liveImages = [], liveToken = 0, liveQuery = '';
+        let liveGroupFilter = 'all', liveTextFilter = '', liveImageFilter = 'all', liveTab = 'images';
         const liveSelected = new Set();
         const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+        const fold = value => String(value ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').toLowerCase();
         const catName = code => t((CAT_META[code] || CAT_META['99_uncertain'])[0]);
+        const groupName = group => t({ active: 'groupActive', upcoming: 'groupUpcoming', inactive: 'groupInactive' }[group] || 'groupInactive');
+        const fieldLabel = key => (FIELD_LABELS[language] || FIELD_LABELS.vi)[key] || key;
+        const fieldValue = (f, key) => {
+            const value = String(f[key] ?? '').trim();
+            return EMPTY_VALUES.has(value.toLowerCase()) || /^0+(\.0+)?$/.test(value) ? '' : value;
+        };
+        const num = value => /^-?\d+(\.\d+)?$/.test(value)
+            ? new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : 'en-GB', { maximumFractionDigits: 2 }).format(Number(value)) : value;
+        const months = value => /^\d+\s*m?$/i.test(value) ? `${parseInt(value, 10)} ${t('unitMonths')}` : value;
+        const dimsOf = (...values) => values.every(Boolean) ? values.map(num).join(' × ') : '';
+        const formatField = (key, value) => (key === 'SHELF LIFE' || key === 'PAO') ? months(value) : value;
+
         const liveReady = (async () => {
             const healthy = async base => {
                 try {
@@ -1963,7 +2092,12 @@
             if (!response.ok) throw new Error(data.detail || data.error || response.statusText);
             return data;
         }
+        async function copyText(value) {
+            try { await navigator.clipboard.writeText(value); showToast(`${t('liveCopied')}: ${value}`); }
+            catch (e) { showToast(t('liveFailed')); }
+        }
 
+        // ---- search and result list ----
         async function liveSearch(query) {
             if (!query) { document.getElementById('search-input').focus(); return; }
             hideSearchFeedback();
@@ -1971,7 +2105,7 @@
             try { data = await api(`search?q=${encodeURIComponent(query)}`); } catch (e) { return showLiveError(e); }
             if (!data.products.length) { showSearchFeedback('liveNoProduct'); return; }
             pushRecent('search', query, query);
-            showLiveProducts(data.products);
+            showLiveProducts(data.products, query);
         }
         async function liveLookup(file) {
             const codes = (await file.text()).split(/[\r\n,;\t]+/).map(v => v.trim().replace(/^"|"$/g, '')).filter(Boolean);
@@ -1982,30 +2116,79 @@
             const missing = data.results.filter(row => !row.products.length).length;
             if (!products.length) { showSearchFeedback('liveNoFileMatch'); return; }
             document.getElementById('search-input').value = '';
-            showLiveProducts(products);
+            showLiveProducts(products, file.name);
             showToast(`${t('liveFileMatches')}: ${products.length}` + (missing ? ` · ${missing} ${t('liveNotFound')}` : ''));
         }
-        function showLiveProducts(products) {
+        function showLiveProducts(products, query) {
             liveProducts = products;
+            liveQuery = query;
+            liveGroupFilter = 'all';
+            liveTextFilter = '';
+            renderLiveResults();
             switchToResultPage();
             selectLiveProduct(0);
         }
+        function renderLiveResults() {
+            const aside = document.getElementById('live-results');
+            const many = liveProducts.length > 1;
+            aside.hidden = !many;
+            document.getElementById('live-layout').classList.toggle('has-list', many);
+            if (!many) { aside.innerHTML = ''; return; }
+            aside.innerHTML = `
+                <div class="ant-results-head">
+                    <strong>${num(String(liveProducts.length))} ${t('liveProductsWord')}</strong>
+                    <p>“${esc(liveQuery)}”</p>
+                    <div class="ant-results-tools">
+                        <div id="live-group-filters" class="ant-chips" role="group" aria-label="${t('liveStatusFilter')}"></div>
+                        <input type="search" class="ant-input" placeholder="${t('liveFilterResults')}" aria-label="${t('liveFilterResults')}" value="${esc(liveTextFilter)}" oninput="liveTextFilter = this.value; renderResultList()">
+                    </div>
+                </div>
+                <div id="live-results-list" class="ant-results-list"></div>`;
+            renderGroupFilters();
+            renderResultList();
+        }
+        function renderGroupFilters() {
+            const counts = { all: liveProducts.length, active: 0, upcoming: 0, inactive: 0 };
+            liveProducts.forEach(p => { counts[p.group] = (counts[p.group] || 0) + 1; });
+            document.getElementById('live-group-filters').innerHTML = ['all', 'active', 'upcoming', 'inactive']
+                .filter(g => g === 'all' || counts[g])
+                .map(g => `<button type="button" class="ant-filter-chip" aria-pressed="${liveGroupFilter === g}" onclick="liveGroupFilter = '${g}'; renderGroupFilters(); renderResultList()">${g === 'all' ? t('groupAll') : groupName(g)} <span>${counts[g]}</span></button>`).join('');
+        }
+        function renderResultList() {
+            const words = fold(liveTextFilter).split(/\s+/).filter(Boolean);
+            const rows = liveProducts.map((p, i) => [p, i]).filter(([p]) =>
+                (liveGroupFilter === 'all' || p.group === liveGroupFilter) && words.every(w => fold(`${p.name} ${p.ean} ${p.code} ${p.volume}`).includes(w)));
+            document.getElementById('live-results-list').innerHTML = rows.length ? rows.map(([p, i]) => `
+                <button type="button" class="ant-result-item" aria-current="${i === liveIndex}" onclick="selectLiveProduct(${i}, true)">
+                    <span class="ant-result-name">${esc(p.name || p.key)}</span>
+                    <span class="ant-result-meta"><span class="ant-status is-${p.group}">${groupName(p.group)}</span>${p.ean ? `<span>${esc(p.ean)}</span>` : ''}<span>${esc(p.code)}</span>${p.volume ? `<span>${esc(p.volume)}</span>` : ''}</span>
+                </button>`).join('') : `<p class="ant-results-empty">${t('liveNoMatchFilter')}</p>`;
+        }
 
-        async function selectLiveProduct(index) {
+        // ---- one product ----
+        async function selectLiveProduct(index, fromList = false) {
             liveIndex = index;
+            // Stacked layout: the details sit below the list, so bring them into view.
+            if (fromList && matchMedia('(max-width: 1100px)').matches) document.getElementById('live-product').scrollIntoView({ behavior: 'smooth', block: 'start' });
             const product = liveProducts[index];
             const token = ++liveToken;
             liveKey = product.key;
+            liveDetail = null;
             liveImages = [];
+            liveImageFilter = 'all';
             liveSelected.clear();
-            renderLiveProducts();
+            if (liveProducts.length > 1) renderResultList();
             renderLiveProduct();
+            renderLiveInfo();
             renderBoard(t('liveSearching'));
             updateLiveStatus(t('liveSearching'));
             let data;
             try { data = await api(`product?key=${encodeURIComponent(product.key)}`); } catch (e) { if (token === liveToken) showLiveError(e); return; }
             if (token !== liveToken) return;
+            liveDetail = data.product;
             liveImages = data.images.map(img => ({ ...img, result: img.result || null }));
+            renderLiveProduct();
+            renderLiveInfo();
             renderBoard(t('liveNoImages'));
             const pending = liveImages.filter(img => !img.result).map(img => img.id);
             if (!pending.length) return updateLiveStatus();
@@ -2019,70 +2202,130 @@
             updateLiveStatus();
         }
 
-        function renderLiveProducts() {
-            document.getElementById('live-products').innerHTML = liveProducts.length < 2 ? '' : liveProducts.map((p, i) => `
-                <button type="button" class="ant-mini-card" aria-pressed="${i === liveIndex}" onclick="selectLiveProduct(${i})">
-                    <span class="min-w-0"><strong>${esc(p.name || p.key)}</strong><small>${esc(p.ean || p.code)}${p.status ? ` · ${esc(p.status)}` : ''}</small></span>
-                </button>`).join('');
-        }
         function renderLiveProduct() {
-            const p = liveProducts[liveIndex];
+            const p = liveDetail || liveProducts[liveIndex];
             if (!p) return;
-            // Master data writes numbers as "150.0000"; show 150.
-            const f = Object.fromEntries(Object.entries(p.fields || {}).map(([k, v]) => [k, /^-?\d+\.\d+$/.test(v) ? String(parseFloat(v)) : v]));
-            const dims = ['WIDTH', 'HEIGHT', 'DEPTH'].map(k => f[k]).filter(v => v && Number(v) > 0);
-            const chips = [p.ean && `EAN ${p.ean}`, p.code && `CODE ${p.code}`, p.brand, p.volume].filter(Boolean)
-                .map(v => `<span class="ant-chip is-muted">${esc(v)}</span>`).join('');
-            const keyFields = [...(dims.length === 3 ? [[t('dimensions'), dims.join(' × ') + ' mm']] : []), ...KEY_FIELDS.filter(k => f[k] && f[k] !== '0').map(k => [k, f[k]])];
-            const all = Object.entries(f).filter(([k]) => k !== 'NAME');
+            const f = p.fields || {};
+            const ids = [['BAR CODE', p.ean], ['CODE', p.code], ['INNER BOX EAN', fieldValue(f, 'INNER BOX EAN')], ['OUTER BOX EAN', fieldValue(f, 'OUTER BOX EAN')]].filter(([, v]) => v);
+            const facts = [
+                ['fa-flask', t('factVolume'), fieldValue(f, 'UNIT/VOLUME') || p.volume, ''],
+                ['fa-ruler-combined', t('factSize'), dimsOf(fieldValue(f, 'WIDTH'), fieldValue(f, 'HEIGHT'), fieldValue(f, 'DEPTH')) && `${dimsOf(fieldValue(f, 'WIDTH'), fieldValue(f, 'HEIGHT'), fieldValue(f, 'DEPTH'))} mm`, t('factSizeHint')],
+                ['fa-weight-hanging', t('factWeight'), fieldValue(f, 'WEIGHT') && `${num(fieldValue(f, 'WEIGHT'))} g`, fieldValue(f, 'GROSS WEIGHT') && `${t('factGross')} ${num(fieldValue(f, 'GROSS WEIGHT'))} g`],
+                ['fa-boxes-stacked', t('factCarton'), fieldValue(f, 'CARTON QTY') && `${num(fieldValue(f, 'CARTON QTY'))} ${t('factPerCarton')}`, fieldValue(f, 'INNER BOX QTY') && `${num(fieldValue(f, 'INNER BOX QTY'))} ${t('factPerInner')}`],
+            ];
             document.getElementById('live-product').innerHTML = `
                 <div class="ant-live-head">
-                    <div class="min-w-0"><h2>${esc(p.name || p.key)}</h2><div class="ant-live-chips">${chips}</div></div>
-                    ${p.status ? `<span class="ant-chip">${esc(p.status)}</span>` : ''}
+                    <div class="min-w-0">
+                        <p class="ant-eyebrow">${esc([p.brand, p.volume].filter(Boolean).join(' · ') || t('liveProductWord'))}</p>
+                        <h2>${esc(p.name || p.key)}</h2>
+                    </div>
+                    ${p.status ? `<span class="ant-status is-pill is-${p.group}" title="${esc(p.status)}">${groupName(p.group)}</span>` : ''}
                 </div>
                 ${p.notInMaster ? `<p class="ant-muted text-sm mt-3">${t('liveNotInMaster')}</p>` : ''}
-                ${keyFields.length ? `<dl class="ant-master-fields mt-4">${keyFields.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>` : ''}
-                ${all.length ? `<details class="mt-2"><summary>${t('liveAllFields')} (${all.length})</summary><dl class="ant-live-all">${all.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl></details>` : ''}`;
+                <div class="ant-id-row">${ids.map(([k, v]) => `<button type="button" class="ant-copy" onclick="copyText('${esc(v)}')" aria-label="${t('liveCopy')} ${fieldLabel(k)} ${esc(v)}">${fieldLabel(k)} <b>${esc(v)}</b><i class="fa-regular fa-copy" aria-hidden="true"></i></button>`).join('')}</div>
+                ${liveDetail && !p.notInMaster ? `<dl class="ant-facts">${facts.map(([icon, label, value, hint]) => `
+                    <div class="ant-fact"><dt><i class="fa-solid ${icon}" aria-hidden="true"></i>${label}</dt><dd>${esc(value || '—')}${value && hint ? `<small>${esc(hint)}</small>` : ''}</dd></div>`).join('')}</dl>` : ''}`;
         }
 
+        function renderLiveInfo() {
+            const panel = document.getElementById('live-panel-info');
+            const p = liveDetail;
+            if (!p) { panel.innerHTML = `<p class="ant-info-empty mt-4">${t('liveSearching')}</p>`; return; }
+            const f = p.fields || {};
+            if (!Object.keys(f).length) { panel.innerHTML = `<p class="ant-info-empty mt-4">${t('liveNotInMaster')}</p>`; return; }
+            const kv = keys => keys.map(k => [k, fieldValue(f, k)]).filter(([, v]) => v)
+                .map(([k, v]) => `<dt>${esc(fieldLabel(k))}</dt><dd>${esc(formatField(k, v))}</dd>`).join('');
+            const card = (titleKey, icon, body) => `<section class="ant-info-card"><h3><i class="fa-solid ${icon}" aria-hidden="true"></i>${t(titleKey)}</h3>${body || `<p class="ant-info-empty">${t('infoNoData')}</p>`}</section>`;
+            const v = key => fieldValue(f, key);
+            const packRows = [
+                [t('packProduct'), dimsOf(v('WIDTH'), v('HEIGHT'), v('DEPTH')), [v('WEIGHT') && `${num(v('WEIGHT'))} ${t('packNet')}`, v('GROSS WEIGHT') && `${num(v('GROSS WEIGHT'))} ${t('packGross')}`].filter(Boolean).join(' · '), '1'],
+                [t('packInner'), dimsOf(v('INNER BOX LENGTH'), v('INNER BOX WIDTH'), v('INNER BOX HEIGHT')), v('INNER BOX G.WEIGHT') && num(v('INNER BOX G.WEIGHT')), v('INNER BOX QTY') && num(v('INNER BOX QTY'))],
+                [t('packCarton'), dimsOf(v('OUTER BOX LENGTH'), v('OUTER BOX WIDTH'), v('OUTER BOX HEIGHT')), v('OUTER BOX G.WEIGHT') && num(v('OUTER BOX G.WEIGHT')), [v('CARTON QTY') && num(v('CARTON QTY')), v('CARTON QTY PER LAYER') && `${num(v('CARTON QTY PER LAYER'))} ${t('packPerLayer')}`].filter(Boolean).join(' · ')],
+            ].filter(([, size, weight, qty], i) => i === 0 ? size || weight : size || weight || qty);
+            const pack = packRows.length ? `<table class="ant-pack"><thead><tr><th scope="col"></th><th scope="col">${t('packSize')}</th><th scope="col">${t('packWeight')}</th><th scope="col">${t('packQty')}</th></tr></thead>
+                <tbody>${packRows.map(([name, size, weight, qty]) => `<tr><th scope="row">${name}</th><td>${size || '—'}</td><td>${weight || '—'}</td><td>${qty || '—'}</td></tr>`).join('')}</tbody></table>` : '';
+            const others = Object.keys(f).filter(k => !SHOWN_FIELDS.has(k) && fieldValue(f, k));
+            const inci = v('INGREDIENTS');
+            panel.innerHTML = `<div class="ant-info-grid">
+                ${card(INFO_SECTIONS[0][0], INFO_SECTIONS[0][1], kv(INFO_SECTIONS[0][2]) && `<dl class="ant-kv">${kv(INFO_SECTIONS[0][2])}</dl>`)}
+                ${card(INFO_SECTIONS[1][0], INFO_SECTIONS[1][1], kv(INFO_SECTIONS[1][2]) && `<dl class="ant-kv">${kv(INFO_SECTIONS[1][2])}</dl>`)}
+                <section class="ant-info-card is-wide"><h3><i class="fa-solid fa-box-open" aria-hidden="true"></i>${t('infoPacking')}</h3>${pack || `<p class="ant-info-empty">${t('infoNoData')}</p>`}</section>
+                ${card(INFO_SECTIONS[2][0], INFO_SECTIONS[2][1], kv(INFO_SECTIONS[2][2]) && `<dl class="ant-kv">${kv(INFO_SECTIONS[2][2])}</dl>`)}
+                ${card(INFO_SECTIONS[3][0], INFO_SECTIONS[3][1], kv(INFO_SECTIONS[3][2]) && `<dl class="ant-kv">${kv(INFO_SECTIONS[3][2])}</dl>`)}
+                ${inci ? `<details class="ant-info-card is-wide"><summary><h3><i class="fa-solid fa-flask-vial" aria-hidden="true"></i>${t('infoIngredients')}</h3></summary>
+                    <p class="ant-inci mt-3">${esc(inci)}</p>
+                    <button type="button" class="ant-btn ant-btn-secondary mt-3" onclick="copyText(liveDetail.fields.INGREDIENTS)"><i class="fa-regular fa-copy" aria-hidden="true"></i>${t('liveCopyIngredients')}</button></details>` : ''}
+                ${others.length ? `<details class="ant-info-card is-wide"><summary><h3><i class="fa-solid fa-ellipsis" aria-hidden="true"></i>${t('infoOther')} (${others.length})</h3></summary>
+                    <dl class="ant-kv mt-3">${others.map(k => `<dt>${esc(k)}</dt><dd>${esc(num(fieldValue(f, k)))}</dd>`).join('')}</dl></details>` : ''}
+            </div>`;
+        }
+
+        function setLiveTab(tab) {
+            liveTab = tab;
+            for (const name of ['images', 'info']) {
+                document.getElementById(`live-tab-${name}`).setAttribute('aria-selected', String(name === tab));
+                document.getElementById(`live-panel-${name}`).hidden = name !== tab;
+            }
+        }
+
+        // ---- image board ----
+        const isReview = img => img.result && img.result.source !== 'person' && img.result.review;
+        const isConfirmed = img => img.result && img.result.source === 'person';
+        function visibleImages() {
+            return liveImages.map((img, i) => [img, i]).filter(([img]) =>
+                liveImageFilter === 'review' ? isReview(img) : liveImageFilter === 'confirmed' ? isConfirmed(img) : true);
+        }
+        function renderImageFilters() {
+            const counts = { all: liveImages.length, review: liveImages.filter(isReview).length, confirmed: liveImages.filter(isConfirmed).length };
+            document.getElementById('live-image-filters').innerHTML = liveImages.length ? ['all', 'review', 'confirmed']
+                .map(f => `<button type="button" class="ant-filter-chip" aria-pressed="${liveImageFilter === f}" onclick="liveImageFilter = '${f}'; renderBoard()">${t({ all: 'imgFilterAll', review: 'imgFilterReview', confirmed: 'imgFilterConfirmed' }[f])} <span>${counts[f]}</span></button>`).join('') : '';
+            document.getElementById('live-count-images').textContent = liveImages.length;
+        }
         function renderBoard(emptyText = '') {
+            renderImageFilters();
             const board = document.getElementById('live-board');
             if (!liveImages.length) { board.innerHTML = `<p class="ant-recent-empty">${esc(emptyText)}</p>`; return; }
             const groups = {};
-            liveImages.forEach((img, i) => (groups[img.result ? img.result.category : 'pending'] ||= []).push(i));
-            board.innerHTML = ['pending', ...CAT_ORDER].filter(c => groups[c]).map(c => {
+            visibleImages().forEach(([img, i]) => (groups[img.result ? img.result.category : 'pending'] ||= []).push(i));
+            const order = ['pending', ...CAT_ORDER].filter(c => groups[c]);
+            board.innerHTML = order.length ? order.map(c => {
                 const [, tile, icon] = CAT_META[c] || CAT_META['99_uncertain'];
-                return `<section class="ant-board-section">
-                    <div class="ant-board-head"><span class="ant-tile ${tile}" aria-hidden="true"><i class="fa-solid ${icon}${c === 'pending' ? ' fa-spin' : ''}"></i></span><h3 class="font-semibold">${c === 'pending' ? t('livePending') : catName(c)}</h3><span class="ant-chip is-muted">${groups[c].length}</span></div>
+                const unconfirmed = groups[c].filter(i => liveImages[i].result && liveImages[i].result.source !== 'person').length;
+                return `<section class="ant-board-section" aria-label="${c === 'pending' ? t('livePending') : catName(c)}">
+                    <div class="ant-board-head">
+                        <span class="ant-tile ${tile}" aria-hidden="true"><i class="fa-solid ${icon}${c === 'pending' ? ' fa-spin' : ''}"></i></span>
+                        <h3>${c === 'pending' ? t('livePending') : catName(c)}</h3><span class="ant-chip is-muted">${groups[c].length}</span>
+                        ${c === 'pending' ? '' : `<div class="ant-board-actions">
+                            <button type="button" class="ant-btn ant-btn-secondary" onclick="liveSelectGroup('${c}')">${t('liveSelectGroup')}</button>
+                            ${unconfirmed ? `<button type="button" class="ant-btn ant-btn-secondary" onclick="liveConfirmGroup('${c}')" title="${t('liveConfirmGroupHint')}"><i class="fa-solid fa-check" aria-hidden="true"></i>${t('liveConfirmGroup')} (${unconfirmed})</button>` : ''}
+                        </div>`}
+                    </div>
                     <div class="ant-board-grid">${groups[c].map(imageCard).join('')}</div>
                 </section>`;
-            }).join('');
+            }).join('') : `<p class="ant-recent-empty">${t('liveNoMatchFilter')}</p>`;
         }
         function imageCard(i) {
             const img = liveImages[i], r = img.result, selected = liveSelected.has(img.id);
             const badge = !r ? `<span class="ant-badge">${t('livePending')}</span>`
-                : r.source === 'person' ? `<span class="ant-badge is-person">${t('liveByPerson')}</span>`
+                : r.source === 'person' ? `<span class="ant-badge is-person"><i class="fa-solid fa-check" aria-hidden="true"></i> ${t('liveByPerson')}</span>`
                 : r.review ? `<span class="ant-badge is-review">${t('liveReview')} · ${Math.round(r.confidence * 100)}%</span>`
-                : `<span class="ant-badge">${Math.round(r.confidence * 100)}%</span>`;
+                : `<span>${Math.round(r.confidence * 100)}%</span>`;
             return `<div class="ant-img-card${selected ? ' is-selected' : ''}" data-i="${i}">
                 <label class="ant-img-check"><input type="checkbox"${selected ? ' checked' : ''} onchange="toggleLiveSelect(${i})" aria-label="${t('liveSelect')} ${esc(img.name)}"></label>
                 <button type="button" class="ant-img-thumb" onclick="openLiveViewer(${i})" aria-label="${esc(img.name)}"><img src="${IMG_API}/thumb/${img.id}" alt="" loading="lazy"></button>
                 <div class="ant-img-name" title="${esc(img.name)}">${esc(img.name)}</div>
                 <div class="ant-img-meta">${badge}<span>${(img.size / 1e6).toFixed(1)} MB</span></div>
-                ${r ? `<select class="ant-select" aria-label="${t('liveCategory')}" onchange="relabelLive(${i}, this.value)">${categoryOptions(r.category)}</select>` : ''}
+                ${r ? `<select class="ant-select" aria-label="${t('liveCategory')}" onchange="relabelLive([${i}], this.value)">${categoryOptions(r.category)}</select>` : ''}
             </div>`;
         }
         const categoryOptions = current => CAT_ORDER.map(c => `<option value="${c}"${c === current ? ' selected' : ''}>${catName(c)}</option>`).join('');
 
         function updateLiveStatus(text) {
-            const toReview = liveImages.filter(img => img.result && img.result.review).length;
             document.getElementById('live-status').textContent = text || [
                 `${liveImages.length} ${t('liveImages')}`,
-                toReview && `${toReview} ${t('liveToReview')}`,
                 liveSelected.size && `${liveSelected.size} ${t('liveSelectedCount')}`,
             ].filter(Boolean).join(' · ');
-            const download = document.getElementById('live-download');
-            download.disabled = !liveSelected.size;
+            document.getElementById('live-download').disabled = !liveSelected.size;
             document.getElementById('live-download-label').textContent = t('liveDownloadSelected') + (liveSelected.size ? ` (${liveSelected.size})` : '');
             document.getElementById('live-select-label').textContent = t(liveImages.length && liveSelected.size === liveImages.length ? 'liveClearAll' : 'liveSelectAll');
         }
@@ -2099,14 +2342,23 @@
             renderBoard();
             updateLiveStatus();
         }
-
-        async function relabelLive(i, category) {
-            const img = liveImages[i];
-            try { await api('label', { id: img.id, category }); } catch (e) { return showLiveError(e); }
-            img.result = { category, confidence: 1, source: 'person', review: false };
+        function liveSelectGroup(category) {
+            visibleImages().forEach(([img]) => { if (img.result && img.result.category === category) liveSelected.add(img.id); });
             renderBoard();
             updateLiveStatus();
-            showToast(t('liveLearned'));
+        }
+        function liveConfirmGroup(category) {
+            const indexes = visibleImages().filter(([img]) => img.result && img.result.category === category && img.result.source !== 'person').map(([, i]) => i);
+            relabelLive(indexes, category);
+        }
+        async function relabelLive(indexes, category) {
+            const ids = indexes.map(i => liveImages[i].id);
+            if (!ids.length) return;
+            try { await api('label', { ids, category }); } catch (e) { return showLiveError(e); }
+            indexes.forEach(i => { liveImages[i].result = { category, confidence: 1, source: 'person', review: false }; });
+            renderBoard();
+            updateLiveStatus();
+            showToast(ids.length > 1 ? `${t('liveLearned')} (${ids.length})` : t('liveLearned'));
         }
 
         function openLiveViewer(i) {
@@ -2117,7 +2369,7 @@
             const select = document.getElementById('live-viewer-cat');
             select.innerHTML = categoryOptions(img.result ? img.result.category : '');
             select.disabled = !img.result;
-            select.onchange = () => relabelLive(i, select.value);
+            select.onchange = () => relabelLive([i], select.value);
             document.getElementById('live-viewer-download').href = `${IMG_API}/file/${img.id}`;
             document.getElementById('live-viewer').showModal();
         }
@@ -2136,10 +2388,10 @@
             if (ids.length === 1) return downloadUrl(`${IMG_API}/file/${ids[0]}`);
             showToast(t('liveZipping'));
             const categories = Object.fromEntries(liveImages.filter(img => liveSelected.has(img.id) && img.result).map(img => [img.id, img.result.category]));
-            const response = await fetch(`${IMG_API}/zip`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids, key: liveKey, categories }) });
+            const response = await fetch(`${IMG_API}/zip`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids, key: liveDetail?.ean || liveKey, categories }) });
             if (!response.ok) { showToast(t('liveFailed')); return; }
             const url = URL.createObjectURL(await response.blob());
-            downloadUrl(url, `${liveKey}.zip`);
+            downloadUrl(url, `${liveDetail?.ean || liveKey}.zip`);
             setTimeout(() => URL.revokeObjectURL(url), 5000);
         }
 
