@@ -4,224 +4,562 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A.N.T — Asset Nexus Technology</title>
+    <script>try { document.documentElement.dataset.theme = localStorage.getItem('ant-theme') === 'light' ? 'light' : 'dark'; } catch (e) { document.documentElement.dataset.theme = 'dark'; }</script>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Inter Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Be Vietnam Pro: geometric sans with full Vietnamese glyphs -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#f4faf1',
-                            100: '#e5f3de',
-                            500: '#80b86c',
-                            600: '#497b3c',
-                            700: '#264d2d',
-                        }
-                    }
-                }
-            }
+            theme: { extend: { fontFamily: { sans: ['"Be Vietnam Pro"', 'system-ui', 'sans-serif'] } } }
         }
     </script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fbf7;
+        /* Dark workspace tokens, taken from the Uizard "File management (dark)"
+           reference: near-black surfaces, one electric-blue accent, colour-coded
+           tiles, flat cards with 1px lines instead of shadows. */
+        :root {
+            color-scheme: dark;
+            --bg: #121318;
+            --bg-raised: #17191f;
+            --surface: #1e2028;
+            --surface-2: #262933;
+            --surface-3: #2f333e;
+            --line: #2a2d36;
+            --line-strong: #3b3f4b;
+            --text: #f2f3f5;
+            --text-2: #b7bac1;
+            --text-3: #8d919a;
+            --primary: #2f2fff;
+            --primary-hover: #4848ff;
+            --primary-ink: #9097ff;
+            --primary-soft: rgba(70, 70, 255, .16);
+            --red: #f0353f;
+            --green: #33c457;
+            --yellow: #f2c12e;
+            --plate: #f4f5f7;
+            --radius-sm: 6px;
+            --radius: 8px;
+            --radius-lg: 12px;
+            --sidebar-w: 248px;
+            --red-ink: #ff5a63;
+            --green-ink: #46d468;
+            --yellow-ink: #f2c12e;
+            --topbar-bg: rgba(18, 19, 24, .92);
+            --dock-bg: rgba(23, 25, 31, .96);
+            --glow: rgba(47, 47, 255, .2);
+            --grid-line: rgba(255, 255, 255, .035);
         }
+        /* Light theme: the same saturated accents as dark (never pastel), and
+           darker "ink" variants wherever a colour is text or a small icon on
+           white, so nothing washes out. */
+        :root[data-theme="light"] {
+            color-scheme: light;
+            --bg: #f4f5f8;
+            --bg-raised: #ffffff;
+            --surface: #ffffff;
+            --surface-2: #f1f2f6;
+            --surface-3: #e5e7ed;
+            --line: #e1e4ea;
+            --line-strong: #cbd0d9;
+            --text: #12141a;
+            --text-2: #3f4450;
+            --text-3: #5f6572;
+            --primary-hover: #1f1fe0;
+            --primary-ink: #2a2ae6;
+            --primary-soft: rgba(47, 47, 255, .1);
+            --plate: #f3f4f7;
+            --red-ink: #d0202c;
+            --green-ink: #11802f;
+            --yellow-ink: #9a6b00;
+            --topbar-bg: rgba(255, 255, 255, .92);
+            --dock-bg: rgba(255, 255, 255, .96);
+            --glow: rgba(47, 47, 255, .12);
+            --grid-line: rgba(18, 20, 26, .05);
+        }
+        html, body { background: var(--bg); }
+        .ant-theme-switching *, .ant-theme-switching *::before, .ant-theme-switching *::after { transition: none !important; }
+        body { font-family: 'Be Vietnam Pro', system-ui, sans-serif; color: var(--text); }
+        ::selection { background: var(--primary); color: #fff; }
+        h1, h2, h3, h4 { color: var(--text); letter-spacing: -.01em; }
+        .ant-muted { color: var(--text-3); }
+        .ant-soft { color: var(--text-2); }
+        .ant-ico-red { color: var(--red-ink) !important; }
+        .ant-ico-yellow { color: var(--yellow-ink) !important; }
+        .ant-ico-green { color: var(--green-ink) !important; }
+        .ant-ico-blue { color: var(--primary-ink) !important; }
+        .ant-ico-gray { color: var(--text-3) !important; }
 
-        body.ant-home {
-            background:
-                radial-gradient(ellipse 54% 35% at 50% 22%, rgba(214, 237, 204, .68), transparent 82%),
-                radial-gradient(ellipse 38% 42% at 88% 82%, rgba(228, 243, 223, .62), transparent 90%),
-                #f9fcf8;
-        }
+        /* Home canvas: faint grid and a blue glow behind the search */
         body.ant-home #main-scroll-container::before {
             content: '';
             position: absolute;
             inset: 0;
             pointer-events: none;
             background-image:
-                linear-gradient(rgba(39, 98, 33, .045) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(39, 98, 33, .045) 1px, transparent 1px);
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
             background-size: 56px 56px;
-            mask-image: radial-gradient(ellipse 55% 57% at 50% 29%, #000 12%, transparent 100%);
+            mask-image: radial-gradient(ellipse 55% 46% at 50% 20%, #000 10%, transparent 100%);
         }
-        .ant-home-art { display: none; }
-        body.ant-home .ant-home-art { display: block; position: absolute; width: min(940px, 90vw); height: auto; left: 50%; top: clamp(250px, 31vh, 345px); transform: translateX(-50%); pointer-events: none; opacity: .8; }
+        body.ant-home #main-scroll-container::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: -140px;
+            width: min(980px, 100%);
+            height: 560px;
+            transform: translateX(-50%);
+            pointer-events: none;
+            background: radial-gradient(closest-side, var(--glow), transparent);
+        }
         body.ant-home #search-view-wrapper { position: relative; z-index: 1; }
 
-        /* Custom smooth transition styles for layout shift */
-        .transition-all-custom {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .transition-all-custom { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .square-grid-item { aspect-ratio: 1 / 1; }
 
-        /* Hide scrollbar for clean UI */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        /* Custom aspect ratio box grid styling */
-        .square-grid-item {
-            aspect-ratio: 1 / 1;
-        }
-
-        :root { --ant-green: #d8edcc; --ant-green-deep: #376b37; --ant-line: #dce8da; }
-        body { color: #25402c; }
-        #language-switch { position: fixed; top: 14px; right: 18px; z-index: 60; display: flex; gap: 3px; padding: 4px; background: white; border: 1px solid var(--ant-line); border-radius: 999px; box-shadow: 0 8px 24px rgba(30,70,40,.08); }
-        #language-switch button { min-width: 34px; padding: 5px 8px; border-radius: 999px; color: #276221; font-size: 11px; font-weight: 800; }
-        #language-switch button[aria-pressed="true"] { background: #276221; color: #fff; }
-        #toast { top: 62px; right: 18px; max-width: min(360px, calc(100vw - 36px)); }
-        #main-scroll-container { padding-bottom: 116px; }
+        /* Controls */
         button, input, [role="button"] { touch-action: manipulation; }
-        button:focus-visible, input:focus-visible, [role="button"]:focus-visible { outline: 3px solid #6eb464 !important; outline-offset: 3px; }
+        button:focus-visible, input:focus-visible, a:focus-visible, [role="button"]:focus-visible { outline: 2px solid var(--primary-ink) !important; outline-offset: 2px; }
         button:disabled { cursor: not-allowed; opacity: .48; }
-        #top-toolbar-container { background: #fff; color: #25402c; border-bottom: 1px solid var(--ant-line); box-shadow: 0 10px 30px rgba(30,70,40,.09); }
-        #top-toolbar-container > div { padding-right: 96px; }
-        #top-toolbar-container .ant-top-tabs { background: #f4faf1; border: 1px solid #d4e8cd; }
-        #top-toolbar-container button { min-height: 36px; color: #276221; }
-        #top-toolbar-container .ant-top-back { background: #fff; border: 1px solid #cfe3c9; }
-        #top-toolbar-container .ant-top-tab { background: transparent; border: 1px solid transparent; font-weight: 600; }
-        #top-toolbar-container .ant-top-back:hover, #top-toolbar-container .ant-top-tab:hover { background: #e8f4e3; }
-        #top-toolbar-container .ant-top-tab.ant-tool-active { background: #dcefd4 !important; color: #276221 !important; border-color: #a7c99d; box-shadow: none; }
-        #top-toolbar-container button span, #bottom-toolbar-container button span { color: inherit !important; }
-        #top-toolbar-container button i { color: #276221 !important; }
-        #bottom-toolbar-container > div { background: #f8fdf5; color: #294d2f; border: 1px solid #cfe4c7; box-shadow: 0 13px 32px rgba(28,75,37,.20), 0 3px 8px rgba(28,75,37,.10); }
-        #bottom-toolbar-container { bottom: max(16px, env(safe-area-inset-bottom)); }
-        #bottom-toolbar-container button { color: #315d36; border-color: #cfe4c7; }
-        #bottom-toolbar-container button { min-height: 44px; }
-        #bottom-toolbar-container button:hover, #bottom-toolbar-container button:nth-of-type(2) { background: #e4f3dc; color: #244e2b; }
-        #bottom-toolbar-container button:nth-of-type(1) i { color: #38bdf8 !important; }
-        #bottom-toolbar-container button:nth-of-type(2) i { color: #fbbf24 !important; }
-        #bottom-toolbar-container button:nth-of-type(3) i { color: #34d399 !important; }
-        #bottom-toolbar-container button:nth-of-type(4) i { color: #c084fc !important; }
-        #bottom-toolbar-container button:nth-of-type(5) i { color: #94a3b8 !important; }
-        #bottom-toolbar-container button span { text-transform: uppercase; }
-        #bottom-toolbar-container .bg-slate-700 { background: #d0e2cc; }
-        #search-container button, #result-page button { transition: background-color .2s, transform .2s; }
-        #search-container button[onclick="executeSearch()"], #result-page button[onclick^="showToast"] { background: #276221; color: #fff; box-shadow: none; }
-        #search-container button[onclick="executeSearch()"]:hover, #result-page button[onclick^="showToast"]:hover { background: #1d4d19; }
-        #search-container button[onclick="executeSearch()"] { white-space: nowrap; }
-        #search-container button[onclick*="file-upload"] { background: #edf7e9; color: #276221; border: 1px solid #276221; }
-        #search-container input { min-width: 0; }
-        #return-to-master { margin-left: max(0px, calc((100% - 1024px) / 2)); margin-bottom: 8px; }
+        .ant-btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0 16px; border-radius: var(--radius); font-size: 13px; font-weight: 600; white-space: nowrap; transition: background-color .18s, border-color .18s, color .18s; }
+        .ant-btn-primary { background: var(--primary); color: #fff; }
+        .ant-btn-primary:hover { background: var(--primary-hover); }
+        .ant-btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--line); }
+        .ant-btn-secondary:hover { background: var(--surface-3); border-color: var(--line-strong); }
+        .ant-input { min-height: 44px; padding: 0 14px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); color: var(--text); outline: none; transition: border-color .18s, box-shadow .18s; }
+        .ant-input::placeholder { color: var(--text-3); }
+        .ant-input:focus { border-color: var(--primary-ink); box-shadow: 0 0 0 3px var(--primary-soft); }
+        .ant-input:focus-visible { outline: none !important; }
+        .ant-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); }
+        .ant-divider { border-top: 1px solid var(--line); }
+        .ant-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 600; background: var(--primary-soft); color: var(--primary-ink); }
+        .ant-chip.is-muted { background: var(--surface-2); color: var(--text-2); }
+        .ant-tile { width: 36px; height: 36px; flex: none; display: grid; place-items: center; border-radius: var(--radius-sm); font-size: 15px; color: #fff; }
+        .ant-tile.is-red { background: var(--red); }
+        .ant-tile.is-blue { background: var(--primary); }
+        .ant-tile.is-green { background: var(--green); color: #0d1a10; }
+        .ant-tile.is-yellow { background: var(--yellow); color: #231b02; }
+        .ant-meter { height: 6px; border-radius: 999px; background: var(--surface-3); overflow: hidden; }
+        .ant-meter > span { display: block; height: 100%; border-radius: inherit; background: var(--primary); transition: width .4s ease-out; }
+
+        /* Sidebar (desktop) */
+        #ant-sidebar { display: none; }
+        .ant-brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 16px; border-radius: var(--radius); text-align: left; }
+        .ant-brand-mark { width: 34px; height: 34px; flex: none; display: grid; place-items: center; border-radius: var(--radius); background: var(--primary); color: #fff; font-size: 15px; }
+        .ant-brand-word { display: block; font-size: 20px; font-weight: 700; line-height: 1; color: var(--text); }
+        .ant-brand-sub { display: block; margin-top: 4px; font-size: 11px; font-weight: 500; color: var(--text-3); }
+        .ant-nav-label { padding: 14px 12px 6px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); }
+        .ant-nav-item { width: 100%; min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: var(--radius); color: var(--text-2); font-size: 14px; font-weight: 500; text-align: left; transition: background-color .18s, color .18s; }
+        .ant-nav-item i { width: 18px; text-align: center; color: var(--text-3); transition: color .18s; }
+        .ant-nav-item:hover { background: var(--surface); color: var(--text); }
+        .ant-nav-item:hover i { color: var(--text-2); }
+        .ant-nav-item.ant-tool-active { background: var(--primary-soft); color: var(--text); }
+        .ant-nav-item.ant-tool-active i { color: var(--primary-ink); }
+        .ant-tag { margin-left: auto; padding: 2px 8px; border-radius: 999px; font-size: 10.5px; font-weight: 600; color: var(--text-3); background: var(--surface-2); }
+        .ant-side-cta { margin: 14px 2px 0; }
+        .ant-side-meter { margin: auto 2px 8px; padding: 14px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); }
+        .ant-side-meter-head { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; font-weight: 600; color: var(--text-2); }
+        .ant-side-meter .ant-meter { margin: 10px 0 8px; }
+        .ant-side-meter p { font-size: 11.5px; color: var(--text-3); }
+        @media (min-width: 1024px) {
+            body { padding-left: var(--sidebar-w); }
+            #ant-sidebar { position: fixed; inset: 0 auto 0 0; z-index: 45; width: var(--sidebar-w); display: flex; flex-direction: column; gap: 2px; padding: 20px 14px 16px; overflow-y: auto; background: var(--bg-raised); border-right: 1px solid var(--line); }
+            #bottom-toolbar-container { display: none !important; }
+            #top-toolbar-container .ant-top-tabs { display: none !important; }
+            #main-scroll-container { padding-bottom: 40px !important; }
+            /* The sidebar already carries the brand; keep only the tagline above the search. */
+            #header-container > button { display: none; }
+            #app-subtitle { font-size: 15px; color: var(--text-2); }
+        }
+
+        /* Language switch & toast */
+        #ant-controls { position: fixed; top: 14px; right: 18px; z-index: 60; }
+        .ant-controls { display: flex; align-items: center; gap: 6px; }
+        .ant-lang { display: flex; gap: 2px; padding: 3px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+        .ant-lang button { min-width: 38px; min-height: 34px; padding: 0 8px; border-radius: var(--radius-sm); color: var(--text-3); font-size: 11px; font-weight: 700; transition: background-color .18s, color .18s; }
+        .ant-lang button:hover { color: var(--text); }
+        .ant-lang button[aria-pressed="true"] { background: var(--primary); color: #fff; }
+        .ant-theme-btn { width: 42px; height: 42px; display: grid; place-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); color: var(--text-2); transition: background-color .18s, color .18s; }
+        .ant-theme-btn:hover { background: var(--surface-2); color: var(--text); }
+        #toast { top: 62px; right: 18px; max-width: min(360px, calc(100vw - 36px)); background: var(--surface-2); border: 1px solid var(--line-strong); color: var(--text); }
+        #main-scroll-container { padding-bottom: 116px; }
+
+        /* Top bar (library and tools) */
+        #top-toolbar-container { background: var(--topbar-bg); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+        #top-toolbar-container > div { padding-right: 150px; }
+        .ant-top-tabs { padding: 3px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+        .ant-top-tab { min-height: 36px; display: flex; align-items: center; gap: 6px; padding: 0 12px; border-radius: var(--radius-sm); color: var(--text-2); font-weight: 500; transition: background-color .18s, color .18s; }
+        .ant-top-tab:hover { background: var(--surface-2); color: var(--text); }
+        .ant-top-tab.ant-tool-active { background: var(--primary); color: #fff; }
+        #top-library-title { min-height: 36px; padding: 0 12px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); color: var(--text-2); font-size: 12.5px; font-weight: 500; }
+
+        /* Bottom dock (below 1024px) */
+        #bottom-toolbar-container { bottom: max(14px, env(safe-area-inset-bottom)); }
+        .ant-dock { display: flex; align-items: center; gap: 2px; padding: 5px; background: var(--dock-bg); border: 1px solid var(--line-strong); border-radius: 14px; backdrop-filter: blur(10px); }
+        .ant-dock button { flex: 1; min-height: 48px; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 8px; border-radius: 10px; color: var(--text-2); font-size: 12px; font-weight: 500; transition: background-color .18s, color .18s; }
+        .ant-dock button:hover { background: var(--surface-2); color: var(--text); }
+        .ant-dock button.ant-tool-active { background: var(--primary-soft); color: var(--text); }
+
+        /* Search */
+        .ant-searchbar { display: flex; align-items: center; padding: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; transition: border-color .18s, box-shadow .18s; }
+        .ant-searchbar:hover { border-color: var(--line-strong); }
+        .ant-searchbar:focus-within { border-color: var(--primary-ink); box-shadow: 0 0 0 4px var(--primary-soft); }
+        #search-input { min-width: 0; color: var(--text); }
+        #search-input::placeholder { color: var(--text-3); }
         #search-input:focus-visible, #master-search-input:focus-visible { outline: none !important; }
-        #search-container > div:first-child:focus-within, .ant-master-search:focus-within { border-color: #8cbd80; box-shadow: 0 0 0 4px rgba(111, 173, 100, .14), 0 15px 28px rgba(33, 79, 40, .10); }
+        .ant-feedback { background: rgba(242, 193, 46, .08); border: 1px solid rgba(242, 193, 46, .32); border-radius: var(--radius); color: var(--text); }
+        .ant-link { color: var(--primary-ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
         #search-feedback { max-width: 100%; }
-        #result-page button[onclick="showToast(t('saved'))"] { background: #edf7e9; color: #276221; border: 1px solid #276221; }
-        #lib-brand-grid-view > div:first-child button, #lib-product-detail-view > div:first-child button, #tool-view .ant-workspace-head button { background: #276221; color: #fff; border-color: #276221; }
-        #lib-brand-grid-view > div:first-child button:hover, #lib-product-detail-view > div:first-child button:hover, #tool-view .ant-workspace-head button:hover { background: #1d4d19; }
-        #search-container .fa-magnifying-glass { color: #58845a; }
-        #search-container .fa-cloud-arrow-up { color: #276221; }
-        #search-container input::placeholder, #app-subtitle { color: #718476; }
-        #app-title span, #detail-category, #lib-detail-product-brand { color: var(--ant-green-deep) !important; }
-        #brand-cards-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-        .ant-brand-card { min-height: 100px; padding: 14px; background: white; border: 1px solid var(--ant-line); border-radius: 14px; display: grid; place-items: center; cursor: pointer; transition: background .2s, border-color .2s, transform .2s; }
-        .ant-brand-card:hover, .ant-brand-card:focus-visible { background: #f0f8ec; border-color: #91c487; transform: translateY(-2px); }
-        .ant-brand-logo { display: block; width: min(100%, 132px); max-height: 58px; object-fit: contain; }
+        #return-to-master { margin-left: max(0px, calc((100% - 1024px) / 2)); margin-bottom: 8px; }
+
+        /* Home shortcuts */
+        #home-dashboard { display: none; }
+        body.ant-home #home-dashboard { display: flex; }
+        .ant-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+        .ant-shortcut-foot { width: 100%; margin-top: auto; }
+        .ant-shortcut-foot .ant-meter > span { background: var(--yellow); }
+        .ant-shortcut-foot p { margin-top: 7px; font-size: 11.5px; color: var(--text-3); }
+        .ant-status { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600; color: var(--text-2); }
+        .ant-status::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--text-3); }
+        .ant-status.is-ready::before { background: var(--green); }
+        .ant-suggest-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+        .ant-suggest-grid .ant-brand-plate { height: 96px; }
+        .ant-suggest-grid small { display: block; padding: 0 2px; font-size: 11.5px; color: var(--text-3); }
+        .ant-recent { overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); }
+        .ant-recent table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+        .ant-recent th { padding: 10px 14px; border-bottom: 1px solid var(--line); color: var(--text-3); font-size: 11.5px; font-weight: 600; }
+        .ant-recent td { height: 48px; padding: 0 14px; border-top: 1px solid var(--line); color: var(--text-2); white-space: nowrap; }
+        .ant-recent tbody tr:first-child td { border-top: 0; }
+        .ant-recent tbody tr { transition: background-color .15s; }
+        .ant-recent tbody tr:hover { background: var(--surface-2); }
+        .ant-recent td:first-child { width: 60%; max-width: 0; }
+        .ant-recent td button { min-height: 44px; max-width: 100%; display: inline-flex; align-items: center; gap: 10px; overflow: hidden; color: var(--text); font-weight: 500; text-align: left; }
+        .ant-recent td button span { overflow: hidden; text-overflow: ellipsis; }
+        .ant-recent-empty { padding: 22px 16px; font-size: 13px; color: var(--text-3); }
+
+        /* Landing page */
+        #landing-view { display: none; }
+        body.ant-landing { padding-left: 0 !important; }
+        body.ant-landing #landing-view { display: block; flex: 1 1 auto; min-height: 0; overflow-y: auto; background: radial-gradient(ellipse 60% 50% at 78% 18%, var(--glow), transparent 70%), var(--bg); }
+        body.ant-landing #ant-app, body.ant-landing #ant-controls { display: none !important; }
+        .ant-landing-wrap { width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+        .ant-landing-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 0; }
+        .ant-landing-links { display: flex; align-items: center; gap: 4px; }
+        .ant-landing-links a { min-height: 44px; display: inline-flex; align-items: center; padding: 0 14px; border-radius: var(--radius); color: var(--text-2); font-size: 14px; font-weight: 500; transition: background-color .18s, color .18s; }
+        .ant-landing-links a:hover { background: var(--surface); color: var(--text); }
+        .ant-hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); align-items: center; gap: 40px; padding: 56px 0 72px; }
+        .ant-hero h1 { font-size: clamp(34px, 4.2vw, 50px); line-height: 1.12; font-weight: 700; letter-spacing: -.025em; text-wrap: balance; }
+        .ant-hero-lead { max-width: 520px; margin-top: 18px; font-size: 16px; line-height: 1.65; color: var(--text-2); }
+        .ant-hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 28px; }
+        .ant-hero-actions .ant-btn { min-height: 48px; padding: 0 20px; font-size: 14px; }
+        .ant-stats { display: flex; flex-wrap: wrap; margin-top: 44px; }
+        .ant-stat { min-width: 120px; padding: 0 28px; border-left: 1px solid var(--line); }
+        .ant-stat:first-child { padding-left: 0; border-left: 0; }
+        .ant-stat i { color: var(--text-2); font-size: 16px; }
+        .ant-stat strong { display: block; margin-top: 10px; font-size: 22px; font-weight: 700; color: var(--text); }
+        .ant-stat span { font-size: 12.5px; color: var(--text-3); }
+        .ant-hero-art { width: 100%; height: auto; display: block; }
+        .ant-art-paper { fill: #ffffff; }
+        .ant-art-paper-2 { fill: #e4e6ec; }
+        .ant-art-paper-3 { fill: #c9cdd7; }
+        .ant-art-chip { fill: var(--surface); stroke: var(--line-strong); }
+        .ant-art-chip-text { fill: var(--text); font: 600 13px 'Be Vietnam Pro', system-ui, sans-serif; }
+        .ant-art-chip-sub { fill: var(--text-3); font: 500 11px 'Be Vietnam Pro', system-ui, sans-serif; }
+        .ant-landing-section { padding: 64px 0; border-top: 1px solid var(--line); }
+        .ant-landing-section h2 { font-size: clamp(24px, 2.6vw, 32px); font-weight: 700; letter-spacing: -.02em; }
+        .ant-landing-section .ant-section-lead { max-width: 560px; margin-top: 10px; color: var(--text-2); line-height: 1.6; }
+        .ant-feature-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 32px; }
+        .ant-feature { padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); }
+        .ant-feature h3, .ant-step h3 { margin-top: 16px; font-size: 15px; font-weight: 600; }
+        .ant-feature p, .ant-step p { margin-top: 6px; font-size: 13px; line-height: 1.55; color: var(--text-2); }
+        .ant-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 32px; counter-reset: step; }
+        .ant-step { padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); }
+        .ant-step::before { counter-increment: step; content: counter(step); width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; background: var(--primary); color: #fff; font-size: 14px; font-weight: 700; }
+        .ant-landing-cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; margin-top: 40px; padding: 28px; border-radius: var(--radius-lg); background: var(--primary); }
+        .ant-landing-cta h3 { color: #fff; font-size: 20px; font-weight: 700; }
+        .ant-landing-cta p { margin-top: 4px; color: rgba(255, 255, 255, .88); font-size: 14px; }
+        .ant-landing-cta .ant-btn { min-height: 48px; background: #fff; color: #1a1ad6; }
+        .ant-landing-cta .ant-btn:hover { background: #ebebff; }
+        .ant-landing-footer { padding: 28px 0 36px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--text-3); }
+        .ant-preview-badge { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px; padding: 6px 12px; border-radius: 999px; background: var(--primary-soft); color: var(--primary-ink); font-size: 12px; font-weight: 600; }
+        @media (max-width: 1000px) {
+            .ant-hero { grid-template-columns: 1fr; padding-top: 24px; }
+            .ant-hero-art { max-width: 520px; margin: 0 auto; }
+            .ant-feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 700px) {
+            .ant-landing-links { display: none; }
+            .ant-steps, .ant-feature-grid { grid-template-columns: 1fr; }
+            .ant-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .ant-stat { min-width: 0; padding: 0 12px; }
+            .ant-shortcut > span:first-child { flex-direction: column; align-items: flex-start; }
+            .ant-suggest-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .ant-recent th:nth-child(2), .ant-recent td:nth-child(2) { display: none; }
+        }
+        .ant-section-title { margin-bottom: 12px; font-size: 17px; font-weight: 600; color: var(--text); }
+        .ant-shortcuts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+        .ant-shortcut { min-height: 128px; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 14px; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); transition: background-color .18s, border-color .18s; }
+        .ant-shortcut:hover { background: var(--surface-2); border-color: var(--line-strong); }
+        .ant-shortcut strong { display: block; font-size: 14px; font-weight: 600; color: var(--text); }
+        .ant-shortcut small { display: block; margin-top: 3px; font-size: 12px; line-height: 1.45; color: var(--text-3); }
+
+        /* Result page */
+        .ant-mini-card { min-height: 44px; display: flex; align-items: center; gap: 8px; padding: 8px; text-align: left; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius); transition: background-color .18s, border-color .18s; }
+        .ant-mini-card:hover { background: var(--surface-3); }
+        .ant-mini-card[aria-pressed="true"] { border-color: var(--primary-ink); box-shadow: inset 0 0 0 1px var(--primary-ink); }
+        .ant-mini-card img { width: 40px; height: 40px; flex: none; object-fit: cover; border-radius: var(--radius-sm); background: var(--plate); }
+        .ant-mini-card strong { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 12px; font-weight: 600; color: var(--text); }
+        .ant-mini-card small { font-size: 11px; font-weight: 500; color: var(--primary-ink); }
+        /* Sits on photos in both themes, so it keeps its own dark chip + light text. */
+        .ant-overlay-chip { background: rgba(18, 19, 24, .78); backdrop-filter: blur(8px); color: #f2f3f5; border: 1px solid rgba(255, 255, 255, .08); }
+        .ant-next-button { width: 44px; height: 44px; right: 6px; top: 50%; transform: translateY(-50%); border: 0; border-radius: 50%; display: grid; place-items: center; background: transparent; color: #fff; }
+        .ant-next-button::before { content: ''; position: absolute; inset: 4px; border-radius: 50%; background: var(--primary); transition: background-color .18s; }
+        .ant-next-button:hover::before { background: var(--primary-hover); }
+        .ant-next-button i { position: relative; z-index: 1; }
+        #lib-detail-img, #visual-image { display: block; width: 100%; height: 100%; object-fit: cover; background: var(--plate); }
+
+        /* Library */
+        #brand-cards-grid { grid-template-columns: repeat(auto-fill, minmax(156px, 1fr)); }
+        .ant-brand-card { display: flex; flex-direction: column; gap: 10px; padding: 10px; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); transition: background-color .18s, border-color .18s; }
+        .ant-brand-card:hover, .ant-brand-card:focus-visible { background: var(--surface-2); border-color: var(--line-strong); }
+        .ant-brand-plate { height: 76px; display: grid; place-items: center; padding: 10px; border-radius: var(--radius-sm); background: var(--plate); }
+        .ant-brand-name { overflow: hidden; padding: 0 2px; white-space: nowrap; text-overflow: ellipsis; font-size: 12.5px; font-weight: 500; color: var(--text-2); }
+        .ant-brand-logo { display: block; width: min(100%, 124px); max-height: 52px; object-fit: contain; }
         .ant-brand-logo.logo-invert { filter: invert(1); }
-        .ant-logo-placeholder { width: 58px; height: 58px; display: grid; place-items: center; border-radius: 14px; background: #edf4ea; border: 1px solid #dce9d8; color: #8bad87; }
+        .ant-logo-placeholder { width: 44px; height: 44px; display: grid; place-items: center; border-radius: var(--radius); color: #9aa0ab; }
         .ant-brand-logo[hidden], .ant-logo-placeholder[hidden] { display: none !important; }
-        .ant-logo-placeholder svg { width: 27px; height: 27px; }
-        .ant-library-preview { width: 100%; min-height: 430px; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(300px, .65fr); gap: 22px; padding: 22px; background: #fff; border: 1px solid #cddfcb; border-radius: 20px; box-shadow: 0 18px 34px rgba(34,77,43,.10); }
-        .ant-master-bar { width: 100%; margin-top: 14px; padding: 15px 20px; background: #fff; border: 1px solid #cddfcb; border-radius: 16px; box-shadow: 0 9px 22px rgba(34,77,43,.07); }
-        .ant-master-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        .ant-master-action { min-height: 44px; display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px; border: 1px solid #cfe3c9; border-radius: 10px; background: #f4faf1; color: #276221; font-size: 12px; font-weight: 700; }
-        .ant-master-action:hover { background: #e4f3dc; }
-        .ant-master-search { display: flex; align-items: center; gap: 10px; margin-top: 16px; padding: 5px 6px 5px 14px; border: 1px solid #cfe3c9; border-radius: 14px; background: #fff; transition: border-color .2s, box-shadow .2s; }
-        .ant-master-search input { min-width: 0; flex: 1; background: transparent; font-size: 14px; }
-        .ant-master-search button { min-height: 44px; padding: 8px 16px; border-radius: 10px; background: #276221; color: #fff; font-size: 12px; font-weight: 700; }
-        .ant-master-search button:hover { background: #1d4d19; }
-        .ant-master-table-wrap { overflow-x: auto; margin-top: 16px; border: 1px solid #e0ebdc; border-radius: 12px; }
-        .ant-master-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; }
-        .ant-master-table th { padding: 11px 12px; background: #f4faf1; color: #527554; font-weight: 700; }
-        .ant-master-table td { padding: 9px 12px; border-top: 1px solid #e7efe4; color: #294d2f; }
-        .ant-master-table tbody tr:hover { background: #f8fcf6; }
-        .ant-master-table td button { min-height: 44px; color: #276221; font-weight: 700; text-align: left; text-decoration: underline; text-underline-offset: 3px; }
-        .ant-master-fields { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
-        .ant-master-fields dt { font-size: 10px; font-weight: 800; color: #749075; text-transform: uppercase; letter-spacing: .07em; }
-        .ant-master-fields dd { margin-top: 4px; font-size: 12px; font-weight: 650; color: #294d2f; overflow-wrap: anywhere; }
+        .ant-logo-placeholder svg { width: 26px; height: 26px; }
+        #selected-brand-logo, #selected-brand-logo-pending { width: 100%; height: 96px; padding: 14px 18px; border-radius: var(--radius); background: var(--plate); object-fit: contain; max-height: none; }
+        .ant-library-preview { width: 100%; min-height: 430px; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(300px, .65fr); gap: 22px; padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); }
         .ant-library-main { min-width: 0; }
         .ant-library-side { min-width: 0; display: flex; flex-direction: column; gap: 12px; }
         #brand-product-squares-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
-        #brand-product-squares-grid .square-grid-item { aspect-ratio: 1; border: 1px solid #e2ece0; border-radius: 9px; overflow: hidden; background: #f4f8f2; }
+        #brand-product-squares-grid .square-grid-item { overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--plate); transition: outline-color .18s; outline: 2px solid transparent; outline-offset: 1px; }
+        #brand-product-squares-grid .square-grid-item:hover { outline-color: var(--primary-ink); }
         #brand-product-squares-grid img, .ant-feature-image img { width: 100%; height: 100%; display: block; object-fit: cover; }
-        .ant-feature-image { aspect-ratio: 4 / 3; overflow: hidden; border-radius: 12px; background: #f4f8f2; cursor: pointer; }
-        .ant-empty-image { width: 100%; height: 100%; display: grid; place-items: center; color: #8ba78c; background: linear-gradient(145deg, #f6faf4, #eaf4e8); }
-        .ant-next-button { width: 44px; height: 44px; right: 5px; top: 50%; transform: translateY(-50%); border: 0; border-radius: 50%; display: grid; place-items: center; background: transparent; color: #fff; }
-        .ant-next-button::before { content: ''; position: absolute; inset: 5px; border-radius: 50%; background: #276221; box-shadow: 0 3px 12px rgba(25,60,32,.14); }
-        .ant-next-button:hover::before { background: #1d4d19; }
-        .ant-next-button i { position: relative; z-index: 1; }
-        #lib-detail-img, #visual-image { display: block; width: 100%; height: 100%; object-fit: cover; background: #fff; }
-        #lib-product-detail-view .ant-image-frame { background: white; border-color: var(--ant-line); }
-        .ant-tool-active { background: #1d4d19 !important; color: #fff !important; box-shadow: inset 0 0 0 1px #a5c795; }
-        .ant-workspace-card { width: 100%; min-height: 600px; overflow: hidden; background: white; border: 1px solid #cddfcb; border-radius: 22px; box-shadow: 0 18px 42px rgba(34,77,43,.12); }
-        .ant-workspace-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--ant-line); background: #f5fbf1; }
-        .ant-workspace-frame { display: block; width: 100%; height: min(76vh, 850px); min-height: 560px; border: 0; background: white; }
-        .ant-workspace-placeholder { min-height: 520px; display: grid; place-items: center; padding: 30px; text-align: center; color: #58705b; }
-        .ant-box-enter { animation: ant-box-enter .34s cubic-bezier(.2,.8,.2,1) both; }
-        @keyframes ant-box-enter { from { opacity: 0; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        body.ant-workspace-mode #main-scroll-container { max-width: none; min-height: 0; padding: 0; overflow: hidden; }
+        .ant-feature-image { aspect-ratio: 4 / 3; overflow: hidden; border-radius: var(--radius); background: var(--plate); cursor: pointer; }
+        .ant-master-bar { width: 100%; margin-top: 14px; padding: 16px 20px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); }
+        .ant-master-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .ant-master-search { display: flex; align-items: center; gap: 10px; margin-top: 16px; padding: 5px 5px 5px 14px; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius); transition: border-color .18s, box-shadow .18s; }
+        .ant-master-search:focus-within { border-color: var(--primary-ink); box-shadow: 0 0 0 3px var(--primary-soft); }
+        .ant-master-search input { min-width: 0; flex: 1; background: transparent; color: var(--text); font-size: 14px; }
+        .ant-master-search input::placeholder { color: var(--text-3); }
+        .ant-master-table-wrap { overflow-x: auto; margin-top: 16px; border: 1px solid var(--line); border-radius: var(--radius); }
+        .ant-master-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12.5px; }
+        .ant-master-table th { padding: 10px 12px; border-bottom: 1px solid var(--line); color: var(--text-3); font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+        .ant-master-table td { padding: 8px 12px; border-top: 1px solid var(--line); color: var(--text-2); }
+        .ant-master-table td:first-child { color: var(--text); font-weight: 500; }
+        .ant-master-table tbody tr { transition: background-color .15s; }
+        .ant-master-table tbody tr:hover { background: var(--surface-2); }
+        .ant-master-table td button { min-height: 44px; color: var(--primary-ink); font-weight: 600; text-align: left; }
+        .ant-master-fields { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+        .ant-master-fields dt { font-size: 10.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); }
+        .ant-master-fields dd { margin-top: 4px; overflow-wrap: anywhere; font-size: 13px; font-weight: 500; color: var(--text); }
+
+        /* Tools */
+        .ant-tool-active { box-shadow: none; }
+        .ant-workspace-card { width: 100%; min-height: 600px; overflow: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); }
+        .ant-workspace-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; background: var(--bg-raised); border-bottom: 1px solid var(--line); }
+        .ant-workspace-frame { display: block; width: 100%; height: min(76vh, 850px); min-height: 560px; border: 0; background: #fff; }
+        .ant-workspace-placeholder { min-height: 520px; display: grid; place-items: center; padding: 30px; text-align: center; color: var(--text-3); }
+        .ant-box-enter { animation: ant-box-enter .3s cubic-bezier(.2, .8, .2, 1) both; }
+        @keyframes ant-box-enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        body.ant-workspace-mode #main-scroll-container { max-width: none; min-height: 0; padding: 0 !important; overflow: hidden; }
         body.ant-workspace-mode #tool-view, body.ant-workspace-mode #tool-card { height: 100%; min-height: 0; margin: 0; }
-        body.ant-workspace-mode #tool-card { border: 0; border-radius: 0; box-shadow: none; }
+        body.ant-workspace-mode #tool-card { border: 0; border-radius: 0; }
         body.ant-workspace-mode .ant-workspace-head { display: none; }
         body.ant-workspace-mode .ant-workspace-frame { height: 100%; min-height: 0; }
         body.ant-workspace-mode #top-library-title { visibility: hidden; }
-        body.ant-workspace-mode .ant-box-enter { animation: ant-workspace-enter .28s ease-out both; }
-        @keyframes ant-workspace-enter { from { opacity: .55; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        body.ant-workspace-mode .ant-box-enter { animation: ant-workspace-enter .24s ease-out both; }
+        @keyframes ant-workspace-enter { from { opacity: .55; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+
+        @media (max-width: 900px) {
+            .ant-shortcuts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
         @media (max-width: 700px) {
-            #language-switch { top: 8px; right: 8px; }
-            #top-toolbar-container > div { flex-direction: column; align-items: stretch; gap: 8px; padding: 28px 0 0; }
-            #top-toolbar-container > div > button { align-self: flex-start; white-space: nowrap; }
-            #top-toolbar-container > div > button { min-height: 44px; }
+            #ant-controls { top: 8px; right: 8px; }
+            .ant-lang button { min-height: 40px; }
+            .ant-theme-btn { width: 48px; height: 48px; }
+            #top-toolbar-container > div { flex-direction: column; align-items: stretch; gap: 8px; padding: 36px 0 0; }
+            #top-toolbar-container > div > button { align-self: flex-start; }
             #top-toolbar-container .ant-top-tabs { width: 100%; overflow-x: auto; white-space: nowrap; justify-content: space-between; }
-            #top-toolbar-container .ant-top-tabs button { flex: none; white-space: nowrap; }
-            #top-toolbar-container .ant-top-tabs button { min-height: 44px; }
+            #top-toolbar-container .ant-top-tabs button { flex: none; min-height: 44px; white-space: nowrap; }
             #top-toolbar-container .ant-top-tabs button span { display: inline !important; }
             #top-library-title { display: none !important; }
             #lib-brand-grid-view > div:first-child { flex-direction: column; align-items: flex-start; }
-            #lib-brand-grid-view > div:first-child button { white-space: nowrap; }
             .ant-library-preview { grid-template-columns: 1fr; min-height: 0; padding: 14px; }
             #brand-product-squares-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
             .ant-master-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
         @media (max-width: 600px) {
-            body.ant-home .ant-home-art { width: 125vw; top: 260px; opacity: .56; }
+            #brand-cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .ant-master-bar { padding: 14px; }
             .ant-master-actions { width: 100%; }
             .ant-master-search { flex-wrap: wrap; }
             .ant-master-search input { font-size: 16px; }
             body.ant-home #main-scroll-container::before { background-size: 48px 48px; opacity: .65; }
-            #bottom-toolbar-container button { min-width: 0; min-height: 54px; padding: 5px 2px; gap: 2px; }
-            #bottom-toolbar-container button i { font-size: 16px; }
-            #bottom-toolbar-container button span { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-            #bottom-toolbar-container button::after { content: attr(data-short-vi); font-size: 9px; font-weight: 700; line-height: 1; white-space: nowrap; }
-            html[lang="en"] #bottom-toolbar-container button::after { content: attr(data-short-en); }
-            #search-container input { font-size: 16px; }
+            .ant-dock button { min-width: 0; min-height: 54px; flex-direction: column; gap: 3px; padding: 4px 2px; }
+            .ant-dock button i { font-size: 16px; }
+            .ant-dock button span { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+            .ant-dock button::after { content: attr(data-short-vi); font-size: 10px; font-weight: 600; line-height: 1; white-space: nowrap; }
+            html[lang="en"] .ant-dock button::after { content: attr(data-short-en); }
+            #search-input { font-size: 16px; }
         }
     </style>
 </head>
-<body class="ant-home h-screen w-screen overflow-hidden flex flex-col justify-between text-slate-800 antialiased relative">
+<body class="ant-home h-screen w-screen overflow-hidden flex flex-col justify-between antialiased relative">
 
-    <div id="language-switch" role="group" aria-label="Language / Ngôn ngữ">
-        <button type="button" onclick="setLanguage('vi')" data-lang="vi" aria-pressed="true">VI</button>
-        <button type="button" onclick="setLanguage('en')" data-lang="en" aria-pressed="false">EN</button>
+    <div id="ant-controls" class="ant-controls">
+        <button type="button" class="ant-theme-btn" onclick="toggleTheme()" aria-pressed="false" aria-label="Chế độ sáng" title="Chế độ sáng"><i class="fa-solid fa-sun" aria-hidden="true"></i></button>
+        <div class="ant-lang" role="group" aria-label="Language / Ngôn ngữ">
+            <button type="button" onclick="setLanguage('vi')" data-lang="vi" aria-pressed="true">VI</button>
+            <button type="button" onclick="setLanguage('en')" data-lang="en" aria-pressed="false">EN</button>
+        </div>
     </div>
 
+    <!-- ==================== LANDING PAGE (no hash; "#app" opens the workspace) ==================== -->
+    <div id="landing-view">
+        <div class="ant-landing-wrap">
+            <header class="ant-landing-nav">
+                <div class="ant-brand !p-0">
+                    <span class="ant-brand-mark" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></span>
+                    <span class="ant-brand-word">A.N.T</span>
+                </div>
+                <nav class="ant-landing-links" aria-label="A.N.T">
+                    <a href="#landing-features" data-i18n="features">Tính năng</a>
+                    <a href="#landing-how" data-i18n="howItWorks">Cách hoạt động</a>
+                </nav>
+                <div class="ant-controls">
+                    <button type="button" class="ant-theme-btn" onclick="toggleTheme()" aria-pressed="false" aria-label="Chế độ sáng" title="Chế độ sáng"><i class="fa-solid fa-sun" aria-hidden="true"></i></button>
+                    <div class="ant-lang" role="group" aria-label="Language / Ngôn ngữ">
+                        <button type="button" onclick="setLanguage('vi')" data-lang="vi" aria-pressed="true">VI</button>
+                        <button type="button" onclick="setLanguage('en')" data-lang="en" aria-pressed="false">EN</button>
+                    </div>
+                    <button type="button" class="ant-btn ant-btn-secondary hidden sm:inline-flex" onclick="enterApp()" data-i18n="openApp">Vào A.N.T</button>
+                </div>
+            </header>
+
+            <div class="ant-hero">
+                <div>
+                    <span class="ant-preview-badge"><i class="fa-solid fa-flask" aria-hidden="true"></i><span data-i18n="previewBadge">Bản xem trước · dữ liệu demo</span></span>
+                    <h1 data-i18n="heroTitle">Mọi hình ảnh và dữ liệu sản phẩm, ở một nơi.</h1>
+                    <p class="ant-hero-lead" data-i18n="heroLead">Nhập EAN, article code hoặc tên sản phẩm. A.N.T khớp master data rồi trả về packshot, thông tin sản phẩm và công cụ xử lý ảnh.</p>
+                    <div class="ant-hero-actions">
+                        <button type="button" class="ant-btn ant-btn-primary" onclick="enterApp()"><span data-i18n="getStarted">Vào không gian làm việc</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+                        <a class="ant-btn ant-btn-secondary" href="#landing-how"><i class="fa-solid fa-play text-[11px]" aria-hidden="true"></i><span data-i18n="seeHow">Xem cách hoạt động</span></a>
+                    </div>
+                    <div class="ant-stats">
+                        <div class="ant-stat"><i class="fa-solid fa-tags" aria-hidden="true"></i><strong id="stat-brands">—</strong><span data-i18n="statBrands">thương hiệu</span></div>
+                        <div class="ant-stat"><i class="fa-regular fa-image" aria-hidden="true"></i><strong id="stat-logos">—</strong><span data-i18n="statLogos">logo đã chuẩn hóa</span></div>
+                        <div class="ant-stat"><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i><strong>4</strong><span data-i18n="statAreas">khu vực làm việc</span></div>
+                    </div>
+                </div>
+                <svg class="ant-hero-art" viewBox="0 0 560 460" fill="none" aria-hidden="true" focusable="false">
+                    <defs>
+                        <linearGradient id="ant-folder-front" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4b4bff"/><stop offset="1" stop-color="#2323f0"/></linearGradient>
+                    </defs>
+                    <path d="M78 96h138a14 14 0 0 1 11.4 5.9L246 128h236a18 18 0 0 1 18 18v236a18 18 0 0 1-18 18H78a18 18 0 0 1-18-18V114a18 18 0 0 1 18-18Z" fill="#1a1ac2"/>
+                    <rect class="ant-art-paper-3" x="112" y="104" width="330" height="250" rx="14" transform="rotate(-6 277 229)"/>
+                    <rect class="ant-art-paper-2" x="120" y="112" width="326" height="250" rx="14" transform="rotate(-2 283 237)"/>
+                    <g transform="rotate(3 290 250)">
+                        <rect class="ant-art-paper" x="128" y="122" width="322" height="250" rx="14"/>
+                        <rect x="150" y="142" width="104" height="92" rx="10" fill="#eef0f5"/>
+                        <rect x="191" y="152" width="22" height="12" rx="3" fill="#2f2fff"/>
+                        <rect x="183" y="164" width="38" height="58" rx="9" fill="#ffffff" stroke="#c9cdd7" stroke-width="2"/>
+                        <rect x="189" y="184" width="26" height="18" rx="2" fill="#dfe2ff"/>
+                        <rect x="270" y="150" width="132" height="10" rx="5" fill="#d7dae2"/>
+                        <rect x="270" y="170" width="96" height="10" rx="5" fill="#e4e6ec"/>
+                        <rect x="270" y="190" width="112" height="10" rx="5" fill="#e4e6ec"/>
+                    </g>
+                    <path d="M52 212h456a16 16 0 0 1 15.7 19.2l-34 166A18 18 0 0 1 472 412H88a18 18 0 0 1-17.6-14.4l-34-166A16 16 0 0 1 52 212Z" fill="url(#ant-folder-front)"/>
+                    <text x="96" y="384" fill="#ffffff" fill-opacity=".9" style="font: 700 22px 'Be Vietnam Pro', system-ui, sans-serif; letter-spacing: .02em">A.N.T</text>
+                    <g>
+                        <rect class="ant-art-chip" x="362" y="34" width="180" height="56" rx="12" stroke-width="1"/>
+                        <circle cx="390" cy="62" r="12" fill="#33c457"/>
+                        <path d="m384.5 62.2 3.8 3.8 7.2-7.4" stroke="#0d1a10" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                        <text class="ant-art-chip-text" x="412" y="58">8809663753122</text>
+                        <text class="ant-art-chip-sub" x="412" y="75">Packshot × 5</text>
+                    </g>
+                    <g>
+                        <rect class="ant-art-chip" x="14" y="300" width="172" height="56" rx="12" stroke-width="1"/>
+                        <rect x="30" y="316" width="24" height="24" rx="6" fill="#f2c12e"/>
+                        <path d="M37 324h10M37 328.5h10M37 333h6" stroke="#231b02" stroke-width="2" stroke-linecap="round"/>
+                        <text class="ant-art-chip-text" x="64" y="324">Master data</text>
+                        <text class="ant-art-chip-sub" x="64" y="341">CODE · EAN · CPNP</text>
+                    </g>
+                </svg>
+            </div>
+        </div>
+
+        <section id="landing-features" class="ant-landing-section">
+            <div class="ant-landing-wrap">
+                <h2 data-i18n="featuresTitle">Mọi thứ cho tài sản sản phẩm</h2>
+                <p class="ant-section-lead" data-i18n="featuresLead">Bốn khu vực làm việc dùng chung một nguồn dữ liệu sản phẩm.</p>
+                <div class="ant-feature-grid">
+                    <div class="ant-feature"><span class="ant-tile is-blue" aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span><h3 data-i18n="featSearchTitle">Tìm theo EAN, mã hoặc tên</h3><p data-i18n="featSearchText">Nhận diện loại mã, khớp master data rồi gom toàn bộ ảnh liên quan.</p></div>
+                    <div class="ant-feature"><span class="ant-tile is-yellow" aria-hidden="true"><i class="fa-solid fa-folder-open"></i></span><h3 data-i18n="brandLibraryTitle">Thư viện thương hiệu</h3><p data-i18n="featLibraryText">Logo chuẩn hóa, ảnh và master data xếp theo từng thương hiệu.</p></div>
+                    <div class="ant-feature"><span class="ant-tile is-red" aria-hidden="true"><i class="fa-solid fa-wand-magic-sparkles"></i></span><h3 data-i18n="imageEdit">Chỉnh ảnh</h3><p data-i18n="featEditText">Resize theo preset, cắt, đặt ảnh lên nền trắng và xuất hàng loạt.</p></div>
+                    <div class="ant-feature"><span class="ant-tile is-green" aria-hidden="true"><i class="fa-solid fa-bolt"></i></span><h3 data-i18n="autoFill">Tự điền file</h3><p data-i18n="featFillText">Kiểm tra và điền file Excel theo mẫu của từng nhà bán lẻ.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="landing-how" class="ant-landing-section">
+            <div class="ant-landing-wrap">
+                <h2 data-i18n="howItWorks">Cách hoạt động</h2>
+                <p class="ant-section-lead" data-i18n="howLead">Master data là cầu nối: mọi giá trị nhập vào được đổi thành một sản phẩm trước khi tìm ảnh.</p>
+                <div class="ant-steps">
+                    <div class="ant-step"><h3 data-i18n="step1Title">Nhập hoặc tải file</h3><p data-i18n="step1Text">Một EAN, article code, tên sản phẩm hay cả danh sách CSV.</p></div>
+                    <div class="ant-step"><h3 data-i18n="step2Title">Khớp master data</h3><p data-i18n="step2Text">Barcode, mã hàng, mã cũ và tên được quy về đúng sản phẩm.</p></div>
+                    <div class="ant-step"><h3 data-i18n="step3Title">Nhận ảnh và thông tin</h3><p data-i18n="step3Text">Packshot, ảnh hộp, lifestyle cùng kích thước, pháp lý và nhà cung cấp.</p></div>
+                </div>
+                <div class="ant-landing-cta">
+                    <div><h3 data-i18n="ctaTitle">Sẵn sàng tìm ảnh?</h3><p data-i18n="ctaText">Mở không gian làm việc và thử với một mã EAN mẫu.</p></div>
+                    <button type="button" class="ant-btn" onclick="enterApp()"><span data-i18n="getStarted">Vào không gian làm việc</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <footer class="ant-landing-footer"><div class="ant-landing-wrap">© 2026 A.N.T · Asset Nexus Technology</div></footer>
+    </div>
+
+    <!-- ==================== WORKSPACE ==================== -->
+    <div id="ant-app" class="contents">
+
+    <!-- SIDEBAR (desktop, 1024px and up; the bottom dock and top tabs cover smaller screens) -->
+    <nav id="ant-sidebar" aria-label="A.N.T">
+        <button type="button" class="ant-brand" onclick="openSearchView(); resetToFrontPage()">
+            <span class="ant-brand-mark" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></span>
+            <span><span class="ant-brand-word">A.N.T</span><span class="ant-brand-sub">Asset Nexus Technology</span></span>
+        </button>
+        <div class="ant-nav-label" data-i18n="workspace">Không gian</div>
+        <button type="button" class="ant-nav-item ant-tool-active" aria-current="page" onclick="openSearchView()"><i class="fa-solid fa-house" aria-hidden="true"></i><span data-i18n="mainPage">Trang chính</span></button>
+        <button type="button" class="ant-nav-item" onclick="openLibraryView()"><i class="fa-solid fa-folder-open" aria-hidden="true"></i><span data-i18n="library">Thư viện</span></button>
+        <div class="ant-nav-label" data-i18n="tools">Công cụ</div>
+        <button type="button" class="ant-nav-item" onclick="triggerTool('IMG EDIT')"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i><span data-i18n="imageEdit">Chỉnh ảnh</span></button>
+        <button type="button" class="ant-nav-item" onclick="triggerTool('AUTO FILL')"><i class="fa-solid fa-bolt" aria-hidden="true"></i><span data-i18n="autoFill">Tự điền file</span></button>
+        <button type="button" class="ant-nav-item" onclick="triggerTool('REQUEST')"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span data-i18n="request">Yêu cầu ảnh</span><span class="ant-tag" data-i18n="soon">Sắp có</span></button>
+        <button type="button" class="ant-btn ant-btn-primary ant-side-cta" onclick="openSearchView(); document.getElementById('file-upload').click()"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i><span data-i18n="uploadLookup">Tải file tra cứu</span></button>
+        <div class="ant-side-meter">
+            <div class="ant-side-meter-head"><span data-i18n="logoLibrary">Thư viện logo</span><span id="logo-coverage-percent"></span></div>
+            <div class="ant-meter" aria-hidden="true"><span id="logo-coverage-bar" style="width: 0%"></span></div>
+            <p id="logo-coverage-text"></p>
+        </div>
+        <a href="#" class="ant-nav-item"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span data-i18n="aboutAnt">Giới thiệu A.N.T</span></a>
+        <button type="button" class="ant-nav-item" onclick="triggerTool('SETTING')"><i class="fa-solid fa-gear" aria-hidden="true"></i><span data-i18n="settings">Cài đặt</span><span class="ant-tag" data-i18n="soon">Sắp có</span></button>
+    </nav>
+
     <!-- Toast Notification Container -->
-    <div id="toast" role="status" aria-live="polite" class="fixed top-5 right-5 z-50 transform translate-y-[-100px] opacity-0 transition-all duration-300 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 border border-slate-700 pointer-events-none">
-        <i id="toast-icon" class="fa-solid fa-circle-info text-sky-400"></i>
+    <div id="toast" role="status" aria-live="polite" class="fixed top-5 right-5 z-50 transform translate-y-[-100px] opacity-0 transition-all duration-300 px-4 py-3 rounded-xl flex items-center gap-3 pointer-events-none">
+        <i id="toast-icon" class="fa-solid fa-circle-info ant-ico-blue"></i>
         <span id="toast-message" class="text-sm font-medium">Thông báo</span>
     </div>
 
@@ -229,38 +567,38 @@
     <div id="top-toolbar-container" class="hidden w-full py-3 px-4 z-40 transition-all duration-300">
         <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
             <!-- Top Back Button -->
-            <button onclick="handleTopBackNav()" class="ant-top-back flex items-center gap-2 font-semibold text-sm px-3.5 py-2 rounded-xl transition-colors">
-                <i class="fa-solid fa-arrow-left"></i>
+            <button onclick="handleTopBackNav()" class="ant-btn ant-btn-secondary">
+                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
                 <span id="top-back-label">Quay lại</span>
             </button>
 
             <!-- Function Tabs Moved To Top -->
-            <div class="ant-top-tabs rounded-full p-1 flex items-center gap-1 text-xs">
-                <button onclick="triggerTool('IMG EDIT')" class="ant-top-tab py-1.5 px-3 rounded-full transition-colors flex items-center gap-1.5">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <div class="ant-top-tabs flex items-center gap-1 text-xs">
+                <button onclick="triggerTool('IMG EDIT')" class="ant-top-tab">
+                    <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
                     <span class="hidden md:inline" data-i18n="imageEdit">Chỉnh ảnh</span>
                 </button>
-                <button onclick="openLibraryView()" class="ant-top-tab py-1.5 px-3 rounded-full transition-colors flex items-center gap-1.5">
-                    <i class="fa-solid fa-folder-open"></i>
+                <button onclick="openLibraryView()" class="ant-top-tab">
+                    <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
                     <span data-i18n="library">Thư viện</span>
                 </button>
-                <button onclick="triggerTool('REQUEST')" class="ant-top-tab py-1.5 px-3 rounded-full transition-colors flex items-center gap-1.5">
-                    <i class="fa-solid fa-paper-plane"></i>
+                <button onclick="triggerTool('REQUEST')" class="ant-top-tab">
+                    <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
                     <span class="hidden md:inline" data-i18n="request">Yêu cầu ảnh</span>
                 </button>
-                <button onclick="triggerTool('AUTO FILL')" class="ant-top-tab py-1.5 px-3 rounded-full transition-colors flex items-center gap-1.5">
-                    <i class="fa-solid fa-bolt"></i>
+                <button onclick="triggerTool('AUTO FILL')" class="ant-top-tab">
+                    <i class="fa-solid fa-bolt" aria-hidden="true"></i>
                     <span class="hidden md:inline" data-i18n="autoFill">Tự điền file</span>
                 </button>
-                <button onclick="triggerTool('SETTING')" class="ant-top-tab py-1.5 px-3 rounded-full transition-colors flex items-center gap-1.5">
-                    <i class="fa-solid fa-gear"></i>
+                <button onclick="triggerTool('SETTING')" class="ant-top-tab">
+                    <i class="fa-solid fa-gear" aria-hidden="true"></i>
                     <span class="hidden md:inline" data-i18n="settings">Cài đặt</span>
                 </button>
             </div>
 
-            <!-- Context Info Badge -->
-            <div id="top-library-title" class="hidden sm:flex items-center gap-2 text-xs text-slate-400 font-medium">
-                <i class="fa-solid fa-layer-group text-sky-400"></i>
+            <!-- Context Info Badge (breadcrumb) -->
+            <div id="top-library-title" class="hidden sm:flex items-center gap-2">
+                <i class="fa-solid fa-layer-group ant-ico-blue" aria-hidden="true"></i>
                 <span id="top-library-status">Chọn thương hiệu</span>
             </div>
         </div>
@@ -268,106 +606,120 @@
 
     <!-- MAIN CONTENT AREA WRAPPER -->
     <div id="main-scroll-container" class="relative flex-1 flex flex-col items-center justify-start p-4 md:p-8 overflow-y-auto no-scrollbar w-full max-w-7xl mx-auto">
-        <svg class="ant-home-art" viewBox="0 0 940 500" fill="none" aria-hidden="true" focusable="false">
-            <g stroke="#91b68d" stroke-width="1.25" opacity=".42">
-                <path d="M470 230C390 154 270 132 153 153M470 230C555 132 683 125 802 155M470 230C361 239 225 275 116 351M470 230C586 234 722 274 832 351M470 230C451 316 337 373 264 422M470 230C495 319 608 371 677 423" stroke-dasharray="4 8"/>
-                <circle cx="470" cy="230" r="92" opacity=".55"/>
-                <circle cx="470" cy="230" r="146" opacity=".28"/>
-            </g>
-            <g fill="#f9fcf8" stroke="#aac9a3" stroke-width="1.5" opacity=".7">
-                <rect x="414" y="174" width="112" height="112" rx="28"/>
-                <rect x="113" y="119" width="82" height="68" rx="14"/><rect x="764" y="121" width="82" height="68" rx="14"/>
-                <rect x="73" y="319" width="86" height="68" rx="14"/><rect x="797" y="319" width="86" height="68" rx="14"/>
-                <rect x="222" y="390" width="84" height="68" rx="14"/><rect x="635" y="390" width="84" height="68" rx="14"/>
-            </g>
-            <g stroke="#8eae89" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".52">
-                <path d="m444 221 26-13 26 13-26 13-26-13Zm0 16 26 13 26-13m-52 16 26 13 26-13"/>
-                <path d="M129 169h50l-16-19-11 11-7-7-16 15Zm0-34h50v36h-50v-36Zm15 9h.1"/>
-                <path d="M780 169h50l-16-19-11 11-7-7-16 15Zm0-34h50v36h-50v-36Z"/>
-                <path d="M89 369h54l-17-19-11 11-8-7-18 15Zm0-34h54v36H89v-36Zm724 34h54l-17-19-11 11-8-7-18 15Zm0-34h54v36h-54v-36Z"/>
-                <path d="M238 442h52l-17-19-11 11-8-7-16 15Zm0-36h52v38h-52v-38Zm413 36h52l-17-19-11 11-8-7-16 15Zm0-36h52v38h-52v-38Z"/>
-            </g>
-        </svg>
 
         <!-- ==================== MAIN SEARCH VIEW (ORIGINAL PAGE 1 & PAGE 2) ==================== -->
         <div id="search-view-wrapper" class="w-full flex flex-col items-center">
-            <button id="return-to-master" type="button" onclick="returnToMasterData()" class="hidden self-start items-center gap-2 rounded-full border border-emerald-200 bg-white px-4 py-2 text-sm font-semibold text-[#276221] hover:bg-emerald-50" data-i18n="backToMaster">Về master data</button>
-            
+            <button id="return-to-master" type="button" onclick="returnToMasterData()" class="hidden self-start ant-btn ant-btn-secondary" data-i18n="backToMaster">Về master data</button>
+
             <!-- HEADER / WEB APP NAME -->
             <header id="header-container" class="transition-all-custom w-full flex flex-col items-center mt-12 md:mt-20 mb-6">
-                <button onclick="resetToFrontPage()" class="group flex items-center gap-3 focus:outline-none">
-                    <div class="w-10 h-10 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-800 shadow-sm group-hover:scale-105 transition-transform">
-                        <i class="fa-solid fa-layer-group text-lg"></i>
-                    </div>
-                    <h1 id="app-title" class="transition-all-custom text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900">
+                <button onclick="resetToFrontPage()" class="flex items-center gap-3 rounded-lg">
+                    <span class="ant-brand-mark" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></span>
+                    <h1 id="app-title" class="transition-all-custom text-2xl md:text-3xl font-bold tracking-tight">
                         A.N.T
                     </h1>
                 </button>
-                <p id="app-subtitle" class="text-slate-400 text-xs md:text-sm mt-1 transition-all duration-300 font-medium">
+                <p id="app-subtitle" class="ant-muted text-xs md:text-sm mt-2 transition-all duration-300 font-medium">
                     <span data-i18n="subtitle">Asset Nexus Technology · Không gian tìm kiếm tài sản sản phẩm</span>
                 </p>
             </header>
 
-            <!-- SEARCH & UPLOAD BAR (SPLIT CAPSULE DESIGN) -->
+            <!-- SEARCH & UPLOAD BAR -->
             <div id="search-container" class="transition-all-custom w-full max-w-4xl mb-8 z-30">
-                <div class="bg-white rounded-full p-1.5 md:p-2 shadow-xl shadow-slate-200/80 border border-slate-200 flex items-center relative hover:border-slate-300 transition-colors">
-                    
+                <div class="ant-searchbar relative">
+
                     <!-- Left Section: Search Input -->
-                    <div class="flex-1 flex items-center pl-4 pr-2">
-                        <button type="button" onclick="executeSearch()" class="md:hidden shrink-0 w-11 h-11 -ml-2 mr-1 rounded-full grid place-items-center text-emerald-900" aria-label="Tìm kiếm" data-i18n-aria="search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></button>
-                        <i class="hidden md:inline fa-solid fa-magnifying-glass text-slate-400 text-lg mr-3" aria-hidden="true"></i>
-                        <input 
-                            type="text" 
+                    <div class="flex-1 min-w-0 flex items-center pl-3 pr-2">
+                        <button type="button" onclick="executeSearch()" class="md:hidden shrink-0 w-11 h-11 -ml-2 mr-1 rounded-lg grid place-items-center ant-soft" aria-label="Tìm kiếm" data-i18n-aria="search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></button>
+                        <i class="hidden md:inline fa-solid fa-magnifying-glass ant-muted mr-3" aria-hidden="true"></i>
+                        <input
+                            type="text"
                             id="search-input"
-                            placeholder="Nhập tên sản phẩm, mã EAN hoặc article code..." 
+                            placeholder="Nhập tên sản phẩm, mã EAN hoặc article code..."
                             data-i18n-placeholder="searchPlaceholder"
                             aria-label="Nhập tên sản phẩm, mã EAN hoặc article code"
-                            class="w-full bg-transparent text-slate-800 placeholder-slate-400 text-sm md:text-base font-medium focus:outline-none"
+                            class="w-full min-h-11 bg-transparent text-sm md:text-base focus:outline-none"
                             onkeydown="if(event.key === 'Enter') executeSearch()"
                             oninput="hideSearchFeedback()"
                         />
-                        <button onclick="executeSearch()" class="hidden md:flex items-center justify-center px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-full transition-colors ml-2">
+                        <button onclick="executeSearch()" class="hidden md:inline-flex ant-btn ant-btn-primary ml-2">
                             <span data-i18n="search">Tìm kiếm</span>
                         </button>
                     </div>
 
                     <!-- Divider -->
-                    <div class="h-8 w-[1px] bg-slate-200 my-auto"></div>
+                    <div class="h-8 w-px my-auto" style="background: var(--line)"></div>
 
-                    <!-- Right Section: Upload File Split Box -->
-                    <div class="relative pl-2 pr-1">
+                    <!-- Right Section: Upload File -->
+                    <div class="relative pl-2">
                         <input type="file" id="file-upload" class="hidden" accept=".csv,.txt,text/csv,text/plain" onchange="handleFileUpload(event)">
-                        <button 
+                        <button
                             onclick="document.getElementById('file-upload').click()"
-                            class="flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200/80 text-slate-700 text-xs md:text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+                            class="ant-btn ant-btn-secondary"
                             title="Tải danh sách CSV hoặc TXT"
                             aria-label="Tải file"
                             data-i18n-aria="upload"
                         >
-                            <i class="fa-solid fa-cloud-arrow-up text-sky-600 text-base"></i>
+                            <i class="fa-solid fa-cloud-arrow-up ant-ico-blue" aria-hidden="true"></i>
                             <span class="hidden sm:inline" data-i18n="upload">Tải file</span>
                         </button>
                     </div>
                 </div>
 
-                <div id="search-feedback" class="hidden mt-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-slate-800" role="status" aria-live="polite">
+                <div id="search-feedback" class="hidden mt-3 ant-feedback px-4 py-3 text-sm" role="status" aria-live="polite">
                     <span id="search-feedback-text"></span>
-                    <button type="button" onclick="tryDemoSearch()" class="ml-2 font-bold text-emerald-900 underline underline-offset-2" data-i18n="tryDemo">Thử EAN mẫu</button>
+                    <button type="button" onclick="tryDemoSearch()" class="ml-2 ant-link" data-i18n="tryDemo">Thử EAN mẫu</button>
                 </div>
 
                 <!-- Expand if many products indicator (Visible in Result Page) -->
                 <button id="expand-indicator" type="button" class="hidden w-full flex-col items-center mt-3 cursor-pointer" onclick="toggleMultiProducts()" aria-expanded="false" aria-controls="multi-product-panel">
-                    <span class="inline-flex min-h-11 items-center gap-2 text-xs font-semibold text-emerald-900 bg-white border border-emerald-200 px-4 py-2 rounded-full shadow-sm hover:bg-emerald-50">
-                        <i class="fa-solid fa-chevron-down text-sky-500"></i>
+                    <span class="ant-btn ant-btn-secondary">
+                        <i class="fa-solid fa-chevron-down ant-ico-blue transition-transform" aria-hidden="true"></i>
                         <span id="expand-label" data-i18n="expandProducts">Mở danh sách sản phẩm</span>
-                        <span id="product-count-badge" class="bg-sky-100 text-sky-700 font-bold text-[10px] px-1.5 py-0.5 rounded-full">3</span>
+                        <span id="product-count-badge" class="ant-chip" style="padding: 1px 7px">3</span>
                     </span>
                 </button>
             </div>
 
+            <!-- MAIN PAGE DASHBOARD (only on the start page) -->
+            <div id="home-dashboard" class="w-full max-w-4xl mb-10 flex-col gap-9">
+                <section aria-labelledby="overview-title">
+                    <h2 id="overview-title" class="ant-section-title" data-i18n="overview">Tổng quan</h2>
+                    <div class="ant-shortcuts">
+                        <button type="button" class="ant-shortcut" onclick="openLibraryView()">
+                            <span class="flex items-center gap-3 w-full"><span class="ant-tile is-yellow" aria-hidden="true"><i class="fa-solid fa-folder-open"></i></span><span class="min-w-0"><strong data-i18n="brandLibraryTitle">Thư viện thương hiệu</strong><small id="library-card-meta"></small></span></span>
+                            <span class="ant-shortcut-foot"><span class="ant-meter block" aria-hidden="true"><span id="library-card-bar" style="width: 0%"></span></span><p id="library-card-caption"></p></span>
+                        </button>
+                        <button type="button" class="ant-shortcut" onclick="triggerTool('IMG EDIT')">
+                            <span class="flex items-center gap-3 w-full"><span class="ant-tile is-red" aria-hidden="true"><i class="fa-solid fa-wand-magic-sparkles"></i></span><span class="min-w-0"><strong data-i18n="imageEdit">Chỉnh ảnh</strong><small>MINIMA Resize Studio</small></span></span>
+                            <span class="ant-shortcut-foot"><span class="ant-status is-ready" data-i18n="ready">Sẵn sàng</span></span>
+                        </button>
+                        <button type="button" class="ant-shortcut" onclick="triggerTool('AUTO FILL')">
+                            <span class="flex items-center gap-3 w-full"><span class="ant-tile is-blue" aria-hidden="true"><i class="fa-solid fa-bolt"></i></span><span class="min-w-0"><strong data-i18n="autoFill">Tự điền file</strong><small>Grand Archives · Excel</small></span></span>
+                            <span class="ant-shortcut-foot"><span class="ant-status is-ready" data-i18n="ready">Sẵn sàng</span></span>
+                        </button>
+                        <button type="button" class="ant-shortcut" onclick="triggerTool('REQUEST')">
+                            <span class="flex items-center gap-3 w-full"><span class="ant-tile is-green" aria-hidden="true"><i class="fa-solid fa-paper-plane"></i></span><span class="min-w-0"><strong data-i18n="request">Yêu cầu ảnh</strong><small data-i18n="requestMeta">Giao và theo dõi ảnh cần chụp</small></span></span>
+                            <span class="ant-shortcut-foot"><span class="ant-status" data-i18n="soon">Sắp có</span></span>
+                        </button>
+                    </div>
+                </section>
+                <section aria-labelledby="suggest-title">
+                    <div class="ant-section-head">
+                        <h2 id="suggest-title" class="ant-section-title" data-i18n="suggestions">Thương hiệu gợi ý</h2>
+                        <button type="button" class="ant-link text-sm min-h-11" onclick="openLibraryView()" data-i18n="viewAll">Xem tất cả</button>
+                    </div>
+                    <div id="suggest-grid" class="ant-suggest-grid"></div>
+                </section>
+                <section aria-labelledby="recent-title">
+                    <h2 id="recent-title" class="ant-section-title" data-i18n="recent">Gần đây</h2>
+                    <div id="recent-list" class="ant-recent"></div>
+                </section>
+            </div>
+
             <!-- MULTI-PRODUCT EXPAND PANEL (Collapsible) -->
-            <div id="multi-product-panel" class="hidden w-full max-w-4xl mb-6 bg-white/90 backdrop-blur rounded-2xl p-4 border border-slate-200 shadow-md transition-all">
-                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-1" data-i18n="relatedProducts">Các sản phẩm liên quan tìm thấy:</div>
+            <div id="multi-product-panel" class="hidden w-full max-w-4xl mb-6 ant-card p-4 transition-all">
+                <div class="text-xs font-semibold ant-muted uppercase tracking-wider mb-3 px-1" data-i18n="relatedProducts">Các sản phẩm liên quan tìm thấy:</div>
                 <div id="multi-product-list" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <!-- Dynamic product thumbnails generated here -->
                 </div>
@@ -378,13 +730,13 @@
                 
                 <!-- LEFT COLUMN: VISUAL CONTAINER (WITH NEXT IMG OVERLAY) -->
                 <div class="md:col-span-5 flex flex-col items-center">
-                    <div class="relative w-full aspect-square bg-white rounded-3xl overflow-hidden shadow-xl border border-slate-200/80 group">
+                    <div class="relative w-full aspect-square ant-card overflow-hidden group">
                         <img id="visual-image" src="" alt="Product Visual" class="w-full h-full object-cover transition-all duration-300">
-                        <div class="absolute top-4 left-4 bg-slate-900/75 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full font-medium flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <div class="absolute top-3 left-3 ant-overlay-chip text-xs px-3 py-1.5 rounded-md font-medium flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full" style="background: var(--green)" aria-hidden="true"></span>
                             <span id="visual-tag">Ảnh sản phẩm</span>
                         </div>
-                        <div class="absolute bottom-4 left-4 bg-slate-900/60 backdrop-blur-md text-white text-[11px] px-2.5 py-1 rounded-full font-medium" id="img-counter">
+                        <div class="absolute bottom-3 left-3 ant-overlay-chip text-[11px] px-2.5 py-1 rounded-md font-medium" id="img-counter">
                             1 / 3
                         </div>
 
@@ -398,62 +750,62 @@
                             <i class="fa-solid fa-chevron-right text-xs" aria-hidden="true"></i>
                         </button>
                     </div>
-                    <span class="text-xs text-slate-400 mt-2 font-medium" data-i18n="moreImagesHint">Bấm nút bên phải để xem thêm ảnh</span>
+                    <span class="text-xs ant-muted mt-2 font-medium" data-i18n="moreImagesHint">Bấm nút bên phải để xem thêm ảnh</span>
                 </div>
 
                 <!-- RIGHT COLUMN: PRODUCT DETAILS -->
-                <div class="md:col-span-7 bg-white rounded-3xl p-6 md:p-8 shadow-xl shadow-slate-200/50 border border-slate-200 flex flex-col justify-between min-h-[380px]">
+                <div class="md:col-span-7 ant-card p-6 md:p-8 flex flex-col justify-between min-h-[380px]">
                     <div>
                         <div class="flex items-center justify-between gap-4 mb-3">
-                            <span id="detail-category" class="text-xs font-bold uppercase tracking-wider text-sky-600 bg-sky-50 px-3 py-1 rounded-full border border-sky-100">
+                            <span id="detail-category" class="ant-chip">
                                 Danh mục
                             </span>
-                            <div id="detail-rating-block" class="flex items-center gap-1 text-amber-400 text-sm">
-                                <i class="fa-solid fa-star"></i>
-                                <span id="detail-rating" class="font-bold text-slate-700 text-xs ml-1">4.9 (128 đánh giá)</span>
+                            <div id="detail-rating-block" class="flex items-center gap-1 text-sm ant-ico-yellow">
+                                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                                <span id="detail-rating" class="font-semibold ant-soft text-xs ml-1">4.9 (128 đánh giá)</span>
                             </div>
                         </div>
 
-                        <h2 id="detail-title" class="text-xl md:text-2xl font-bold text-slate-900 mb-2 leading-snug">
+                        <h2 id="detail-title" class="text-xl md:text-2xl font-semibold mb-2 leading-snug">
                             Tên sản phẩm chi tiết
                         </h2>
 
-                        <div id="detail-price" class="text-2xl font-black text-slate-900 mb-6">
+                        <div id="detail-price" class="text-2xl font-bold mb-6">
                             0 VNĐ
                         </div>
 
-                        <div class="space-y-3.5 border-t border-slate-100 pt-5 text-sm">
+                        <div class="space-y-3.5 ant-divider pt-5 text-sm">
                             <div class="flex items-start gap-3">
-                                <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                                <i class="fa-solid fa-circle-check ant-ico-blue mt-0.5" aria-hidden="true"></i>
                                 <div>
-                                    <span id="detail-desc-label" class="font-semibold text-slate-700" data-i18n="description">Mô tả sản phẩm: </span>
-                                    <span id="detail-desc" class="text-slate-600">Thông tin chi tiết về đặc tính và công năng sử dụng...</span>
+                                    <span id="detail-desc-label" class="font-semibold" data-i18n="description">Mô tả sản phẩm: </span>
+                                    <span id="detail-desc" class="ant-soft">Thông tin chi tiết về đặc tính và công năng sử dụng...</span>
                                 </div>
                             </div>
                             <div class="flex items-start gap-3">
-                                <i class="fa-solid fa-cube text-sky-500 mt-0.5"></i>
+                                <i class="fa-solid fa-cube ant-ico-blue mt-0.5" aria-hidden="true"></i>
                                 <div>
-                                    <span id="detail-specs-label" class="font-semibold text-slate-700" data-i18n="specifications">Chất liệu & Thông số: </span>
-                                    <span id="detail-specs" class="text-slate-600">Cao cấp, độ bền vượt trội, tiêu chuẩn quốc tế.</span>
+                                    <span id="detail-specs-label" class="font-semibold" data-i18n="specifications">Chất liệu & Thông số: </span>
+                                    <span id="detail-specs" class="ant-soft">Cao cấp, độ bền vượt trội, tiêu chuẩn quốc tế.</span>
                                 </div>
                             </div>
                             <div class="flex items-start gap-3">
-                                <i class="fa-solid fa-shield-halved text-sky-500 mt-0.5"></i>
+                                <i class="fa-solid fa-shield-halved ant-ico-blue mt-0.5" aria-hidden="true"></i>
                                 <div>
-                                    <span id="detail-origin-label" class="font-semibold text-slate-700" data-i18n="origin">Bảo hành & Xuất xứ: </span>
-                                    <span id="detail-origin" class="text-slate-600">Chính hãng 12 tháng - Nhập khẩu.</span>
+                                    <span id="detail-origin-label" class="font-semibold" data-i18n="origin">Bảo hành & Xuất xứ: </span>
+                                    <span id="detail-origin" class="ant-soft">Chính hãng 12 tháng - Nhập khẩu.</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div id="detail-actions" class="flex items-center gap-3 mt-8 pt-4 border-t border-slate-100">
-                        <button onclick="showToast(t('addedToOrder'))" class="flex-1 py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-semibold text-sm transition-all shadow-lg shadow-slate-900/20 active:scale-95 flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-cart-shopping"></i>
+                    <div id="detail-actions" class="flex items-center gap-3 mt-8 pt-4 ant-divider">
+                        <button onclick="showToast(t('addedToOrder'))" class="flex-1 ant-btn ant-btn-primary">
+                            <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
                             <span data-i18n="addToOrder">Thêm vào đơn hàng</span>
                         </button>
-                        <button onclick="showToast(t('saved'))" class="p-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl transition-colors" data-i18n-aria="saved" aria-label="Lưu">
-                            <i class="fa-regular fa-bookmark text-lg" aria-hidden="true"></i>
+                        <button onclick="showToast(t('saved'))" class="ant-btn ant-btn-secondary w-11 !px-0" data-i18n-aria="saved" aria-label="Lưu">
+                            <i class="fa-regular fa-bookmark text-base" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
@@ -463,30 +815,32 @@
 
         <!-- ==================== MOCKUP 1: BRAND SELECTION VIEW ==================== -->
         <div id="lib-brand-selection-view" class="hidden w-full max-w-5xl my-4 flex-col items-center animate-fadeIn">
-            <div class="text-center mb-6">
-                <h2 class="text-xl md:text-2xl font-bold text-slate-800" data-i18n="chooseBrand">Chọn thương hiệu</h2>
-                <p class="text-xs md:text-sm text-slate-500 mt-1" data-i18n="chooseBrandHint">Chọn logo để xem thư viện ảnh của thương hiệu</p>
+            <div class="w-full mb-5">
+                <h2 class="text-xl md:text-2xl font-semibold" data-i18n="chooseBrand">Chọn thương hiệu</h2>
+                <p class="text-xs md:text-sm ant-muted mt-1" data-i18n="chooseBrandHint">Chọn logo để xem thư viện ảnh của thương hiệu</p>
             </div>
 
-            <input id="brand-filter" type="search" oninput="brandVisibleCount=48; renderBrandCards()" class="w-full max-w-md mb-5 px-4 py-2.5 rounded-xl border border-emerald-200 bg-white outline-none focus:border-emerald-500" placeholder="Tìm thương hiệu..." aria-label="Tìm thương hiệu">
-            <p id="brand-match-count" class="w-full max-w-md text-xs font-medium text-slate-600 -mt-2 mb-4" aria-live="polite"></p>
+            <div class="w-full flex flex-wrap items-center gap-3 mb-4">
+                <input id="brand-filter" type="search" oninput="brandVisibleCount=48; renderBrandCards()" class="ant-input w-full max-w-md" placeholder="Tìm thương hiệu..." aria-label="Tìm thương hiệu">
+                <p id="brand-match-count" class="text-xs font-medium ant-muted" aria-live="polite"></p>
+            </div>
             <div id="brand-cards-grid" class="grid gap-3 w-full mb-8">
                 <!-- Dynamically Populated -->
             </div>
-            <button id="brand-more-button" type="button" onclick="loadMoreBrands()" class="hidden mb-10 rounded-full bg-[#276221] px-5 py-3 text-sm font-semibold text-white hover:bg-[#1d4d19]" data-i18n="showMoreBrands">Xem thêm thương hiệu</button>
+            <button id="brand-more-button" type="button" onclick="loadMoreBrands()" class="hidden mb-10 ant-btn ant-btn-primary" data-i18n="showMoreBrands">Xem thêm thương hiệu</button>
         </div>
 
         <!-- Wide library panel with a square thumbnail grid. -->
         <div id="lib-brand-grid-view" class="hidden w-full max-w-6xl my-2 flex-col items-center animate-fadeIn">
             <div class="w-full flex items-center justify-between gap-4 mb-5">
                 <div>
-                    <h3 id="selected-brand-title" class="text-xl font-bold text-slate-900"></h3>
-                    <p id="selected-brand-desc" class="text-sm text-slate-600 mt-1"></p>
+                    <h3 id="selected-brand-title" class="text-xl font-semibold"></h3>
+                    <p id="selected-brand-desc" class="text-sm ant-muted mt-1"></p>
                 </div>
             </div>
             <div class="ant-library-preview" aria-label="Brand library preview">
                 <section class="ant-library-main" aria-label="Image grid">
-                    <div class="flex items-center justify-between mb-3"><strong data-i18n="imageLibrary">Thư viện ảnh</strong><span id="brand-photo-count" class="text-xs text-slate-500"></span></div>
+                    <div class="flex items-center justify-between mb-3"><strong class="font-semibold" data-i18n="imageLibrary">Thư viện ảnh</strong><span id="brand-photo-count" class="text-xs ant-muted"></span></div>
                     <div id="brand-product-squares-grid"></div>
                 </section>
                 <section class="ant-library-side" aria-label="Brand preview">
@@ -494,16 +848,16 @@
                     <span id="selected-brand-logo-pending" class="ant-logo-placeholder" hidden aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="12" r="2"/><path d="m6 23 7-7 5 5 4-4 4 5"/></svg></span>
                     <div id="brand-feature-image" class="ant-feature-image" role="button" tabindex="0" onclick="openBrandFeature()" onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openBrandFeature(); }" aria-label="Xem ảnh nổi bật"></div>
                     <p id="brand-feature-name" class="font-semibold text-sm leading-snug"></p>
-                    <p id="selected-brand-story" class="text-xs text-slate-600 leading-relaxed"></p>
+                    <p id="selected-brand-story" class="text-xs ant-muted leading-relaxed"></p>
                 </section>
             </div>
             <section class="ant-master-bar" aria-labelledby="master-bar-title">
                 <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
-                    <h4 id="master-bar-title" class="text-sm font-bold text-slate-800" data-i18n="brandMasterData">Master data · thương hiệu</h4>
+                    <h4 id="master-bar-title" class="text-sm font-semibold" data-i18n="brandMasterData">Master data · thương hiệu</h4>
                     <div class="ant-master-actions">
-                        <span class="text-[10px] font-bold px-2 py-1 rounded-full bg-emerald-50 text-emerald-800" data-i18n="demoData">Dữ liệu demo</span>
-                        <button type="button" id="master-view-button" class="ant-master-action" onclick="toggleMasterData()" aria-expanded="false" aria-controls="master-table-wrap"><i class="fa-regular fa-eye" aria-hidden="true"></i><span data-i18n="viewMaster">Xem dữ liệu</span></button>
-                        <button type="button" class="ant-master-action" onclick="downloadMasterData()"><i class="fa-solid fa-download" aria-hidden="true"></i><span data-i18n="downloadMaster">Tải CSV</span></button>
+                        <span class="ant-chip is-muted" data-i18n="demoData">Dữ liệu demo</span>
+                        <button type="button" id="master-view-button" class="ant-btn ant-btn-secondary" onclick="toggleMasterData()" aria-expanded="false" aria-controls="master-table-wrap"><i class="fa-regular fa-eye" aria-hidden="true"></i><span data-i18n="viewMaster">Xem dữ liệu</span></button>
+                        <button type="button" class="ant-btn ant-btn-secondary" onclick="downloadMasterData()"><i class="fa-solid fa-download" aria-hidden="true"></i><span data-i18n="downloadMaster">Tải CSV</span></button>
                     </div>
                 </div>
                 <dl class="ant-master-fields">
@@ -513,11 +867,11 @@
                     <div><dt data-i18n="masterStatus">Dữ liệu sản phẩm</dt><dd id="master-data-status"></dd></div>
                 </dl>
                 <div class="ant-master-search">
-                    <i class="fa-solid fa-magnifying-glass text-emerald-700" aria-hidden="true"></i>
+                    <i class="fa-solid fa-magnifying-glass ant-muted" aria-hidden="true"></i>
                     <input id="master-search-input" type="search" autocomplete="off" data-i18n-placeholder="masterSearchPlaceholder" placeholder="Tìm tên hoặc mã sản phẩm trong brand..." aria-label="Tìm sản phẩm trong master data" oninput="filterMasterRows()" onkeydown="if(event.key === 'Enter') searchMasterData()">
-                    <button type="button" onclick="searchMasterData()" data-i18n="search">Tìm kiếm</button>
+                    <button type="button" class="ant-btn ant-btn-primary" onclick="searchMasterData()" data-i18n="search">Tìm kiếm</button>
                 </div>
-                <p id="master-search-feedback" class="hidden mt-2 text-xs text-amber-800" role="status"></p>
+                <p id="master-search-feedback" class="hidden mt-2 text-xs ant-ico-yellow" role="status"></p>
                 <div id="master-search-suggestions" class="hidden mt-2 grid gap-2" aria-live="polite"></div>
                 <div id="master-table-wrap" class="ant-master-table-wrap hidden">
                     <table class="ant-master-table">
@@ -533,14 +887,14 @@
             
             <!-- Top Nav Row with Back Button -->
             <div class="w-full flex items-center justify-between mb-4">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest" data-i18n="singleViewer">Xem ảnh sản phẩm</span>
+                <span class="text-xs font-semibold ant-muted uppercase tracking-widest" data-i18n="singleViewer">Xem ảnh sản phẩm</span>
             </div>
 
             <!-- Main Big Square Image Frame with Overlay Next Button (Mockup 3) -->
-            <div class="ant-image-frame relative w-full max-w-2xl aspect-square bg-white rounded-3xl overflow-hidden border shadow-xl group my-2">
-                
+            <div class="ant-image-frame relative w-full max-w-2xl aspect-square ant-card overflow-hidden group my-2">
+
                 <!-- Expanded Image -->
-                <img id="lib-detail-img" src="" alt="Product Detail" class="w-full h-full object-cover bg-white transition-all duration-300">
+                <img id="lib-detail-img" src="" alt="Product Detail" class="w-full h-full object-cover transition-all duration-300">
                 
                 <!-- Overlay Next Button on Right Edge (Mockup 3) -->
                 <button 
@@ -552,18 +906,18 @@
                 </button>
 
                 <!-- Image Sub-index Badge -->
-                <div class="absolute bottom-4 left-4 bg-slate-900/80 backdrop-blur text-white text-xs px-3 py-1.5 rounded-full font-semibold border border-slate-700" id="lib-img-badge">
+                <div class="absolute bottom-3 left-3 ant-overlay-chip text-xs px-3 py-1.5 rounded-md font-semibold" id="lib-img-badge">
                     Image 1 / 3
                 </div>
             </div>
 
-            <!-- Underline & Product Name Display (Mockup 3) -->
+            <!-- Product Name Display (Mockup 3) -->
             <div class="w-full max-w-2xl text-center mt-6">
-                <div class="h-1 w-full bg-emerald-200 rounded-full mb-4"></div>
-                <h2 id="lib-detail-product-name" class="text-lg md:text-xl font-black uppercase tracking-wide text-slate-900">
+                <div class="h-px w-full mb-4" style="background: var(--line)"></div>
+                <h2 id="lib-detail-product-name" class="text-lg md:text-xl font-semibold tracking-wide">
                     PRODUCT NAME
                 </h2>
-                <p id="lib-detail-product-brand" class="text-xs font-bold text-sky-600 mt-1 uppercase tracking-widest"></p>
+                <p id="lib-detail-product-brand" class="text-xs font-semibold ant-ico-blue mt-1 uppercase tracking-widest"></p>
             </div>
         </div>
 
@@ -571,10 +925,10 @@
             <div class="ant-workspace-card" id="tool-card">
                 <div class="ant-workspace-head">
                     <div>
-                        <h2 id="tool-title" class="text-base font-bold text-emerald-950"></h2>
-                        <p id="tool-description" class="text-xs text-slate-500 mt-1"></p>
+                        <h2 id="tool-title" class="text-base font-semibold"></h2>
+                        <p id="tool-description" class="text-xs ant-muted mt-1"></p>
                     </div>
-                    <button type="button" onclick="closeToolView()" class="rounded-full bg-white border border-emerald-200 px-4 py-2 text-xs font-semibold text-emerald-900" data-i18n="backToSearch">Về tìm kiếm</button>
+                    <button type="button" onclick="closeToolView()" class="ant-btn ant-btn-secondary" data-i18n="backToSearch">Về tìm kiếm</button>
                 </div>
                 <iframe id="image-edit-frame" class="ant-workspace-frame hidden" data-src="/PROJECT_UNITY/project-m2/" title="MINIMA image editor" allow="clipboard-read; clipboard-write"></iframe>
                 <iframe id="auto-fill-frame" class="ant-workspace-frame hidden" data-src="/PROJECT_UNITY/auto-fill/" title="PROJECT_AUTO file autofill"></iframe>
@@ -586,43 +940,31 @@
 
     <!-- BOTTOM FLOATING TOOLBAR (ORIGINAL MOCKUP TOOLBAR) -->
     <div id="bottom-toolbar-container" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-full max-w-2xl px-4 transition-all duration-300">
-        <div class="bg-slate-900/95 backdrop-blur-md text-white rounded-full p-1.5 shadow-2xl border border-slate-700/60 flex items-center justify-between text-xs font-medium">
-            
-            <button onclick="triggerTool('IMG EDIT')" data-short-vi="Ảnh" data-short-en="Edit" class="flex-1 py-2 px-2 hover:bg-slate-800 rounded-full transition-colors flex flex-col sm:flex-row items-center justify-center gap-1.5 group">
-                <i class="fa-solid fa-wand-magic-sparkles text-sky-400 group-hover:scale-110 transition-transform"></i>
-                <span class="text-[11px] sm:text-xs" data-i18n="imageEdit">CHỈNH ẢNH</span>
+        <div class="ant-dock">
+            <button onclick="triggerTool('IMG EDIT')" data-short-vi="Ảnh" data-short-en="Edit">
+                <i class="fa-solid fa-wand-magic-sparkles ant-ico-red" aria-hidden="true"></i>
+                <span data-i18n="imageEdit">Chỉnh ảnh</span>
             </button>
-
-            <div class="h-4 w-[1px] bg-slate-700"></div>
-
-            <button onclick="openLibraryView()" data-short-vi="Thư viện" data-short-en="Library" class="flex-1 py-2 px-2 bg-amber-500/20 hover:bg-amber-500/30 rounded-full transition-colors flex flex-col sm:flex-row items-center justify-center gap-1.5 group border border-amber-500/30">
-                <i class="fa-solid fa-folder-open text-amber-400 group-hover:scale-110 transition-transform"></i>
-                <span class="text-[11px] sm:text-xs font-bold text-amber-300" data-i18n="library">THƯ VIỆN</span>
+            <button onclick="openLibraryView()" data-short-vi="Thư viện" data-short-en="Library">
+                <i class="fa-solid fa-folder-open ant-ico-yellow" aria-hidden="true"></i>
+                <span data-i18n="library">Thư viện</span>
             </button>
-
-            <div class="h-4 w-[1px] bg-slate-700"></div>
-
-            <button onclick="triggerTool('REQUEST')" data-short-vi="Yêu cầu" data-short-en="Request" class="flex-1 py-2 px-2 hover:bg-slate-800 rounded-full transition-colors flex flex-col sm:flex-row items-center justify-center gap-1.5 group">
-                <i class="fa-solid fa-paper-plane text-emerald-400 group-hover:scale-110 transition-transform"></i>
-                <span class="text-[11px] sm:text-xs" data-i18n="request">YÊU CẦU ẢNH</span>
+            <button onclick="triggerTool('REQUEST')" data-short-vi="Yêu cầu" data-short-en="Request">
+                <i class="fa-solid fa-paper-plane ant-ico-green" aria-hidden="true"></i>
+                <span data-i18n="request">Yêu cầu ảnh</span>
             </button>
-
-            <div class="h-4 w-[1px] bg-slate-700"></div>
-
-            <button onclick="triggerTool('AUTO FILL')" data-short-vi="Tự điền" data-short-en="Auto fill" class="flex-1 py-2 px-2 hover:bg-slate-800 rounded-full transition-colors flex flex-col sm:flex-row items-center justify-center gap-1.5 group">
-                <i class="fa-solid fa-bolt text-purple-400 group-hover:scale-110 transition-transform"></i>
-                <span class="text-[11px] sm:text-xs" data-i18n="autoFill">TỰ ĐIỀN FILE</span>
+            <button onclick="triggerTool('AUTO FILL')" data-short-vi="Tự điền" data-short-en="Auto fill">
+                <i class="fa-solid fa-bolt ant-ico-blue" aria-hidden="true"></i>
+                <span data-i18n="autoFill">Tự điền file</span>
             </button>
-
-            <div class="h-4 w-[1px] bg-slate-700"></div>
-
-            <button onclick="triggerTool('SETTING')" data-short-vi="Cài đặt" data-short-en="Settings" class="flex-1 py-2 px-2 hover:bg-slate-800 rounded-full transition-colors flex flex-col sm:flex-row items-center justify-center gap-1.5 group">
-                <i class="fa-solid fa-gear text-slate-400 group-hover:scale-110 transition-transform"></i>
-                <span class="text-[11px] sm:text-xs" data-i18n="settings">CÀI ĐẶT</span>
+            <button onclick="triggerTool('SETTING')" data-short-vi="Cài đặt" data-short-en="Settings">
+                <i class="fa-solid fa-gear ant-ico-gray" aria-hidden="true"></i>
+                <span data-i18n="settings">Cài đặt</span>
             </button>
-
         </div>
     </div>
+
+    </div><!-- /#ant-app -->
 
     <script src="logos/distributor-logos.js"></script>
     <script src="logos/popular-logos.js"></script>
@@ -636,14 +978,24 @@
                 expandProducts: 'Mở danh sách sản phẩm', collapseProducts: 'Đóng danh sách sản phẩm', relatedProducts: 'Các sản phẩm liên quan tìm thấy:', imageEdit: 'Chỉnh ảnh', library: 'Thư viện', request: 'Yêu cầu ảnh', autoFill: 'Tự điền file', settings: 'Cài đặt',
                 next: 'Tiếp', moreImagesHint: 'Bấm nút bên phải để xem thêm ảnh', description: 'Mô tả sản phẩm: ', specifications: 'Chất liệu & Thông số: ', origin: 'Bảo hành & Xuất xứ: ', addToOrder: 'Thêm vào đơn hàng',
                 chooseBrand: 'Chọn thương hiệu', chooseBrandHint: 'Tìm tên brand và chọn logo để xem thư viện', nextPage: 'Trang tiếp', backToBrands: 'Về thương hiệu', brandOverview: 'Tổng quan thương hiệu', imageLibrary: 'Thư viện ảnh', featuredImage: 'Ảnh nổi bật', featureHint: 'Chọn ảnh để xem đầy đủ', swipeHint: 'Vuốt ngang để xem ba phần của thư viện.', brandFilter: 'Tìm thương hiệu...', demoAssets: 'Ảnh minh họa bố cục · chưa có dữ liệu thật của brand', demoImage: 'Ảnh mẫu', brandMasterData: 'Master data · thương hiệu', demoData: 'Dữ liệu demo', canonicalBrand: 'Tên chuẩn', brandCode: 'Mã tra cứu', brandAliases: 'Tên gốc / bí danh', masterStatus: 'Dữ liệu sản phẩm', notConnected: 'Chưa kết nối', pendingLogo: 'Logo đang chờ xác minh',
-                back: 'Quay lại', singleViewer: 'Xem ảnh sản phẩm', products: 'sản phẩm', brandSelection: 'Chọn thương hiệu', backToSearch: 'Về tìm kiếm', backToGrid: 'Về thư viện', image: 'Ảnh', brandLibrary: 'Thư viện', viewing: 'Đang xem', receivedFile: 'Đã nhận file', fileMatches: 'Sản phẩm demo khớp trong file', noFileMatches: 'Không có mã hoặc tên nào trong file khớp với sản phẩm demo. Hỗ trợ danh sách CSV/TXT.', toolReady: 'Sẵn sàng', noResult: 'Không tìm thấy sản phẩm phù hợp', noResultHelp: 'Không tìm thấy sản phẩm. Thử tên khác, mã EAN hoặc article code.', tryDemo: 'Thử EAN mẫu', noBrands: 'Không tìm thấy thương hiệu. Thử tên khác hoặc tên viết tắt.', showMoreBrands: 'Xem thêm thương hiệu', addedToOrder: 'Đã thêm vào đơn hàng', saved: 'Đã lưu', nextPageReady: 'Đây là bản xem trước thư viện', imageEditHint: 'MINIMA Resize Studio · chỉnh sửa và xuất ảnh', autoFillHint: 'Grand Archives · xử lý và điền file Excel', comingSoon: 'Chức năng này đang được chuẩn bị.'
+                back: 'Quay lại', singleViewer: 'Xem ảnh sản phẩm', products: 'sản phẩm', brandSelection: 'Chọn thương hiệu', backToSearch: 'Về tìm kiếm', backToGrid: 'Về thư viện', image: 'Ảnh', brandLibrary: 'Thư viện', viewing: 'Đang xem', receivedFile: 'Đã nhận file', fileMatches: 'Sản phẩm demo khớp trong file', noFileMatches: 'Không có mã hoặc tên nào trong file khớp với sản phẩm demo. Hỗ trợ danh sách CSV/TXT.', toolReady: 'Sẵn sàng', noResult: 'Không tìm thấy sản phẩm phù hợp', noResultHelp: 'Không tìm thấy sản phẩm. Thử tên khác, mã EAN hoặc article code.', tryDemo: 'Thử EAN mẫu', noBrands: 'Không tìm thấy thương hiệu. Thử tên khác hoặc tên viết tắt.', showMoreBrands: 'Xem thêm thương hiệu', addedToOrder: 'Đã thêm vào đơn hàng', saved: 'Đã lưu', nextPageReady: 'Đây là bản xem trước thư viện', imageEditHint: 'MINIMA Resize Studio · chỉnh sửa và xuất ảnh', autoFillHint: 'Grand Archives · xử lý và điền file Excel', comingSoon: 'Chức năng này đang được chuẩn bị.',
+                workspace: 'Không gian', tools: 'Công cụ', soon: 'Sắp có', uploadLookup: 'Tải file tra cứu', logoLibrary: 'Thư viện logo', shortcuts: 'Lối tắt', brandLibraryTitle: 'Thư viện thương hiệu',
+                mainPage: 'Trang chính', aboutAnt: 'Giới thiệu A.N.T', lightMode: 'Chế độ sáng', overview: 'Tổng quan', ready: 'Sẵn sàng', requestMeta: 'Giao và theo dõi ảnh cần chụp', suggestions: 'Thương hiệu gợi ý', viewAll: 'Xem tất cả', openLibrary: 'Mở thư viện', recent: 'Gần đây', recentEmpty: 'Chưa có hoạt động. Tìm một mã EAN hoặc mở một thương hiệu để bắt đầu.', colName: 'Tên', colType: 'Loại', colTime: 'Thời gian', typeSearch: 'Tìm kiếm', typeBrand: 'Thương hiệu', typeTool: 'Công cụ',
+                features: 'Tính năng', howItWorks: 'Cách hoạt động', openApp: 'Vào A.N.T', previewBadge: 'Bản xem trước · dữ liệu demo', heroTitle: 'Mọi hình ảnh và dữ liệu sản phẩm, ở một nơi.', heroLead: 'Nhập EAN, article code hoặc tên sản phẩm. A.N.T khớp master data rồi trả về packshot, thông tin sản phẩm và công cụ xử lý ảnh.', getStarted: 'Vào không gian làm việc', seeHow: 'Xem cách hoạt động', statBrands: 'thương hiệu', statLogos: 'logo đã chuẩn hóa', statAreas: 'khu vực làm việc',
+                featuresTitle: 'Mọi thứ cho tài sản sản phẩm', featuresLead: 'Bốn khu vực làm việc dùng chung một nguồn dữ liệu sản phẩm.', featSearchTitle: 'Tìm theo EAN, mã hoặc tên', featSearchText: 'Nhận diện loại mã, khớp master data rồi gom toàn bộ ảnh liên quan.', featLibraryText: 'Logo chuẩn hóa, ảnh và master data xếp theo từng thương hiệu.', featEditText: 'Resize theo preset, cắt, đặt ảnh lên nền trắng và xuất hàng loạt.', featFillText: 'Kiểm tra và điền file Excel theo mẫu của từng nhà bán lẻ.',
+                howLead: 'Master data là cầu nối: mọi giá trị nhập vào được đổi thành một sản phẩm trước khi tìm ảnh.', step1Title: 'Nhập hoặc tải file', step1Text: 'Một EAN, article code, tên sản phẩm hay cả danh sách CSV.', step2Title: 'Khớp master data', step2Text: 'Barcode, mã hàng, mã cũ và tên được quy về đúng sản phẩm.', step3Title: 'Nhận ảnh và thông tin', step3Text: 'Packshot, ảnh hộp, lifestyle cùng kích thước, pháp lý và nhà cung cấp.', ctaTitle: 'Sẵn sàng tìm ảnh?', ctaText: 'Mở không gian làm việc và thử với một mã EAN mẫu.'
             },
             en: {
                 subtitle: 'Asset Nexus Technology · Product asset workspace', searchPlaceholder: 'Search by product name, EAN, or article code...', search: 'Search', upload: 'Import file', viewMaster: 'View data', downloadMaster: 'Download CSV', masterSearchPlaceholder: 'Search a product name or code in this brand...', productName: 'Product', articleCode: 'Article code', category: 'Category', dimensions: 'Dimensions', weight: 'Weight', preview: 'View image', backToMaster: 'Back to master data', demoProduct: 'Sample product', demoUnavailable: 'Real product data is not connected', noMasterMatch: 'No sample product found in this brand.', sampleStatus: 'Preview', imageInfo: 'Image information: ', lookupCode: 'Lookup code: ', dataSource: 'Data source: ',
                 expandProducts: 'Expand product list', collapseProducts: 'Close product list', relatedProducts: 'Related products found:', imageEdit: 'Image edit', library: 'Library', request: 'Image request', autoFill: 'Auto fill', settings: 'Settings',
                 next: 'Next', moreImagesHint: 'Use the button on the right to see more images', description: 'Description: ', specifications: 'Materials & specifications: ', origin: 'Warranty & origin: ', addToOrder: 'Add to order',
                 chooseBrand: 'Choose a brand', chooseBrandHint: 'Search a brand name and select its logo to view the library', nextPage: 'Next page', backToBrands: 'Back to brands', brandOverview: 'Brand overview', imageLibrary: 'Image library', featuredImage: 'Featured image', featureHint: 'Select the image to view it fully', swipeHint: 'Swipe sideways to explore the three library panels.', brandFilter: 'Find a brand...', demoAssets: 'Layout preview · real brand assets have not been added', demoImage: 'Sample image', brandMasterData: 'Brand master data', demoData: 'Demo data', canonicalBrand: 'Standard name', brandCode: 'Search key', brandAliases: 'Source names / aliases', masterStatus: 'Product data', notConnected: 'Not connected', pendingLogo: 'Logo awaiting verification',
-                back: 'Back', singleViewer: 'Product image viewer', products: 'products', brandSelection: 'Brand selection', backToSearch: 'Back to search', backToGrid: 'Back to library', image: 'Image', brandLibrary: 'Library', viewing: 'Viewing', receivedFile: 'File received', fileMatches: 'Matching demo products in file', noFileMatches: 'No code or name in this file matches a demo product. CSV/TXT lists are supported.', toolReady: 'Ready', noResult: 'No matching product found', noResultHelp: 'No product found. Try another name, EAN, or article code.', tryDemo: 'Try a sample EAN', noBrands: 'No brands found. Try another name or abbreviation.', showMoreBrands: 'Show more brands', addedToOrder: 'Added to order', saved: 'Saved', nextPageReady: 'This is a library preview', imageEditHint: 'MINIMA Resize Studio · edit and export images', autoFillHint: 'Grand Archives · process and fill Excel files', comingSoon: 'This function is being prepared.'
+                back: 'Back', singleViewer: 'Product image viewer', products: 'products', brandSelection: 'Brand selection', backToSearch: 'Back to search', backToGrid: 'Back to library', image: 'Image', brandLibrary: 'Library', viewing: 'Viewing', receivedFile: 'File received', fileMatches: 'Matching demo products in file', noFileMatches: 'No code or name in this file matches a demo product. CSV/TXT lists are supported.', toolReady: 'Ready', noResult: 'No matching product found', noResultHelp: 'No product found. Try another name, EAN, or article code.', tryDemo: 'Try a sample EAN', noBrands: 'No brands found. Try another name or abbreviation.', showMoreBrands: 'Show more brands', addedToOrder: 'Added to order', saved: 'Saved', nextPageReady: 'This is a library preview', imageEditHint: 'MINIMA Resize Studio · edit and export images', autoFillHint: 'Grand Archives · process and fill Excel files', comingSoon: 'This function is being prepared.',
+                workspace: 'Workspace', tools: 'Tools', soon: 'Soon', uploadLookup: 'Upload lookup file', logoLibrary: 'Logo library', shortcuts: 'Shortcuts', brandLibraryTitle: 'Brand library',
+                mainPage: 'Home', aboutAnt: 'About A.N.T', lightMode: 'Light mode', overview: 'Overview', ready: 'Ready', requestMeta: 'Assign and follow the photos you need', suggestions: 'Suggested brands', viewAll: 'View all', openLibrary: 'Open library', recent: 'Recent', recentEmpty: 'No activity yet. Search an EAN or open a brand to get started.', colName: 'Name', colType: 'Type', colTime: 'Time', typeSearch: 'Search', typeBrand: 'Brand', typeTool: 'Tool',
+                features: 'Features', howItWorks: 'How it works', openApp: 'Open A.N.T', previewBadge: 'Preview · demo data', heroTitle: 'Every product image and record, in one place.', heroLead: 'Type an EAN, article code or product name. A.N.T matches it against master data and returns the packshots, product details and image tools.', getStarted: 'Open the workspace', seeHow: 'See how it works', statBrands: 'brands', statLogos: 'standardised logos', statAreas: 'workspaces',
+                featuresTitle: 'Everything for product assets', featuresLead: 'Four workspaces sharing one source of product data.', featSearchTitle: 'Search by EAN, code or name', featSearchText: 'Recognises the kind of code, matches master data and gathers every related image.', featLibraryText: 'Standardised logos, images and master data, organised by brand.', featEditText: 'Resize with presets, crop, place images on white and export in bulk.', featFillText: 'Check and fill Excel files to each retailer’s template.',
+                howLead: 'Master data is the bridge: every input is resolved to one product before images are fetched.', step1Title: 'Type or upload a file', step1Text: 'One EAN, article code, product name, or a whole CSV list.', step2Title: 'Match master data', step2Text: 'Barcodes, article codes, old codes and names resolve to the right product.', step3Title: 'Get images and details', step3Text: 'Packshots, box and lifestyle shots with dimensions, compliance and supplier data.', ctaTitle: 'Ready to find images?', ctaText: 'Open the workspace and try it with a sample EAN.'
             }
         };
         let language = localStorage.getItem('ant-language') === 'en' ? 'en' : 'vi';
@@ -667,8 +1019,12 @@
             if (!document.getElementById('search-feedback').classList.contains('hidden')) document.getElementById('search-feedback-text').textContent = t(searchFeedbackKey);
             document.getElementById('expand-label').textContent = t(document.getElementById('expand-indicator').getAttribute('aria-expanded') === 'true' ? 'collapseProducts' : 'expandProducts');
             if (currentView === 'TOOL') updateToolLabels();
-            document.querySelectorAll('#language-switch button').forEach(el => { el.setAttribute('aria-pressed', String(el.dataset.lang === language)); });
+            document.querySelectorAll('.ant-lang [data-lang]').forEach(el => { el.setAttribute('aria-pressed', String(el.dataset.lang === language)); });
             renderBrandCards();
+            renderOverview();
+            updateThemeButtons();
+            renderSuggestions();
+            renderRecent();
             if (currentView === 'LIB_BRANDS') showBrandSelectionView();
             if (currentView === 'LIB_GRID') showBrandGridView();
             if (currentView === 'LIB_PRODUCT_DETAIL') showLibProductDetailView();
@@ -676,7 +1032,7 @@
         }
         // Brands & Library Database
         function demoPackshot(brandIndex, imageIndex) {
-            const hues = [132, 158, 85, 179, 106, 142, 73, 165];
+            const hues = [226, 214, 238, 205, 232, 220, 244, 210];
             const hue = hues[(brandIndex + imageIndex) % hues.length];
             const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><rect width="600" height="600" fill="hsl(${hue} 29% 94%)"/><ellipse cx="300" cy="520" rx="145" ry="19" fill="hsl(${hue} 16% 80%)"/><rect x="231" y="106" width="138" height="51" rx="9" fill="hsl(${hue} 12% 33%)"/><rect x="198" y="151" width="204" height="354" rx="29" fill="hsl(${hue} 24% 97%)" stroke="hsl(${hue} 18% 71%)" stroke-width="5"/><rect x="214" y="246" width="172" height="162" rx="3" fill="hsl(${hue} 23% 83%)"/><text x="300" y="320" text-anchor="middle" fill="hsl(${hue} 25% 29%)" font-family="Arial" font-weight="bold" font-size="25">A.N.T</text><text x="300" y="354" text-anchor="middle" fill="hsl(${hue} 18% 38%)" font-family="Arial" font-size="16">DEMO ${String(imageIndex + 1).padStart(2, '0')}</text></svg>`;
             return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
@@ -762,11 +1118,122 @@
         // Initialize App
         window.addEventListener('DOMContentLoaded', () => {
             setLanguage(language);
+            showRoute();
             for (const id of ['image-edit-frame', 'auto-fill-frame']) {
                 const frame = document.getElementById(id);
                 frame.addEventListener('load', () => styleToolFrame(frame));
             }
         });
+
+        // Sidebar "Search": back to the search page (keeping any results) from a tool or the library.
+        function openSearchView() {
+            if (currentView === 'TOOL') closeToolView();
+            else if (currentView.startsWith('LIB')) exitLibraryView();
+        }
+
+        // Logo coverage for the sidebar meter and the library shortcut.
+        function renderOverview() {
+            const total = brandsDatabase.length;
+            const withLogo = brandsDatabase.filter(brand => brand.logo).length;
+            const percent = total ? Math.round(withLogo / total * 100) : 0;
+            document.getElementById('logo-coverage-percent').textContent = `${percent}%`;
+            document.getElementById('logo-coverage-bar').style.width = `${percent}%`;
+            document.getElementById('logo-coverage-text').textContent = language === 'vi'
+                ? `${withLogo}/${total} thương hiệu có logo`
+                : `${withLogo} of ${total} brands have a logo`;
+            document.getElementById('library-card-meta').textContent = language === 'vi'
+                ? `${total} thương hiệu · ${withLogo} logo`
+                : `${total} brands · ${withLogo} logos`;
+            document.getElementById('library-card-bar').style.width = `${percent}%`;
+            document.getElementById('library-card-caption').textContent = language === 'vi' ? `${percent}% có logo` : `${percent}% have a logo`;
+            document.getElementById('stat-brands').textContent = total;
+            document.getElementById('stat-logos').textContent = withLogo;
+        }
+
+        // Theme: dark by default, light when the viewer picks it (remembered in this browser).
+        function updateThemeButtons() {
+            const light = document.documentElement.dataset.theme === 'light';
+            document.querySelectorAll('.ant-theme-btn').forEach(button => {
+                button.setAttribute('aria-pressed', String(light));
+                button.setAttribute('aria-label', t('lightMode'));
+                button.title = t('lightMode');
+                button.querySelector('i').className = `fa-solid ${light ? 'fa-moon' : 'fa-sun'}`;
+            });
+        }
+        function toggleTheme() {
+            const next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+            // Switch every colour at once: the hover transitions would otherwise
+            // cross-fade cards through grey for a moment.
+            document.documentElement.classList.add('ant-theme-switching');
+            document.documentElement.dataset.theme = next;
+            requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.remove('ant-theme-switching')));
+            try { localStorage.setItem('ant-theme', next); } catch (e) { /* private mode: theme just isn't remembered */ }
+            updateThemeButtons();
+        }
+
+        // Landing page at "/", the workspace at "#app" (Back returns to the landing page).
+        function showRoute() {
+            const landing = location.hash !== '#app';
+            const wasLanding = document.body.classList.contains('ant-landing');
+            document.body.classList.toggle('ant-landing', landing);
+            if (landing && !wasLanding) document.getElementById('landing-view').scrollTop = 0;
+        }
+        function enterApp() {
+            location.hash = 'app';
+        }
+        window.addEventListener('hashchange', showRoute);
+
+        // Recent activity for the main page (this browser only).
+        const RECENT_KEY = 'ant-recent';
+        function loadRecent() {
+            try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; } catch (e) { return []; }
+        }
+        function pushRecent(type, key, label) {
+            const items = [{ type, key, label, at: Date.now() }, ...loadRecent().filter(item => !(item.type === type && item.key === key))].slice(0, 8);
+            try { localStorage.setItem(RECENT_KEY, JSON.stringify(items)); } catch (e) { /* not remembered */ }
+            renderRecent();
+            renderSuggestions();
+        }
+        function timeAgo(at) {
+            const minutes = Math.round((at - Date.now()) / 60000);
+            const rtf = new Intl.RelativeTimeFormat(language, { numeric: 'auto' });
+            if (minutes === 0) return language === 'vi' ? 'vừa xong' : 'just now';
+            if (Math.abs(minutes) < 60) return rtf.format(minutes, 'minute');
+            if (Math.abs(minutes) < 1440) return rtf.format(Math.round(minutes / 60), 'hour');
+            return rtf.format(Math.round(minutes / 1440), 'day');
+        }
+        function escapeHtml(value) {
+            return String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
+        }
+        const recentIcons = { search: 'fa-magnifying-glass ant-ico-blue', brand: 'fa-folder-open ant-ico-yellow', 'IMG EDIT': 'fa-wand-magic-sparkles ant-ico-red', 'AUTO FILL': 'fa-bolt ant-ico-blue' };
+        function renderRecent() {
+            const items = loadRecent();
+            const container = document.getElementById('recent-list');
+            if (!items.length) { container.innerHTML = `<p class="ant-recent-empty">${t('recentEmpty')}</p>`; return; }
+            container.innerHTML = `<table><thead><tr><th>${t('colName')}</th><th>${t('colType')}</th><th>${t('colTime')}</th></tr></thead><tbody>${items.map((item, index) => `
+                <tr><td><button type="button" onclick="openRecent(${index})"><i class="fa-solid ${recentIcons[item.type === 'tool' ? item.key : item.type]}" aria-hidden="true"></i><span>${escapeHtml(item.type === 'tool' ? t(toolKeys[item.key]) : item.label)}</span></button></td>
+                <td>${t(item.type === 'search' ? 'typeSearch' : item.type === 'brand' ? 'typeBrand' : 'typeTool')}</td><td>${timeAgo(item.at)}</td></tr>`).join('')}</tbody></table>`;
+        }
+        function openRecent(index) {
+            const item = loadRecent()[index];
+            if (!item) return;
+            if (item.type === 'search') { document.getElementById('search-input').value = item.key; executeSearch(); }
+            else if (item.type === 'brand') { openLibraryView(); selectBrand(item.key); }
+            else triggerTool(item.key);
+        }
+
+        // Suggested brands: the ones opened recently first, then catalogue brands that have a logo.
+        function renderSuggestions() {
+            const recentIds = loadRecent().filter(item => item.type === 'brand').map(item => item.key);
+            const picks = [...recentIds.map(id => brandsDatabase.find(brand => brand.id === id)).filter(Boolean), ...brandsDatabase.filter(brand => brand.logo)];
+            const brands = [...new Map(picks.map(brand => [brand.id, brand])).values()].slice(0, 4);
+            document.getElementById('suggest-grid').innerHTML = brands.map(brand => `
+                <button type="button" onclick="openLibraryView(); selectBrand('${brand.id}')" class="ant-brand-card">
+                    <span class="ant-brand-plate">${brand.logo ? `<img class="ant-brand-logo${brand.invertLogo ? ' logo-invert' : ''}" src="${brand.logo}" alt="" loading="lazy">` : ''}</span>
+                    <span class="ant-brand-name">${brand.name}</span>
+                    <small>${t('openLibrary')} →</small>
+                </button>`).join('');
+        }
 
         // Navigation Handler for Top Back Button
         function handleTopBackNav() {
@@ -847,10 +1314,11 @@
                 : `Showing ${shown.length} of ${matches.length} brands`;
             document.getElementById('brand-more-button').classList.toggle('hidden', shown.length >= matches.length);
             container.innerHTML = shown.map(brand => `
-                <button type="button" onclick="selectBrand('${brand.id}')" class="ant-brand-card" aria-label="${brand.name}" title="${brand.name}${brand.logo ? '' : ` · ${t('pendingLogo')}`}">
-                    ${brand.logo ? `<img class="ant-brand-logo${brand.invertLogo ? ' logo-invert' : ''}" src="${brand.logo}" alt="" loading="lazy">` : `<span class="ant-logo-placeholder" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="12" r="2"/><path d="m6 23 7-7 5 5 4-4 4 5"/></svg></span>`}
+                <button type="button" onclick="selectBrand('${brand.id}')" class="ant-brand-card" title="${brand.name}${brand.logo ? '' : ` · ${t('pendingLogo')}`}">
+                    <span class="ant-brand-plate">${brand.logo ? `<img class="ant-brand-logo${brand.invertLogo ? ' logo-invert' : ''}" src="${brand.logo}" alt="" loading="lazy">` : `<span class="ant-logo-placeholder" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="12" r="2"/><path d="m6 23 7-7 5 5 4-4 4 5"/></svg></span>`}</span>
+                    <span class="ant-brand-name">${brand.name}</span>
                 </button>
-            `).join('') || `<p class="text-sm text-slate-600 col-span-full py-8 text-center">${t('noBrands')}</p>`;
+            `).join('') || `<p class="text-sm ant-muted col-span-full py-8 text-center">${t('noBrands')}</p>`;
         }
         function loadMoreBrands() {
             const previousCount = brandVisibleCount;
@@ -864,6 +1332,7 @@
             selectedBrand = brandsDatabase.find(b => b.id === brandId);
             if (!selectedBrand) return;
 
+            pushRecent('brand', selectedBrand.id, selectedBrand.name);
             showBrandGridView();
         }
 
@@ -931,9 +1400,9 @@
             const suggestions = document.getElementById('master-search-suggestions');
             suggestions.classList.toggle('hidden', !query || !matches.length);
             suggestions.innerHTML = query ? matches.slice(0, 4).map(index => `
-                <button type="button" onclick="openMasterResult(${index})" class="flex min-h-11 items-center gap-3 rounded-xl border border-emerald-100 bg-[#f8fcf6] p-2 text-left hover:bg-[#eaf5e5]">
-                    <img src="${selectedBrand.products[index].images[0]}" alt="" class="h-10 w-10 rounded-lg object-cover">
-                    <span class="min-w-0"><strong class="block truncate text-xs text-slate-800">${brandProductName(index)}</strong><small class="text-emerald-800">${brandProductCode(index)}</small></span>
+                <button type="button" onclick="openMasterResult(${index})" class="ant-mini-card">
+                    <img src="${selectedBrand.products[index].images[0]}" alt="">
+                    <span class="min-w-0"><strong>${brandProductName(index)}</strong><small>${brandProductCode(index)}</small></span>
                 </button>
             `).join('') : '';
             const feedback = document.getElementById('master-search-feedback');
@@ -1007,7 +1476,7 @@
             document.getElementById('brand-feature-image').innerHTML = `<img src="${products[0].images[0]}" alt="${t('demoImage')} 01">`;
             document.getElementById('brand-feature-name').innerText = `${t('demoImage')} 01`;
             container.innerHTML = products.map(prod => `
-                <button type="button" onclick="openLibProductDetail('${prod.id}')" class="square-grid-item cursor-pointer hover:ring-2 hover:ring-emerald-300 transition-all" aria-label="${t('demoImage')} ${prod.name.slice(-2)}">
+                <button type="button" onclick="openLibProductDetail('${prod.id}')" class="square-grid-item" aria-label="${t('demoImage')} ${prod.name.slice(-2)}">
                     <img src="${prod.images[0]}" alt="${t('demoImage')} ${prod.name.slice(-2)}" loading="lazy">
                 </button>
             `).join('');
@@ -1075,6 +1544,7 @@
                 .filter(({ product }) => !query || [product.name, product.ean, product.articleCode].some(value => value?.toLowerCase().includes(query.toLowerCase())))
                 .map(({ index }) => index);
             if (!matches.length) { showSearchFeedback(); return; }
+            if (query) pushRecent('search', query, query);
             activeResultProducts = productsDatabase;
             masterResultBrand = null;
             document.getElementById('return-to-master').classList.add('hidden');
@@ -1213,12 +1683,9 @@
                 const prod = activeResultProducts[idx];
                 const productName = prod.demo ? `${prod.brandName} · ${t('demoProduct')} ${String(prod.demoNumber).padStart(2, '0')}` : prod.name;
                 return `
-                <button type="button" onclick="selectProduct(${idx})" aria-pressed="${idx === currentProductIndex}" class="min-h-11 text-left cursor-pointer bg-slate-50 border ${idx === currentProductIndex ? 'border-emerald-600 ring-2 ring-emerald-100' : 'border-slate-200'} rounded-xl p-2 hover:bg-white transition-all flex items-center gap-2">
-                    <img src="${prod.images[0]}" alt="" loading="lazy" class="w-10 h-10 object-cover rounded-lg">
-                    <div class="overflow-hidden">
-                        <div class="text-xs font-bold text-slate-800 truncate">${productName}</div>
-                        <div class="text-[10px] text-emerald-700 font-semibold">${prod.price || prod.articleCode}</div>
-                    </div>
+                <button type="button" onclick="selectProduct(${idx})" aria-pressed="${idx === currentProductIndex}" class="ant-mini-card">
+                    <img src="${prod.images[0]}" alt="" loading="lazy">
+                    <span class="min-w-0"><strong>${productName}</strong><small>${prod.price || prod.articleCode}</small></span>
                 </button>
             `; }).join('');
         }
@@ -1263,11 +1730,13 @@
             doc.head.appendChild(link);
         }
         function setActiveTool(toolName) {
-            document.querySelectorAll('#top-toolbar-container button, #bottom-toolbar-container button').forEach(button => {
+            document.querySelectorAll('#top-toolbar-container button, #bottom-toolbar-container button, #ant-sidebar .ant-nav-item').forEach(button => {
                 const action = button.getAttribute('onclick') || '';
-                const active = toolName === 'LIBRARY' ? action === 'openLibraryView()' : action === `triggerTool('${toolName}')`;
+                const active = toolName === 'LIBRARY' ? action === 'openLibraryView()'
+                    : toolName === '' ? action === 'openSearchView()'
+                    : action === `triggerTool('${toolName}')`;
                 button.classList.toggle('ant-tool-active', active);
-                if (action.startsWith('triggerTool(') || action === 'openLibraryView()') button.setAttribute('aria-current', active ? 'page' : 'false');
+                if (action.startsWith('triggerTool(') || action === 'openLibraryView()' || action === 'openSearchView()') button.setAttribute('aria-current', active ? 'page' : 'false');
                 if (active && button.closest('#top-toolbar-container') && document.body.classList.contains('ant-workspace-mode')) {
                     button.scrollIntoView({ block: 'nearest', inline: 'center' });
                 }
@@ -1280,6 +1749,7 @@
             document.getElementById('top-back-label').textContent = t('backToSearch');
         }
         function triggerTool(toolName) {
+            if (toolName === 'IMG EDIT' || toolName === 'AUTO FILL') pushRecent('tool', toolName, toolName);
             activeTool = toolName;
             currentView = 'TOOL';
             document.body.classList.remove('ant-home');
