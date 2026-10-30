@@ -1912,9 +1912,13 @@
         }
 
         // ================= LIVE IMAGE SEARCH (serve.py /api/images) =================
-        // Master data + v8-style SharePoint search + CLIP image type. Without
-        // that backend (GitHub Pages, plain static server) search stays on demo data.
-        const IMG_API = '/api/images';
+        // Master data + v8-style SharePoint search + CLIP image type. Served by
+        // serve.py itself, or, on the hosted copy (GitHub Pages), by serve.py on
+        // the viewer's own computer once they open the page with ?local=1
+        // (remembered; others are never asked for local network access).
+        // Without either, search stays on demo data.
+        const LOCAL_IMG_API = 'http://127.0.0.1:8020/api/images';
+        let IMG_API = '/api/images';
         const CAT_ORDER = ['01_packshot', '02_lifestyle_human', '02_lifestyle_scene_setup', '02_lifestyle_collection',
             '02_lifestyle_color_background_or_packshot_low_priority', '03_artwork', '99_uncertain'];
         const CAT_META = {
@@ -1933,10 +1937,19 @@
         const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
         const catName = code => t((CAT_META[code] || CAT_META['99_uncertain'])[0]);
         const liveReady = (async () => {
+            const healthy = async base => {
+                try {
+                    const response = await fetch(`${base}/health`);
+                    return response.ok && (await response.json()).ok === true;
+                } catch (e) { return false; }
+            };
+            if (await healthy(IMG_API)) { liveMode = true; return; }
+            let optIn = new URLSearchParams(location.search).has('local');
             try {
-                const response = await fetch(`${IMG_API}/health`);
-                liveMode = response.ok && (await response.json()).ok === true;
-            } catch (e) { liveMode = false; }
+                if (optIn) localStorage.setItem('ant-local-backend', '1');
+                optIn = optIn || localStorage.getItem('ant-local-backend') === '1';
+            } catch (e) { /* storage blocked: only the ?local=1 link works */ }
+            if (optIn && await healthy(LOCAL_IMG_API)) { IMG_API = LOCAL_IMG_API; liveMode = true; }
         })();
 
         function resultView() {
