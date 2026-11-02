@@ -153,13 +153,23 @@
             #bottom-toolbar-container { display: none !important; }
             #top-toolbar-container .ant-top-tabs { display: none !important; }
         }
+        /* Laptops: the six tabs keep their place, the status pill keeps only its dot, and below 1280 the search takes its own row */
+        @media (min-width: 1024px) and (max-width: 1439px) {
+            .om-nav button { padding: 0 12px; }
+            .ant-conn { min-width: 44px; justify-content: center; padding: 0; }
+            .ant-conn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+        }
+        @media (min-width: 1024px) and (max-width: 1279px) {
+            #ant-topbar { flex-wrap: wrap; }
+            .ant-topbar-search { order: 3; flex: 1 1 100%; margin-left: 0; }
+        }
 
         /* Search: a white pill, the magnifier in its own circle, a "/" key, then the file upload */
         .ant-searchbar { display: flex; align-items: center; gap: 6px; height: 52px; padding: 0 6px; border: 1px solid transparent; border-radius: 999px; background: var(--surface); transition: border-color .15s; }
         .ant-searchbar:focus-within { border-color: var(--line-strong); }
         .ant-search-go { width: 40px; height: 40px; flex: none; display: grid; place-items: center; border-radius: 50%; background: var(--surface-2); color: var(--text); }
         .ant-search-go:hover { background: var(--surface-3); }
-        #search-input { flex: 1; min-width: 0; height: 100%; background: transparent; color: var(--text); font-size: 15px; outline: none; }
+        #search-input { flex: 1; width: 0; min-width: 0; height: 100%; background: transparent; color: var(--text); font-size: 15px; outline: none; }
         #search-input::placeholder { color: var(--text-3); }
         #search-input:focus-visible, #master-search-input:focus-visible { outline: none !important; }
         .ant-kbd { flex: none; min-width: 34px; height: 30px; display: grid; place-items: center; padding: 0 10px; border-radius: 999px; background: #8f8f8f; color: #fff; font: 500 13px/1 'Inter Tight', system-ui, sans-serif; }
@@ -197,7 +207,7 @@
         .om-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
         #home-dashboard { display: none; }
         body.ant-home #home-dashboard { display: grid; }
-        .om-bento { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gap); }
+        .om-bento { grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-flow: dense; gap: var(--gap); }  /* dense: half-width cards pair up on laptops */
         .om-card { position: relative; min-width: 0; padding: 22px 24px; border-radius: var(--radius-lg); background: var(--surface); }
         .om-card.is-dark { background: var(--ink-dark); color: var(--on-dark); }
         .om-card h2, .om-card h3 { font-size: 20px; font-weight: 400; line-height: 1.25; letter-spacing: -.02em; }
@@ -251,6 +261,7 @@
         .om-product-bar button:hover { transform: scale(1.06); }
         .om-product-empty { height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; padding: 24px; }
         .om-product-empty p { font-size: 15px; color: var(--on-dark-2); }
+        .om-product-empty img { flex: 1 1 0; min-height: 0; width: 100%; margin-bottom: 8px; border-radius: 12px; object-fit: cover; opacity: .3; filter: grayscale(1); } /* where the packshot will be */
         /* a value still loading: a flat bar at the size of the figure it stands for */
         .om-skel { display: inline-block; width: 2.4em; height: .8em; border-radius: 6px; background: var(--surface-3); vertical-align: baseline; }
         .is-dark .om-skel { background: #3a3a3c; }
@@ -324,6 +335,20 @@
         .om-step-key { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 12px; font-size: 12px; color: var(--text-3); }
         .om-step-key i { display: inline-block; width: 9px; height: 9px; margin-right: 6px; border-radius: 2px; vertical-align: -1px; }
         .om-step small { display: block; overflow: hidden; margin-top: 8px; padding-right: 6px; font-size: 12px; color: var(--text-3); white-space: nowrap; text-overflow: ellipsis; }
+        /* Demo (no A.N.T server): the sample products stand in for the four master-data cards */
+        .om-demo { display: none; grid-column: span 12; }
+        .om-bento.is-demo .om-demo { display: block; }
+        .om-bento.is-demo :is(.om-status, .om-source, .om-brands, .om-complete) { display: none; }
+        .om-samples { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; margin-top: 20px; }
+        .om-sample { align-self: start; min-width: 0; text-align: left; }
+        .om-sample img { width: 100%; aspect-ratio: 3 / 4; border-radius: 12px; object-fit: cover; transition: transform .2s; }
+        .om-sample:hover img { transform: translateY(-3px); }
+        .om-sample strong { display: block; margin-top: 10px; font-size: 15px; font-weight: 500; line-height: 1.3; }
+        .om-sample small { display: block; font-size: 13px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+        @media (min-width: 1281px) {
+            .om-bento.is-demo .om-demo, .om-bento.is-demo .om-recent { grid-column: span 8; }
+            .om-bento.is-demo .om-product { grid-column: span 4; }
+        }
         @media (max-width: 1280px) {
             .om-status, .om-brands, .om-recent { grid-column: span 12; }
             .om-source, .om-complete, .om-product, .om-labels { grid-column: span 6; }
@@ -335,188 +360,224 @@
             .om-tl-item { margin-left: 0; }
             .om-huge { font-size: 44px; }
             .om-status-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .om-samples { grid-template-columns: repeat(3, minmax(0, 1fr)); }
             .om-moves ul { grid-template-columns: minmax(0, 1fr); }
             .ant-title-row h1 { font-size: 24px; }
             body:not(.ant-home) .om-actions { display: none; }
         }
 
-        /* Landing page (taste-skill direction "The product performs", seed 498572680).
-           The product's own interface is the picture: working fragments of A.N.T,
-           marked data-ui, on one flat teal stage. Type and colour are the app's.
-           Sizes: huge (the typed EAN), display (h1, the command list, the closing
-           line), section (h2, statements), lead 18px, small 14px. */
+        /* Landing page (taste-skill direction "The printed annual", seed 892856279; A.N.T's own type and
+           colours kept). One vertical axis at five twelfths of the grid: headings and body start on it,
+           side notes sit left of it. Sections alternate the paper ground with full-bleed fields of ink,
+           white and orange. The pictures are flat drawings of cosmetics in the same colours (assets/art,
+           drawn by code), butted into gutterless mosaics. Sizes: display (h1), section (h2), statement,
+           lead, 16px, 14px. */
         #landing-view { display: none; }
         body.ant-landing { padding: 0 !important; }
         body.ant-landing #ant-app { display: none !important; }
-        /* The landing scrolls the document itself (sticky stages and anchors follow the window). */
+        /* The landing scrolls the document itself (anchors follow the window). */
         html:has(body.ant-landing), body.ant-landing { height: auto !important; overflow: visible !important; background: var(--sheet); }
         body.ant-landing { display: block !important; }
         body.ant-landing #landing-view { display: block; }
         #landing-view .ant-mono, #landing-view .ant-copy b { font-family: inherit; }
-        #landing-view { --ld-m: clamp(16px, 2.8vw, 40px); --ld-stage: var(--ink-dark); --ld-cut: clamp(72px, 12vw, 190px); --ld-huge: clamp(44px, 8vw, 132px); --ld-display: clamp(38px, 5.2vw, 80px); --ld-h2: clamp(24px, 2.2vw, 32px); }
+        #landing-view { --ld-m: clamp(16px, 2.8vw, 40px); --ld-gap: 24px; --ld-display: clamp(46px, 5.4vw, 104px); --ld-h2: clamp(32px, 3.4vw, 60px); --ld-say: 20px; --ld-28: clamp(20px, 1.95vw, 28px); --on-dark-2: #bdbdbd; }
         .ld-wrap { padding-left: var(--ld-m); padding-right: var(--ld-m); }
+        .ld-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--ld-gap); }
+        .ld-axis { grid-column: 6 / -1; }
+        .ld-side { grid-column: 1 / span 4; }
         .ld-nav { display: flex; align-items: center; gap: 24px; height: 84px; }
         .ld-word { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; color: var(--text); }
         .ld-links { display: flex; gap: 28px; margin-left: auto; }
-        .ld-links a { font-size: 15px; color: var(--text); transition: color .15s; }
+        .ld-links a { font-size: 16px; color: var(--text); transition: color .15s; }
         .ld-links a:hover { color: var(--primary-ink); }
         .ld-nav .ant-controls { margin-left: 0; }
-        /* Hero: headline upper left, the fragment on a chamfered stage that bleeds off right and bottom */
-        .ld-hero { position: relative; min-height: max(760px, calc(100svh - 84px)); }
-        .ld-hero-text { max-width: 46%; padding-top: 66px; }
-        .ld-hero h1 { max-width: 9em; text-wrap: balance; font-size: var(--ld-display); font-weight: 500; line-height: 1.02; letter-spacing: -.03em; }
-        .ld-lead { max-width: 40ch; margin-top: 24px; font-size: 18px; line-height: 1.55; color: var(--text); }
-        .ld-hero .ant-btn { margin-top: 32px; min-height: 44px; padding: 0 18px; }
-        .ld-stage { position: absolute; left: calc(var(--ld-m) + (100% - 2 * var(--ld-m)) / 3); right: 0; top: 42%; bottom: 0; overflow: hidden; background: var(--ld-stage); clip-path: polygon(var(--ld-cut) 0, 100% 0, 100% 100%, 0 100%, 0 var(--ld-cut)); }
-        .ld-frag-hero { position: absolute; top: 56px; left: calc(var(--ld-cut) * .75); width: 620px; }
-        .ld-panel { padding: 20px; background: var(--surface); border-radius: var(--radius); color: var(--text); font-size: 14px; }
+        #landing-view .ant-btn { font-size: 16px; }
+        #landing-view .ant-lang button { font-size: 14px; }
+        #landing-view [data-ui] * { font-size: 14px; }  /* the interface fragments: their small text at the page's small step */
+        #landing-view h2 { font-size: var(--ld-h2); font-weight: 500; line-height: 1.04; letter-spacing: -.03em; }
+
+        /* Masthead: one code's picture set as a gutterless mosaic, then the title on the axis */
+        .ld-top { display: flex; flex-direction: column; }
+        .ld-mast { order: -1; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); height: clamp(300px, 44svh, 520px); }
+        .ld-mast > *, .ld-strip > * { min-width: 0; min-height: 0; overflow: hidden; }
+        .ld-mast, .ld-strip { grid-template-rows: 100%; }
+        .ld-mast img { display: block; width: 100%; height: 100%; object-fit: cover; }
+        .ld-mast .ld-drift img { animation: ld-drift 18s ease-in-out infinite alternate; }
+        @keyframes ld-drift { from { transform: scale(1); } to { transform: scale(1.07) translateY(-1.5%); } }
+        .ld-tile { display: flex; flex-direction: column; justify-content: space-between; gap: 16px; padding: var(--ld-m); }
+        .ld-tile.is-orange { background: var(--primary); color: #1a1a1a; }
+        .ld-tile.is-ink { background: var(--ink-dark); color: var(--on-dark); }
+        .ld-tile-num { font-size: var(--ld-display); font-weight: 500; line-height: .86; letter-spacing: -.045em; font-variant-numeric: tabular-nums; }
+        .ld-tile-say { max-width: 20ch; font-size: 16px; line-height: 1.4; }
+        .ld-tile-code { font-size: 14px; color: var(--on-dark-2); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+        .ld-kinds { display: grid; gap: 10px; font-size: 16px; }
+        .ld-kinds li { display: flex; align-items: center; gap: 10px; }
+        .ld-kinds i { flex: none; width: 10px; height: 10px; border-radius: 3px; background: #6e6e70; }
+        .ld-kinds i.is-main { background: var(--primary); }
+        .ld-kinds b { margin-left: auto; font-weight: 500; font-variant-numeric: tabular-nums; }
+        .ld-hero { padding-top: clamp(32px, 4.5svh, 56px); padding-bottom: 8px; align-items: start; }
+        .ld-hero h1 { grid-row: 1; font-size: var(--ld-display); font-weight: 500; line-height: .98; letter-spacing: -.04em; }
+        .ld-hero .ld-side { grid-row: 1; padding-top: .5em; }
+        .ld-line { display: block; overflow: hidden; padding-bottom: .07em; }
+        .ld-line > span { display: inline-block; animation: ld-line .9s cubic-bezier(.16, 1, .3, 1) both; }
+        .ld-line + .ld-line > span { animation-delay: .11s; }
+        @keyframes ld-line { from { transform: translateY(108%); } }
+        .ld-lead { max-width: 34ch; font-size: var(--ld-say); line-height: 1.4; color: var(--text); }
+        .ld-hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 28px; }
+        .ld-link { min-height: 44px; display: inline-flex; align-items: center; font-size: 16px; color: var(--text); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 6px; transition: color .15s, text-decoration-color .15s; }
+        .ld-link:hover { color: var(--primary-ink); text-decoration-color: currentColor; }
+
+        /* Try it: what you hand A.N.T on the dark half, what it makes of it on the light half */
+        .ld-try { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); min-height: min(74svh, 780px); margin-top: clamp(96px, 12svh, 160px); }
+        .ld-field { min-width: 0; display: flex; flex-direction: column; padding: clamp(40px, 8svh, 96px) var(--ld-m) 32px; }
+        .ld-field.is-in { background: var(--ink-dark); color: var(--on-dark); }
+        .ld-field.is-out { align-items: flex-start; background: var(--surface); }
+        .ld-try-box { display: flex; align-items: center; gap: 12px; max-width: 640px; padding: 0 24px; border-radius: 999px; background: #3a3a3c; }
+        .ld-try-box i { font-size: .6em; color: var(--on-dark-2); }
+        .ld-try-input { flex: 1; min-width: 0; height: 1.8em; padding: 0; background: none; border: 0; outline: 0; color: var(--on-dark); font-size: var(--ld-28); font-weight: 500; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+        .ld-try-box:focus-within { outline: 2px solid var(--primary); outline-offset: 3px; }
+        .ld-try-hint { max-width: 44ch; margin-top: 18px; font-size: 16px; line-height: 1.5; color: var(--on-dark-2); }
+        .ld-try-examples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+        .ld-try-examples button { min-height: 44px; padding: 0 18px; border-radius: 999px; background: #3a3a3c; color: var(--on-dark); font-size: 16px; font-variant-numeric: tabular-nums; transition: background-color .15s; }
+        .ld-try-examples button:hover { background: #4a4a4c; }
+        .ld-field.is-in .ld-split { color: var(--on-dark); }
+        .ld-split { margin-top: auto; padding-top: 48px; font-size: var(--ld-h2); font-weight: 500; line-height: 1.04; letter-spacing: -.03em; }
+        .ld-out { width: min(100%, 580px); }
+        .ld-panel { padding: 20px; background: var(--bg); border-radius: var(--radius); color: var(--text); font-size: 14px; }
         .ld-panel .ant-tabs { margin-top: 16px; }
-        .ld-frag-name { font-size: 18px; font-weight: 600; line-height: 1.3; }
+        #landing-view .ld-frag-name { font-size: 16px; font-weight: 600; line-height: 1.3; }
         .ld-frag-tools { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
-        .ld-frag-tools .ant-btn { min-height: 32px; font-size: 13px; }
-        .ld-frag-head { display: flex; align-items: center; gap: 8px; margin: 16px 0 10px; font-size: 15px; font-weight: 600; }
+        .ld-frag-tools .ant-btn { min-height: 32px; }
+        .ld-frag-head { display: flex; align-items: center; gap: 8px; margin: 16px 0 10px; font-weight: 600; }
         .ld-frag-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
         .ld-frag-grid .ant-img-card { padding: 6px; }
         .ld-frag-grid .ant-img-check { top: 10px; left: 10px; width: 26px; height: 26px; }
-        .ld-legend { min-height: 28px; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-2); }
-        /* Try it: the section's headline is the search line */
-        .ld-try { padding-top: 160px; }
-        .ld-try-line { display: flex; align-items: center; max-width: 100%; }
-        .ld-try-input { field-sizing: content; min-width: 1ch; max-width: 100%; padding: 0; background: none; border: 0; outline: 0; color: var(--text); font-size: var(--ld-huge); font-weight: 500; line-height: 1.1; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
-        .ld-caret { flex: none; width: .08em; height: .9em; font-size: var(--ld-huge); background: var(--primary); animation: ld-blink 1.1s steps(1) infinite; }
-        .ld-try-line:focus-within .ld-caret { visibility: hidden; }
-        @supports not (field-sizing: content) { .ld-try-input { width: 100%; } .ld-caret { display: none; } }
-        @keyframes ld-blink { 50% { opacity: 0; } }
-        .ld-try-answer { max-width: 560px; margin-top: 48px; }
-        .ld-row { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 14px; padding: 12px 0; border-top: 1px solid var(--line); }
-        .ld-row-cover { width: 48px; height: 60px; overflow: hidden; border-radius: var(--radius-sm); background: var(--plate); }
-        .ld-row-cover img, .ld-frag-grid img { width: 100%; height: 100%; object-fit: contain; }
-        .ld-row-name { display: block; font-size: 15px; font-weight: 500; }
-        .ld-row .ant-set { margin-top: 8px; }
-        .ld-row .ant-set-bar { height: 6px; }
-        .ld-try-more, .ld-try-none { padding: 12px 0; font-size: 16px; color: var(--text-2); }
-        .ld-try-examples { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 40px; }
-        .ld-try-examples button { min-height: 44px; font-size: 17px; color: var(--text); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 5px; transition: color .15s, text-decoration-color .15s; }
-        .ld-try-examples button:hover { color: var(--primary-ink); text-decoration-color: currentColor; }
-        /* Packshots: three museum objects photographed the way a packshot is */
-        .ld-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; }
-        .ld-pack { padding-top: 160px; align-items: start; }
-        .ld-pack-text { grid-column: 1 / span 4; }
-        .ld-pack h2, .ld-how h2, .ld-tools h2 { font-size: var(--ld-h2); font-weight: 500; line-height: 1.2; letter-spacing: -.01em; }
-        .ld-pack-text p { max-width: 42ch; margin-top: 16px; font-size: 18px; line-height: 1.55; }
-        .ld-pack figure { margin: 0; }
-        .ld-pack figure > div { overflow: hidden; background: #e9e9e9; }
-        .ld-pack img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; }
-        .ld-pack figcaption { margin-top: 8px; font-size: 14px; color: var(--text-2); }
-        .ld-pack-main { grid-column: 5 / span 5; }
-        .ld-pack-main img { animation: ld-drift 16s ease-in-out infinite alternate; }
-        .ld-pack-side { grid-column: 10 / span 3; display: grid; gap: 24px; }
-        @keyframes ld-drift { from { transform: scale(1); } to { transform: scale(1.06) translateY(-1.5%); } }
-        /* How it works: three statements on the left, one pinned fragment on the right that changes with them */
-        .ld-how { padding-top: 160px; }
-        .ld-how > h2 { grid-column: 1 / span 5; grid-row: 1; }
-        .ld-how-steps { grid-column: 1 / span 5; grid-row: 2; }
-        .ld-step { min-height: 80vh; display: flex; flex-direction: column; justify-content: center; }
-        .ld-step-say { max-width: 16em; font-size: var(--ld-h2); line-height: 1.25; color: var(--text-3); transition: color .3s; }
-        .ld-step.is-on .ld-step-say { color: var(--text); }
-        .ld-step-more { max-width: 40ch; margin-top: 12px; font-size: 16px; line-height: 1.55; color: var(--text-2); }
-        .ld-how-stage { grid-column: 7 / span 6; grid-row: 1 / span 2; position: sticky; top: 14vh; align-self: start; height: min(560px, 72vh); display: grid; place-items: center; overflow: hidden; border-radius: var(--radius); background: var(--ld-stage); }
-        .ld-how-frag { display: grid; width: min(520px, 86%); }
-        .ld-state { grid-area: 1 / 1; align-self: center; opacity: 0; visibility: hidden; transform: translateY(12px); transition: opacity .35s, transform .35s, visibility .35s; }
-        .ld-how-frag[data-state="1"] [data-for="1"], .ld-how-frag[data-state="2"] [data-for="2"], .ld-how-frag[data-state="3"] [data-for="3"] { opacity: 1; visibility: visible; transform: none; }
-        .ld-search { height: 48px; }
-        .ld-typed { font-size: 18px; }
-        .ld-caret-sm { width: 2px; height: 22px; margin-left: 2px; background: var(--text); animation: ld-blink 1.1s steps(1) infinite; }
-        .ld-chain { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 16px; }
-        .ld-chain div { padding: 10px 12px; border-radius: var(--radius-sm); background: var(--surface-2); }
-        .ld-chain dt { font-size: 12px; font-weight: 600; color: var(--text-3); }
-        .ld-chain dd { margin-top: 2px; font-size: 14px; }
-        .ld-groups { margin-top: 12px; }
-        .ld-groups li { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--line); font-size: 14px; }
-        .ld-groups b { font-weight: 500; font-variant-numeric: tabular-nums; }
-        /* Tools: A.N.T's capabilities as its own command list, set large */
-        .ld-tools { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 5vw, 88px); align-items: start; padding-top: 160px; }
-        .ld-tools-side { position: sticky; top: 96px; }
-        .ld-tools-lead { max-width: 36ch; margin-top: 14px; font-size: 18px; line-height: 1.5; color: var(--text-2); }
+        .ld-frag-grid img { width: 100%; height: 100%; object-fit: contain; }
+        .ld-legend { min-height: 28px; display: inline-flex; align-items: center; gap: 6px; color: var(--text-2); }
+        .ld-try-more, .ld-try-none { margin-top: 16px; font-size: 16px; line-height: 1.5; color: var(--text-2); }
+
+        /* How it works: the progress bar, enlarged until it is the diagram; each stage as long as it takes */
+        .ld-how { padding-top: clamp(120px, 16svh, 180px); }
+        .ld-how h2 { grid-row: 1; }
+        .ld-note { grid-row: 1; align-self: end; max-width: 32ch; font-size: 16px; line-height: 1.5; color: var(--text-2); }
+        .ld-stages { grid-column: 1 / -1; display: flex; gap: 6px; margin-top: 56px; }
+        .ld-stage { flex: var(--grow) 1 0; min-width: 12%; display: flex; flex-direction: column; }
+        #landing-view .ld-seg { height: clamp(140px, 22svh, 240px); padding: 20px; font-size: var(--ld-28); font-weight: 500; line-height: 1.15; letter-spacing: -.015em; }
+        .ld-seg.is-white { background: var(--surface); }
+        .ld-seg.is-grey { background: var(--surface-3); }
+        .ld-seg.is-ink { background: var(--ink-dark); color: var(--on-dark); }
+        .ld-seg.is-orange { background: var(--primary); color: #1a1a1a; }
+        :root[data-theme="dark"] .ld-seg.is-ink { background: #e9e9e9; color: #1a1a1a; } /* on a dark page the long stage turns light, so the four still read apart */
+        #landing-view .ld-stage p { max-width: 26ch; margin-top: 16px; padding-right: 12px; font-size: 16px; line-height: 1.5; color: var(--text-2); }
+
+        /* Packshots first: a whole page of ink, the picture kinds as one mosaic */
+        .ld-kinds-page { margin-top: clamp(120px, 16svh, 180px); padding-top: clamp(80px, 12svh, 140px); background: var(--ink-dark); color: var(--on-dark); }
+        .ld-kinds-page h2 { color: var(--on-dark); }
+        .ld-kinds-page .ld-note { color: var(--on-dark-2); }
+        .ld-body { max-width: 42ch; margin-top: 20px; font-size: var(--ld-say); line-height: 1.55; color: var(--on-dark); }
+        .ld-mosaic { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); margin-top: clamp(56px, 8svh, 96px); }
+        .ld-mosaic > * { position: relative; margin: 0; aspect-ratio: 3 / 4; overflow: hidden; }
+        .ld-mosaic img { display: block; width: 100%; height: 100%; object-fit: cover; }
+        .ld-mosaic figcaption { position: absolute; left: 12px; right: 12px; bottom: 12px; width: fit-content; padding: 4px 12px; border-radius: 999px; background: var(--surface); color: var(--text); font-size: 14px; }
+
+        /* Tools: the task list beside the chosen task, on the axis */
+        .ld-tools { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--ld-gap); align-items: start; padding-top: clamp(120px, 16svh, 180px); }
+        .ld-tools-side { position: sticky; top: 96px; padding-right: clamp(0px, 3vw, 64px); }
+        .ld-tools-lead { max-width: 36ch; margin-top: 16px; font-size: var(--ld-say); line-height: 1.5; color: var(--text-2); }
         .ld-cmd-detail { margin-top: 40px; padding: 28px; border-radius: var(--radius-lg); background: var(--ink-dark); color: var(--on-dark); }
         .ld-cmd-detail h3 { font-size: 28px; font-weight: 500; line-height: 1.15; letter-spacing: -.02em; color: var(--on-dark); }
-        .ld-cmd-detail p { max-width: 44ch; margin-top: 10px; font-size: 16px; line-height: 1.55; color: var(--on-dark-2); }
+        .ld-cmd-detail p { max-width: 44ch; margin-top: 10px; font-size: 16px; line-height: 1.55; color: var(--on-dark); }
         .ld-cmd-detail .ant-btn { margin-top: 24px; }
         .ld-cmd { padding: 8px; border-radius: var(--radius-lg); background: var(--surface); }
-        .ld-cmd-input { width: 100%; height: 52px; padding: 0 20px; border: 0; border-radius: 999px; background: var(--surface-2); color: var(--text); font-size: 17px; outline: none; }
+        #landing-view .ld-cmd-input { width: 100%; height: 52px; padding: 0 20px; border: 0; border-radius: 999px; background: var(--surface-2); color: var(--text); font-size: 16px; outline: none; }
         .ld-cmd-input::placeholder { color: var(--text-3); }
         .ld-cmd-input:focus-visible { outline: 2px solid var(--primary-ink); }
         .ld-cmd-list { margin-top: 6px; }
         .ld-cmd-row { width: 100%; display: grid; gap: 2px; padding: 13px 20px; border-radius: var(--radius); text-align: left; color: var(--text); transition: background-color .15s, color .15s; }
         .ld-cmd-row:hover { background: var(--surface-2); }
         .ld-cmd-row[aria-selected="true"] { background: var(--ink-dark); color: var(--on-dark); }
-        .ld-cmd-name { display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 19px; font-weight: 500; line-height: 1.3; letter-spacing: -.01em; }
-        .ld-key { flex: none; min-width: 26px; height: 26px; display: inline-grid; place-items: center; padding: 0 8px; border-radius: 999px; background: var(--surface-3); color: var(--text-2); font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0; }
+        #landing-view .ld-cmd-name { display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--ld-say); font-weight: 500; line-height: 1.3; letter-spacing: -.01em; }
+        .ld-key { flex: none; min-width: 26px; height: 26px; display: inline-grid; place-items: center; padding: 0 8px; border-radius: 999px; background: var(--surface-3); color: var(--text-2); font-family: inherit; font-size: 14px; font-weight: 500; letter-spacing: 0; }
         .ld-cmd-say { overflow: hidden; font-size: 14px; line-height: 1.45; color: var(--text-3); white-space: nowrap; text-overflow: ellipsis; }
         .ld-cmd-row[aria-selected="true"] .ld-cmd-say { color: var(--on-dark-2); }
-        .ld-cmd-none { padding: 16px 0; font-size: 17px; color: var(--text-2); }
-        /* Close: the sentence's blank is the form */
-        .ld-end { padding-top: 200px; }
-        .ld-end h2 { font-size: clamp(32px, 4.4vw, 64px); font-weight: 500; line-height: 1.1; letter-spacing: -.025em; }
-        .ld-end-bar { display: flex; gap: 8px; max-width: 680px; margin-top: 28px; padding: 6px; border-radius: 999px; background: var(--surface); }
-        .ld-end-input { flex: 1; min-width: 0; height: 52px; padding: 0 20px; border: 0; border-radius: 999px; background: transparent; color: var(--text); font-size: 17px; outline: none; }
+        #landing-view .ld-cmd-none { padding: 16px 0; font-size: 16px; color: var(--text-2); }
+
+        /* Close: three photographs, then a field of orange with the search in it */
+        .ld-close { margin-top: clamp(120px, 16svh, 180px); }
+        .ld-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); height: clamp(240px, 40svh, 460px); }
+        .ld-strip img { display: block; width: 100%; height: 100%; object-fit: cover; }
+        .ld-band { padding-top: clamp(48px, 7svh, 80px); padding-bottom: clamp(56px, 8svh, 96px); background: var(--primary); color: #1a1a1a; }
+        .ld-band h2 { grid-column: 1 / span 7; color: #1a1a1a; }
+        .ld-band .ld-end-bar, .ld-band .ld-end-note { grid-column: 1 / span 7; }
+        .ld-end-bar { display: flex; gap: 8px; max-width: 680px; margin-top: 32px; padding: 6px; border-radius: 999px; background: var(--surface); }
+        .ld-end-input { flex: 1; min-width: 0; height: 52px; padding: 0 20px; border: 0; border-radius: 999px; background: transparent; color: var(--text); font-size: 16px; outline: none; }
         .ld-end-input::placeholder { color: var(--text-3); }
-        .ld-end-input:focus-visible { outline: 2px solid var(--primary-ink) !important; outline-offset: 0; }
+        .ld-end-input:focus-visible { outline: 2px solid var(--ink-dark) !important; outline-offset: 0; }
         .ld-end-bar .ant-btn { flex: none; min-height: 52px; }
-        .ld-end-note { max-width: 60ch; margin-top: 20px; font-size: 16px; line-height: 1.55; color: var(--text-2); }
-        .ld-foot { display: grid; grid-template-columns: 1fr auto 1fr; align-items: baseline; gap: 24px; margin-top: clamp(120px, 18svh, 220px); padding-bottom: 30px; font-size: 14px; color: var(--text-2); }
-        .ld-foot nav { display: flex; gap: 24px; }
-        .ld-foot a { color: var(--text); }
-        .ld-foot > :last-child { justify-self: end; text-align: right; }
-        /* Motion: the hero fragment opens like a shutter; every part rises once as it enters */
+        .ld-end-note { max-width: 60ch; margin-top: 20px; font-size: 16px; line-height: 1.55; color: #1a1a1a; }
+        .ld-band .ld-samples { grid-column: 9 / -1; grid-row: 1 / span 3; align-self: end; }
+        .ld-samples h3 { font-size: 16px; font-weight: 500; }
+        .ld-samples ul { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .ld-samples button { min-height: 44px; padding: 0 18px; border-radius: 999px; background: rgba(0, 0, 0, .12); color: #1a1a1a; font-size: 16px; font-variant-numeric: tabular-nums; transition: background-color .15s; }
+        .ld-samples button:hover { background: rgba(0, 0, 0, .2); }
+
+        /* Footer: ink ground, four columns, the full name across the width */
+        .ld-foot { padding-top: 48px; padding-bottom: 28px; background: #1a1a1a; color: #bdbdbd; }
+        .ld-foot-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--ld-gap); font-size: 16px; line-height: 1.5; }
+        .ld-foot-cols ul { display: grid; gap: 6px; }
+        .ld-foot-cols strong { display: block; margin-bottom: 6px; font-weight: 500; color: #f5f5f5; }
+        .ld-foot a, .ld-foot button { color: #bdbdbd; text-align: left; transition: color .15s; }
+        .ld-foot a:hover, .ld-foot button:hover { color: #f5f5f5; }
+        .ld-wordmark { display: block; width: 100%; height: auto; margin-top: clamp(72px, 12svh, 160px); fill: #f5f5f5; }
+        .ld-legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; margin-top: 20px; font-size: 14px; line-height: 1.5; }
+
+        /* Each part rises once as it enters; without script or with reduced motion everything is simply there */
         .ld-js [data-rise] { opacity: 0; transform: translateY(24px); transition: opacity .6s cubic-bezier(.2, .8, .2, 1), transform .6s cubic-bezier(.2, .8, .2, 1); transition-delay: calc(var(--rise, 0) * 80ms); }
         .ld-js [data-rise].is-in { opacity: 1; transform: none; }
-        .ld-js .ld-stage[data-rise] { opacity: 1; transform: none; }
-        .ld-js .ld-stage[data-rise] .ld-shutter { clip-path: inset(0 100% 0 0); transition: clip-path 1.1s cubic-bezier(.7, 0, .2, 1) .2s; }
-        .ld-js .ld-stage[data-rise] .ld-shutter > * { transform: scale(1.12); transform-origin: left top; transition: transform 1.4s cubic-bezier(.2, .8, .2, 1) .2s; }
-        .ld-js .ld-stage.is-in .ld-shutter { clip-path: inset(0); }
-        .ld-js .ld-stage.is-in .ld-shutter > * { transform: none; }
         @media (prefers-reduced-motion: reduce) {
-            .ld-pack-main img, .ld-caret, .ld-caret-sm { animation: none; }
+            .ld-mast .ld-drift img, .ld-line > span { animation: none; }
+        }
+        @media (max-width: 1100px) {
+            .ld-mast { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: none; grid-auto-rows: clamp(180px, 26vw, 300px); height: auto; }
+            .ld-mosaic { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .ld-band h2, .ld-band .ld-end-bar, .ld-band .ld-end-note, .ld-band .ld-samples { grid-column: 1 / -1; grid-row: auto; }
+            .ld-band .ld-samples { margin-top: 40px; }
         }
         @media (max-width: 900px) {
+            .ld-try { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+            .ld-stages { flex-direction: column; margin-top: 32px; }
+            .ld-stage { min-width: 0; }
+            #landing-view .ld-seg { height: auto; min-height: calc(var(--grow) * 40px + 72px); }
+            #landing-view .ld-stage p { max-width: 60ch; margin: 10px 0 18px; }
+        }
+        @media (max-width: 760px) {
             .ld-links { display: none; }
             .ld-nav .ant-controls { margin-left: auto; }
-            .ld-hero { min-height: 0; }
-            .ld-hero-text { max-width: none; padding-top: 24px; }
-            .ld-hero h1 { font-size: 10vw; }
-            .ld-lead { font-size: 16px; }
-            .ld-stage { position: relative; left: auto; right: auto; top: auto; bottom: auto; height: 560px; margin: 40px calc(-1 * var(--ld-m)) 0; --ld-cut: 72px; }
-            .ld-frag-hero { left: 16px; top: 64px; width: calc(100% - 32px); }
+            .ld-axis, .ld-side { grid-column: 1 / -1; }
+            .ld-mast { order: 0; margin-top: 32px; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 56vw; }
+            .ld-tile { padding: 16px; order: 1; } /* photographs first: the title block above them ends in a link */
+            .ld-tile-say, .ld-kinds, .ld-tile-code { font-size: 14px; }
+            .ld-kinds { gap: 4px; }
+            .ld-hero { padding-top: 20px; }
+            .ld-hero h1 { font-size: var(--ld-display); }
+            .ld-hero .ld-side { grid-row: 2; padding-top: 20px; }
+            .ld-field { padding: 40px 20px 28px; }
+            .ld-try-box { padding: 0 18px; }
             .ld-frag-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .ld-try { min-height: 0; padding-top: 120px; }
-            .ld-try-input { font-size: 11vw; }
-            .ld-caret { font-size: 11vw; }
-            .ld-try-answer { margin-top: 28px; }
-            .ld-try-examples { gap: 8px; }
-            .ld-try-examples button { padding: 0 14px; border-radius: var(--radius-sm); background: var(--surface-2); text-decoration: none; }
-            .ld-pack.ld-grid { display: block; }
-            .ld-pack-main { margin-top: 32px; }
-            .ld-pack-side { grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+            .ld-how h2, .ld-note { grid-row: auto; }
+            .ld-note { margin-top: 16px; }
+            .ld-mosaic { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .ld-tools { grid-template-columns: minmax(0, 1fr); }
-            .ld-tools-side { position: static; }
+            .ld-tools-side { position: static; padding-right: 0; }
             .ld-cmd-detail { display: none; } /* a tap on a task opens it */
             .ld-cmd-say { white-space: normal; }
-        }
-        @media (max-width: 700px) {
-            .ld-grid.ld-how { display: flex; flex-direction: column; }
-            .ld-how-stage { position: sticky; top: 0; z-index: 1; order: 1; height: 46svh; margin: 24px calc(-1 * var(--ld-m)) 0; border-radius: 0; }
-            .ld-how-steps { order: 2; }
-            .ld-step { min-height: 60svh; }
-            .ld-step-say { font-size: 22px; }
-            .ld-how-frag { width: calc(100% - 32px); }
             .ld-key { display: none; }
-            .ld-end { padding-top: 140px; }
-            .ld-end h2 { font-size: 32px; }
+            .ld-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: none; height: auto; }
+            .ld-strip > * { aspect-ratio: 1; }
+            .ld-strip > :first-child { grid-column: 1 / -1; aspect-ratio: 4 / 3; }
             .ld-end-bar .ant-btn { padding: 0 18px; }
-            .ld-foot { display: flex; flex-direction: column; gap: 8px; margin-top: 20svh; padding-bottom: 24px; }
-            .ld-foot nav { flex-wrap: wrap; gap: 8px 20px; }
-            .ld-foot > :last-child { text-align: left; }
+            .ld-foot-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 32px; }
+            .ld-legal { flex-direction: column; }
         }
 
         /* Demo result page (no backend) */
@@ -782,52 +843,70 @@
         </header>
 
         <main>
-            <section class="ld-hero ld-wrap" aria-labelledby="ld-title">
-                <div class="ld-hero-text">
-                    <h1 id="ld-title" data-i18n="ldHeroTitle" data-rise>Một mã EAN, đủ bộ ảnh</h1>
-                    <p class="ld-lead" data-i18n="ldHeroLead" data-rise style="--rise: 1">A.N.T khớp mã với master data rồi gom ảnh của sản phẩm trên SharePoint, đã chia sẵn packshot, ảnh có người và ảnh dàn cảnh.</p>
-                    <button type="button" class="ant-btn ant-btn-primary" onclick="enterApp()" data-rise style="--rise: 2"><span data-i18n="getStarted">Vào không gian làm việc</span></button>
+            <section class="ld-top" aria-labelledby="ld-title">
+                <div class="ld-hero ld-grid ld-wrap">
+                    <h1 id="ld-title" class="ld-axis"><span class="ld-line"><span data-i18n="ldHeroTitle1">Một mã EAN,</span></span><span class="ld-line"><span data-i18n="ldHeroTitle2">đủ bộ ảnh</span></span></h1>
+                    <div class="ld-side">
+                        <p class="ld-lead" data-i18n="ldHeroLead" data-rise>A.N.T khớp mã với master data rồi gom ảnh của sản phẩm trên SharePoint, đã chia sẵn packshot, ảnh có người và ảnh dàn cảnh.</p>
+                        <div class="ld-hero-actions" data-rise style="--rise: 1">
+                            <button type="button" class="ant-btn ant-btn-primary" onclick="enterApp()"><span data-i18n="getStarted">Vào không gian làm việc</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+                            <a class="ld-link" href="#ld-try" data-i18n="ldTryLink">Thử với một mã mẫu</a>
+                        </div>
+                    </div>
                 </div>
-                <div class="ld-stage" data-rise>
-                    <div id="ld-hero-frag" class="ld-frag-hero ld-shutter" data-ui></div>
+                <div class="ld-mast">
+                    <div class="ld-tile is-orange"><p class="ld-tile-num" id="ld-mast-num">18</p><p class="ld-tile-say" data-i18n="ldMastSay">ảnh cho một mã mẫu, chia theo loại, packshot lên đầu</p></div>
+                    <div class="ld-tile is-ink"><p class="ld-tile-code" id="ld-mast-code"></p><ul class="ld-kinds" id="ld-mast-kinds"></ul></div>
+                    <div class="ld-drift"><img src="assets/art/dropper.svg" width="300" height="400" alt="Minh họa chai serum nhỏ giọt"></div>
+                    <div><img src="assets/art/jar.svg" width="300" height="400" alt="Minh họa hũ kem"></div>
+                    <div><img src="assets/art/pump.svg" width="300" height="400" alt="Minh họa chai sữa rửa mặt có vòi"></div>
+                    <div><img src="assets/art/toner.svg" width="300" height="400" alt="Minh họa chai toner nắp cam"></div>
                 </div>
             </section>
 
-            <section id="ld-try" class="ld-try ld-wrap" aria-label="Thử tìm" data-i18n-aria="ldNavTry">
-                <div class="ld-try-ui" data-ui>
-                    <div class="ld-try-line" data-rise>
-                        <input id="ld-try-input" class="ld-try-input" type="text" value="2000104004001" autocomplete="off" spellcheck="false" aria-label="Gõ EAN, mã hàng hoặc tên sản phẩm mẫu" data-i18n-aria="ldTryLabel" oninput="ldTry()">
-                        <span class="ld-caret" aria-hidden="true"></span>
-                    </div>
-                    <div id="ld-try-answer" class="ld-try-answer" aria-live="polite" data-rise style="--rise: 1"></div>
+            <section id="ld-try" class="ld-try" aria-labelledby="ld-try-title">
+                <div class="ld-field is-in">
+                    <label class="ld-try-box" data-rise><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input id="ld-try-input" class="ld-try-input" type="text" value="2000104004001" autocomplete="off" spellcheck="false" aria-label="Gõ EAN, mã hàng hoặc tên sản phẩm mẫu" data-i18n-aria="ldTryLabel" oninput="ldTry()"></label>
+                    <p class="ld-try-hint" data-i18n="ldTryHint" data-rise style="--rise: 1">Gõ EAN, mã hàng hoặc tên. Đây là dữ liệu mẫu, không phải master data thật.</p>
                     <div class="ld-try-examples" data-rise style="--rise: 2">
                         <button type="button" onclick="ldTryExample('MAU0102')">MAU0102</button>
                         <button type="button" onclick="ldTryExample('cream')">cream</button>
                         <button type="button" onclick="ldTryExample('2000104006005')">2000104006005</button>
+                        <button type="button" onclick="ldTryExample('clay')">clay</button>
                     </div>
+                    <h2 id="ld-try-title" class="ld-split" aria-label="Mã vào, bộ ảnh ra." data-i18n-aria="ldTryTitle"><span data-i18n="ldTryIn">Mã vào,</span></h2>
                 </div>
-            </section>
-
-            <section id="ld-packshot" class="ld-pack ld-grid ld-wrap" aria-labelledby="ld-pack-title">
-                <div class="ld-pack-text">
-                    <h2 id="ld-pack-title" data-i18n="ldPackTitle" data-rise>Packshot lên đầu</h2>
-                    <p data-i18n="ldPackText" data-rise style="--rise: 1">Packshot là ảnh vật thể trên nền trơn, thấy đủ hình dáng. A.N.T xếp chúng lên đầu, sau đó đến ảnh có người, ảnh dàn cảnh, bộ sưu tập và artwork; mỗi lần ai đó sửa nhóm, A.N.T học theo.</p>
-                </div>
-                <figure class="ld-pack-main" data-rise style="--rise: 1"><div><img src="assets/scent-bottle.jpg" width="1920" height="2560" alt="Lọ nước hoa sứ vẽ hoa, năm 1779, chụp trên nền xám trơn" loading="lazy"></div><figcaption data-i18n="ldPackCap1">Lọ nước hoa, 1779 · The Met</figcaption></figure>
-                <div class="ld-pack-side">
-                    <figure data-rise style="--rise: 2"><div><img src="assets/apothecary-jar.jpg" width="1920" height="2560" alt="Bình thuốc men sứ trắng hoa văn xanh, khoảng năm 1800" loading="lazy"></div><figcaption data-i18n="ldPackCap2">Bình thuốc, khoảng 1800 · The Met</figcaption></figure>
-                    <figure data-rise style="--rise: 3"><div><img src="assets/lithyalin-scent-bottle.jpg" width="1852" height="2250" alt="Lọ nước hoa thủy tinh Lithyalin nâu đỏ có nút, khoảng năm 1830" loading="lazy"></div><figcaption data-i18n="ldPackCap3">Lọ nước hoa Lithyalin, khoảng 1830 · Art Institute of Chicago</figcaption></figure>
+                <div class="ld-field is-out">
+                    <div id="ld-try-out" class="ld-out" data-ui aria-live="polite"></div>
+                    <p class="ld-split" aria-hidden="true" data-i18n="ldTryOut">bộ ảnh ra.</p>
                 </div>
             </section>
 
             <section id="ld-how" class="ld-how ld-grid ld-wrap" aria-labelledby="ld-how-title">
-                <h2 id="ld-how-title" data-i18n="ldHowTitle" data-rise>Từ mã đến bộ ảnh</h2>
-                <div class="ld-how-steps">
-                    <div class="ld-step is-on" data-step="1"><p class="ld-step-say" data-i18n="ldStep1">Dán một mã. EAN, mã hàng hay tên đều được.</p><p class="ld-step-more" data-i18n="ldStep1More">Cả danh sách cũng được: tải lên file CSV hoặc TXT.</p></div>
-                    <div class="ld-step" data-step="2"><p class="ld-step-say" data-i18n="ldStep2">A.N.T tìm đúng sản phẩm trong master data.</p><p class="ld-step-more" data-i18n="ldStep2More">Mã đổi mới hay mã cũ ghi trong cột WARNING cũng được dò theo.</p></div>
-                    <div class="ld-step" data-step="3"><p class="ld-step-say" data-i18n="ldStep3">Ảnh về đã chia loại, sẵn để tải.</p><p class="ld-step-more" data-i18n="ldStep3More">Một ảnh tải bản gốc, nhiều ảnh thành ZIP chia thư mục theo loại.</p></div>
+                <h2 id="ld-how-title" class="ld-axis" data-i18n="ldHowTitle" data-rise>Từ mã tới bộ ảnh</h2>
+                <p class="ld-note ld-side" data-i18n="ldHowNote" data-rise>Thời gian đo trên máy chạy A.N.T, với một mã có 12 ảnh.</p>
+                <ol class="ld-stages" data-ui>
+                    <li class="ld-stage" style="--grow: 1" data-rise><span class="ld-seg is-white" data-i18n="ldDur1">Một giây</span><p data-i18n="ldStep1">Đầu tiên, dán EAN, mã hàng hay tên; cả danh sách CSV cũng được.</p></li>
+                    <li class="ld-stage" style="--grow: .2" data-rise data-rise-step="1"><span class="ld-seg is-grey" data-i18n="ldDur2">Tức thì</span><p data-i18n="ldStep2">Rồi A.N.T tìm đúng sản phẩm trong master data, kể cả mã cũ ghi ở cột WARNING.</p></li>
+                    <li class="ld-stage" style="--grow: 2.5" data-rise><span class="ld-seg is-ink" data-i18n="ldDur3">Một đến bốn giây</span><p data-i18n="ldStep3">Sau đó gom mọi ảnh của mã trên SharePoint, bỏ bản trùng.</p></li>
+                    <li class="ld-stage" style="--grow: 1" data-rise><span class="ld-seg is-orange" data-i18n="ldDur4">Khoảng một giây</span><p data-i18n="ldStep4">Cuối cùng chia ảnh theo loại, sẵn để chọn và tải.</p></li>
+                </ol>
+            </section>
+
+            <section id="ld-packshot" class="ld-kinds-page" aria-labelledby="ld-pack-title">
+                <div class="ld-grid ld-wrap">
+                    <h2 id="ld-pack-title" class="ld-axis" data-i18n="ldPackTitle" data-rise>Packshot lên đầu</h2>
+                    <p class="ld-note ld-side" data-i18n="ldPackSide" data-rise>Sáu loại ảnh A.N.T nhận ra, mỗi ô một loại. Ảnh chưa chắc chờ người xác nhận.</p>
+                    <p class="ld-body ld-axis" data-i18n="ldPackText" data-rise style="--rise: 1">Packshot là ảnh vật thể trên nền trơn, thấy đủ hình dáng. A.N.T xếp chúng lên đầu, sau đó đến ảnh có người, ảnh dàn cảnh, bộ sưu tập và artwork; mỗi lần ai đó sửa nhóm, A.N.T học theo.</p>
                 </div>
-                <div class="ld-how-stage"><div id="ld-how-frag" class="ld-how-frag" data-ui data-state="1"></div></div>
+                <div class="ld-mosaic">
+<figure><img src="assets/art/cushion.svg" width="300" height="400" alt="Minh họa hộp cushion đang mở trên nền trơn" loading="lazy"><figcaption data-i18n="catPackshot">Packshot</figcaption></figure>
+                    <figure><img src="assets/art/kind-human.svg" width="300" height="400" alt="Minh họa bàn tay cầm tuýp kem" loading="lazy"><figcaption data-i18n="catHuman">Có người</figcaption></figure>
+                    <figure><img src="assets/art/kind-scene.svg" width="300" height="400" alt="Minh họa chai serum đặt trên bục, cạnh lá cây và mặt trời" loading="lazy"><figcaption data-i18n="catScene">Dàn cảnh</figcaption></figure>
+                    <figure><img src="assets/art/kind-collection.svg" width="300" height="400" alt="Minh họa một dòng sản phẩm xếp trên kệ" loading="lazy"><figcaption data-i18n="catCollection">Bộ sưu tập</figcaption></figure>
+                    <figure><img src="assets/art/kind-color.svg" width="300" height="400" alt="Minh họa chai có vòi trên nền cam" loading="lazy"><figcaption data-i18n="catColor">Nền màu</figcaption></figure>
+                    <figure><img src="assets/art/kind-artwork.svg" width="300" height="400" alt="Minh họa ảnh quảng cáo có chữ và sản phẩm" loading="lazy"><figcaption data-i18n="catArtwork">Artwork</figcaption></figure>
+                </div>
             </section>
 
             <section id="ld-tools" class="ld-tools ld-wrap" aria-labelledby="ld-tools-title">
@@ -842,20 +921,40 @@
                 </div>
             </section>
 
-            <section class="ld-end ld-wrap" aria-labelledby="ld-end-title">
-                <h2 id="ld-end-title" data-i18n="ldEndA" data-rise>Tìm ảnh cho một mã</h2>
-                <form class="ld-end-bar" role="search" onsubmit="event.preventDefault(); ldOpen()" data-rise style="--rise: 1">
-                    <input id="ld-end-input" class="ld-end-input" type="text" autocomplete="off" placeholder="EAN, mã hàng hoặc tên sản phẩm" data-i18n-placeholder="searchPlaceholder" aria-label="EAN, mã hàng hoặc tên sản phẩm" data-i18n-aria="searchPlaceholder">
-                    <button type="submit" class="ant-btn ant-btn-primary"><span data-i18n="ldEndGo">Tìm ảnh</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
-                </form>
-                <p class="ld-end-note" data-i18n="ldEndNote" data-rise style="--rise: 1">Mở không gian làm việc và tìm mã này. Bản trên GitHub Pages dùng dữ liệu mẫu; dữ liệu thật chạy trên máy có A.N.T.</p>
+            <section class="ld-close" aria-labelledby="ld-end-title">
+                <div class="ld-strip">
+                    <div><img src="assets/art/tube.svg" width="300" height="400" alt="Minh họa tuýp kem chống nắng" loading="lazy"></div>
+                    <div><img src="assets/art/pump-ink.svg" width="300" height="400" alt="Minh họa chai có vòi trên nền mực" loading="lazy"></div>
+                    <div><img src="assets/art/mask.svg" width="300" height="400" alt="Minh họa túi mặt nạ giấy" loading="lazy"></div>
+                </div>
+                <div class="ld-band ld-grid ld-wrap">
+                    <h2 id="ld-end-title" data-i18n="ldEndA" data-rise>Có một mã trong tay? Tìm ảnh cho nó ngay.</h2>
+                    <form class="ld-end-bar" role="search" onsubmit="event.preventDefault(); ldOpen()" data-rise style="--rise: 1">
+                        <input id="ld-end-input" class="ld-end-input" type="text" autocomplete="off" placeholder="EAN, mã hàng hoặc tên sản phẩm" data-i18n-placeholder="searchPlaceholder" aria-label="EAN, mã hàng hoặc tên sản phẩm" data-i18n-aria="searchPlaceholder">
+                        <button type="submit" class="ant-btn ant-btn-dark"><span data-i18n="ldEndGo">Tìm ảnh</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+                    </form>
+                    <p class="ld-end-note" data-i18n="ldEndNote" data-rise style="--rise: 2">Mở không gian làm việc và tìm mã này. Bản trên GitHub Pages dùng dữ liệu mẫu; dữ liệu thật chạy trên máy có A.N.T.</p>
+                    <div class="ld-samples" data-rise style="--rise: 2">
+                        <h3 data-i18n="ldEndTry">Mã mẫu để thử</h3>
+                        <ul>
+                            <li><button type="button" onclick="ldSample('2000104004001')">2000104004001</button></li>
+                            <li><button type="button" onclick="ldSample('MAU0105')">MAU0105</button></li>
+                            <li><button type="button" onclick="ldSample('Sun Cream')">Sun Cream</button></li>
+                        </ul>
+                    </div>
+                </div>
             </section>
         </main>
 
         <footer class="ld-foot ld-wrap">
-            <span data-i18n="ldFootWhat">Ảnh và dữ liệu sản phẩm, một chỗ</span>
-            <nav aria-label="A.N.T"><a href="#ld-try" data-i18n="ldNavTry">Thử tìm</a><a href="#ld-how" data-i18n="ldNavHow">Cách hoạt động</a><a href="#app" data-i18n="openApp">Vào A.N.T</a></nav>
-            <span>© 2026 · <span data-i18n="ldFootCredit">Ảnh hiện vật</span>: <a href="https://www.metmuseum.org/">The Met</a>, <a href="https://www.artic.edu/artworks/36456">Art Institute of Chicago</a> (CC0)</span>
+            <div class="ld-foot-cols">
+                <div><strong>A.N.T</strong><p>Asset Nexus Technology</p><p data-i18n="ldFootWhat">Ảnh và dữ liệu sản phẩm, một chỗ</p></div>
+                <ul><li><strong data-i18n="ldFootPage">Trang này</strong></li><li><a href="#ld-try" data-i18n="ldNavTry">Thử tìm</a></li><li><a href="#ld-how" data-i18n="ldNavHow">Cách hoạt động</a></li><li><a href="#ld-tools" data-i18n="ldNavTools">Công cụ</a></li><li><a href="#app" data-i18n="openApp">Vào A.N.T</a></li></ul>
+                <ul><li><strong data-i18n="ldNavTools">Công cụ</strong></li><li><button type="button" onclick="enterApp(); triggerTool('IMG EDIT')" data-i18n="imageEdit">Chỉnh ảnh</button></li><li><button type="button" onclick="enterApp(); triggerTool('AUTO FILL')" data-i18n="autoFill">Tự điền file</button></li><li><button type="button" onclick="enterApp(); triggerTool('PRICE SYNC')" data-i18n="priceSync">Cập nhật giá</button></li><li><button type="button" onclick="enterApp(); triggerTool('PALLET')" data-i18n="pallet">Xếp pallet</button></li></ul>
+                <ul><li><strong data-i18n="ldFootRun">Chạy với dữ liệu thật</strong></li><li data-i18n="ldFootRun1">Chạy run-ant.bat trên máy có A.N.T</li><li data-i18n="ldFootRun2">Mở trang này với ?local=1</li><li data-i18n="ldFootRun3">Master data và ảnh SharePoint đi qua serve.py</li></ul>
+            </div>
+            <svg class="ld-wordmark" viewBox="0 0 1000 90" role="img" aria-label="Asset Nexus Technology"><text x="0" y="74" textLength="1000" lengthAdjust="spacingAndGlyphs" font-family="Inter Tight, sans-serif" font-size="96" font-weight="500" letter-spacing="-3">Asset Nexus Technology</text></svg>
+            <div class="ld-legal"><span data-i18n="ldFootLegal">© 2026 A.N.T · Hình minh họa vẽ riêng cho A.N.T</span><a href="#" onclick="window.scrollTo({ top: 0, behavior: 'smooth' }); return false;" data-i18n="ldFootTop">Lên đầu trang</a></div>
         </footer>
     </div>
 
@@ -989,6 +1088,11 @@
 
             <!-- MAIN PAGE: figures counted from the master data file, then recent work (renderHome fills it) -->
             <div id="home-dashboard" class="om-bento">
+                <section class="om-card om-demo" aria-labelledby="demo-title">
+                    <h2 id="demo-title" data-i18n="omDemoTitle">Thử với sản phẩm mẫu</h2>
+                    <p class="om-sub" data-i18n="omDemoSay">Bản xem trước không có master data. Trên máy chạy A.N.T, chỗ này là sản phẩm theo trạng thái, thương hiệu lớn nhất và độ đầy đủ dữ liệu.</p>
+                    <div id="demo-samples" class="om-samples"></div>
+                </section>
                 <section class="om-card om-status" aria-labelledby="st-title">
                     <h2 id="st-title" data-i18n="omStatusTitle">Sản phẩm theo trạng thái</h2>
                     <p id="st-total" class="om-huge">—</p>
@@ -1356,19 +1460,18 @@
                 chRecoveredNote: '“Có lại” là mã file trước không có nhưng từng có trong một file cũ hơn (đã xét {n} file); “mới” là mã chưa từng xuất hiện.', chCutNote: 'File trước bị cắt ở {cap} dòng, và Directo xuất không theo thứ tự cố định nên mỗi lần cắt lại thiếu những mã khác.', chOtherMoves: 'Đổi trạng thái khác', stMovesTitle: 'Đổi trạng thái so với {file}', stMovesCount: '{n} mã', chPending: 'Đang so với file trước…', chNone: 'Chưa có file trước để so.',
                 omNewSearch: 'Tìm mới', omStart: 'Bắt đầu', omStartEan: 'Tìm một mã EAN', omStartEanSub: 'Hoặc mã hàng, tên sản phẩm', omStartList: 'Tra cả danh sách mã', omStartListSub: 'File CSV hoặc TXT', omStartLibrary: 'Mở thư viện thương hiệu', omStartPalletSub: 'Số thùng tối đa, chỉnh trong 3D', omLabelled: 'Ảnh đã gắn nhãn', omTotal: 'tổng', omPerDot: 'Mỗi chấm {n} ảnh', omNeedsData: 'Cần dữ liệu thật (serve.py)', omOfProducts: 'sản phẩm',
                 omTopBrands: 'Thương hiệu nhiều sản phẩm nhất', omProductsIn: 'sản phẩm của', omBrandsWord: 'thương hiệu', omLastProduct: 'Sản phẩm vừa xem',
-                omLastProductEmpty: 'Mở một sản phẩm, ảnh packshot của nó sẽ nằm ở đây.', omOpen: 'Mở', omToolsSub: 'Chỉnh ảnh, điền file nhà bán lẻ và cập nhật giá ngay trong A.N.T.',
+                omLastProductEmpty: 'Mở một sản phẩm, ảnh packshot của nó sẽ nằm ở đây.', omDemoTitle: 'Thử với sản phẩm mẫu', omDemoSay: 'Bản xem trước không có master data. Trên máy chạy A.N.T, chỗ này là sản phẩm theo trạng thái, thương hiệu lớn nhất và độ đầy đủ dữ liệu.', omDemoSet: '{n} sản phẩm mẫu', omOpen: 'Mở', omToolsSub: 'Chỉnh ảnh, điền file nhà bán lẻ và cập nhật giá ngay trong A.N.T.',
                 omLogoLibrary: 'Thư viện logo', omPictureSet: 'Bộ ảnh', typeProduct: 'Sản phẩm',
                
-                ldNavTry: 'Thử tìm', ldNavHow: 'Cách hoạt động', ldNavTools: 'Công cụ', ldHeroTitle: 'Một mã EAN, đủ bộ ảnh',
+                ldNavTry: 'Thử tìm', ldNavHow: 'Cách hoạt động', ldNavTools: 'Công cụ', ldHeroTitle1: 'Một mã EAN,', ldHeroTitle2: 'đủ bộ ảnh', ldTryLink: 'Thử với một mã mẫu', ldMastSay: 'ảnh cho một mã mẫu, chia theo loại, packshot lên đầu', ldMastCode: 'Mã mẫu {ean}',
                 ldHeroLead: 'A.N.T khớp mã với master data rồi gom ảnh của sản phẩm trên SharePoint, đã chia sẵn packshot, ảnh có người và ảnh dàn cảnh.',
-                ldSampleBrand: 'Thương hiệu mẫu', ldTryLabel: 'Gõ EAN, mã hàng hoặc tên sản phẩm mẫu', ldTryNone: 'Không có trong dữ liệu mẫu. Thử một mã bên dưới.', ldTryMore: 'sản phẩm khác',
+                ldSampleBrand: 'Thương hiệu mẫu', ldTryLabel: 'Gõ EAN, mã hàng hoặc tên sản phẩm mẫu', ldTryNone: 'Không có trong dữ liệu mẫu. Thử một mã bên dưới.', ldTryMore: 'sản phẩm khác', ldTryHint: 'Gõ EAN, mã hàng hoặc tên. Đây là dữ liệu mẫu, không phải master data thật.', ldTryIn: 'Mã vào,', ldTryOut: 'bộ ảnh ra.', ldTryTitle: 'Mã vào, bộ ảnh ra.', ldTryAlso: 'Cũng khớp',
                 ldPackTitle: 'Packshot lên đầu', ldPackText: 'Packshot là ảnh vật thể trên nền trơn, thấy đủ hình dáng. A.N.T xếp chúng lên đầu, sau đó đến ảnh có người, ảnh dàn cảnh, bộ sưu tập và artwork; mỗi lần ai đó sửa nhóm, A.N.T học theo.',
-                ldPackCap1: 'Lọ nước hoa, 1779 · The Met', ldPackCap2: 'Bình thuốc, khoảng 1800 · The Met', ldPackCap3: 'Lọ nước hoa Lithyalin, khoảng 1830 · Art Institute of Chicago',
-                ldHowTitle: 'Từ mã đến bộ ảnh', ldStep1: 'Dán một mã. EAN, mã hàng hay tên đều được.', ldStep1More: 'Cả danh sách cũng được: tải lên file CSV hoặc TXT.',
-                ldStep2: 'A.N.T tìm đúng sản phẩm trong master data.', ldStep2More: 'Mã đổi mới hay mã cũ ghi trong cột WARNING cũng được dò theo.',
-                ldStep3: 'Ảnh về đã chia loại, sẵn để tải.', ldStep3More: 'Một ảnh tải bản gốc, nhiều ảnh thành ZIP chia thư mục theo loại.',
-                ldHowFound: 'Khớp theo EAN', ldHowCode: 'Mã hàng', ldHowOld: 'Mã cũ',
-                ldToolsTitle: 'Việc làm được trong A.N.T', ldToolsLead: 'Từ một mã EAN tới bộ ảnh, file cho nhà bán lẻ, file giá cho Directo và pallet xuất kho.', ldCmdGo: 'Mở {area}', toLanding: 'A.N.T · Trang giới thiệu', ldCmdPlaceholder: 'Tìm một việc', ldCmdNone: 'Không có việc nào khớp.', ldCmdOpen: 'Bấm lần nữa để mở.',
+                ldPackSide: 'Sáu loại ảnh A.N.T nhận ra, mỗi ô một loại. Ảnh chưa chắc chờ người xác nhận.', 
+                ldHowTitle: 'Từ mã tới bộ ảnh', ldHowNote: 'Thời gian đo trên máy chạy A.N.T, với một mã có 12 ảnh.', ldDur1: 'Một giây', ldDur2: 'Tức thì', ldDur3: 'Một đến bốn giây', ldDur4: 'Khoảng một giây', ldStep1: 'Đầu tiên, dán EAN, mã hàng hay tên; cả danh sách CSV cũng được.',
+                ldStep2: 'Rồi A.N.T tìm đúng sản phẩm trong master data, kể cả mã cũ ghi ở cột WARNING.',
+                ldStep3: 'Sau đó gom mọi ảnh của mã trên SharePoint, bỏ bản trùng.', ldStep4: 'Cuối cùng chia ảnh theo loại, sẵn để chọn và tải.',
+                                ldToolsTitle: 'Việc làm được trong A.N.T', ldToolsLead: 'Từ một mã EAN tới bộ ảnh, file cho nhà bán lẻ, file giá cho Directo và pallet xuất kho.', ldCmdGo: 'Mở {area}', toLanding: 'A.N.T · Trang giới thiệu', ldCmdPlaceholder: 'Tìm một việc', ldCmdNone: 'Không có việc nào khớp.', ldCmdOpen: 'Bấm lần nữa để mở.',
                 ldCmdSearch: 'Tìm theo EAN, mã hoặc tên', ldCmdSearchSay: 'Ô tìm kiếm có ở mọi màn hình; A.N.T tự nhận ra đó là EAN, mã hàng hay tên.',
                 ldCmdList: 'Tra cả danh sách mã', ldCmdListSay: 'Tải lên file CSV hoặc TXT; A.N.T khớp từng mã và báo mã nào không có.',
                 ldCmdZip: 'Tải ảnh gốc theo loại', ldCmdZipSay: 'Một ảnh là file gốc, nhiều ảnh thành ZIP chia thư mục theo loại ảnh.',
@@ -1377,8 +1480,8 @@
                 ldCmdFill: 'Tự điền file nhà bán lẻ', ldCmdFillSay: 'Điền mẫu Excel của Douglas, Nocibé, Zalando và Baltics từ master data.',
                 ldCmdPrice: 'Cập nhật giá lên Directo', ldCmdPriceSay: 'Ghép file formula với template thành file upload Directo, xem từng dòng trước khi xuất.', ldCmdPallet: 'Xếp thùng lên pallet', ldCmdPalletSay: 'Tính số thùng tối đa theo kích thước, chiều cao và tải trọng, rồi chỉnh từng thùng trong 3D.',
                 ldCmdBrands: 'Mở thư viện thương hiệu', ldCmdBrandsSay: '{n} thương hiệu với logo chuẩn hóa và ảnh xếp theo từng thương hiệu.',
-                ldEndA: 'Tìm ảnh cho một mã', ldEndGo: 'Tìm ảnh', ldEndNote: 'Mở không gian làm việc và tìm mã này. Bản trên GitHub Pages dùng dữ liệu mẫu; dữ liệu thật chạy trên máy có A.N.T.',
-                ldFootWhat: 'Ảnh và dữ liệu sản phẩm, một chỗ', ldFootCredit: 'Ảnh hiện vật',
+                ldEndA: 'Có một mã trong tay? Tìm ảnh cho nó ngay.', ldEndTry: 'Mã mẫu để thử', ldEndGo: 'Tìm ảnh', ldEndNote: 'Mở không gian làm việc và tìm mã này. Bản trên GitHub Pages dùng dữ liệu mẫu; dữ liệu thật chạy trên máy có A.N.T.',
+                ldFootWhat: 'Ảnh và dữ liệu sản phẩm, một chỗ', ldFootRun: 'Chạy với dữ liệu thật', ldFootRun1: 'Chạy run-ant.bat trên máy có A.N.T', ldFootRun2: 'Mở trang này với ?local=1', ldFootRun3: 'Master data và ảnh SharePoint đi qua serve.py', ldFootPage: 'Trang này', ldFootLegal: '© 2026 A.N.T · Hình minh họa vẽ riêng cho A.N.T', ldFootTop: 'Lên đầu trang',
                 dataProducts: 'sản phẩm', spConnected: 'SharePoint đã kết nối', spLogin: 'SharePoint cần đăng nhập', connOffline: 'Mất kết nối', connDemo: 'Dữ liệu demo', connOnlineHint: 'Đang dùng master data và ảnh SharePoint qua máy chủ A.N.T (serve.py).', connOfflineHint: 'Chưa kết nối được máy chủ A.N.T trên máy này. Chạy run-ant.bat trong thư mục ANT, A.N.T sẽ tự kết nối lại.', connOfflineSharedHint: 'Mất kết nối máy chủ A.N.T. Tải lại trang (có thể phải đăng nhập lại); nếu vẫn lỗi, báo người quản lý máy chủ.', liveLoginServer: 'Phiên SharePoint của máy chủ A.N.T đã hết hạn. Báo người quản lý máy chủ đăng nhập lại trên máy chủ.', connDemoHint: 'Bản xem trước dùng dữ liệu demo. Mở link có ?local=1 trên máy đang chạy A.N.T để dùng dữ liệu thật.', comingSoon: 'Chức năng này đang được chuẩn bị.',
                 workspace: 'Không gian', tools: 'Công cụ', soon: 'Sắp có', uploadLookup: 'Tải file tra cứu', logoLibrary: 'Thư viện logo', shortcuts: 'Lối tắt', brandLibraryTitle: 'Thư viện thương hiệu',
                 mainPage: 'Trang chính', aboutAnt: 'Giới thiệu A.N.T', lightMode: 'Chế độ sáng', overview: 'Tổng quan', ready: 'Sẵn sàng', requestMeta: 'Giao và theo dõi ảnh cần chụp', suggestions: 'Thương hiệu gợi ý', viewAll: 'Xem tất cả', openLibrary: 'Mở thư viện', recent: 'Gần đây', recentEmpty: 'Chưa có hoạt động. Tìm một mã EAN hoặc mở một thương hiệu để bắt đầu.', colName: 'Tên', colType: 'Loại', colTime: 'Thời gian', typeSearch: 'Tìm kiếm', typeBrand: 'Thương hiệu', typeTool: 'Công cụ',
@@ -1412,19 +1515,18 @@
                 chRecoveredNote: '“Back” are codes the previous file lacks that an older export listed ({n} files checked); “new” never appeared before.', chCutNote: 'The previous file was cut at {cap} rows, and Directo exports in no fixed order, so each cut loses different codes.', chOtherMoves: 'Other status changes', stMovesTitle: 'Status changes since {file}', stMovesCount: '{n} codes', chPending: 'Comparing with the previous file…', chNone: 'No earlier file to compare with.',
                 omNewSearch: 'New search', omStart: 'Start', omStartEan: 'Search an EAN', omStartEanSub: 'Or an article code or a name', omStartList: 'Look up a list of codes', omStartListSub: 'A CSV or TXT file', omStartLibrary: 'Open the brand library', omStartPalletSub: 'The most cartons, adjusted in 3D', omLabelled: 'Labelled pictures', omTotal: 'total', omPerDot: 'Each dot {n} pictures', omNeedsData: 'Needs live data (serve.py)', omOfProducts: 'of products',
                 omTopBrands: 'Brands with the most products', omProductsIn: 'products from', omBrandsWord: 'brands', omLastProduct: 'Last product',
-                omLastProductEmpty: 'Open a product and its packshot shows up here.', omOpen: 'Open', omToolsSub: 'Edit images, fill retailer files and update prices without leaving A.N.T.',
+                omLastProductEmpty: 'Open a product and its packshot shows up here.', omDemoTitle: 'Try a sample product', omDemoSay: 'This preview has no master data. On a computer running A.N.T, this space shows products by status, the largest brands and how complete the data is.', omDemoSet: '{n} sample products', omOpen: 'Open', omToolsSub: 'Edit images, fill retailer files and update prices without leaving A.N.T.',
                 omLogoLibrary: 'Logo library', omPictureSet: 'Picture set', typeProduct: 'Product',
                
-                ldNavTry: 'Try it', ldNavHow: 'How it works', ldNavTools: 'Tools', ldHeroTitle: 'One EAN, every picture',
+                ldNavTry: 'Try it', ldNavHow: 'How it works', ldNavTools: 'Tools', ldHeroTitle1: 'One EAN,', ldHeroTitle2: 'every picture', ldTryLink: 'Try a sample code', ldMastSay: 'pictures for one sample code, sorted by type, packshots first', ldMastCode: 'Sample code {ean}',
                 ldHeroLead: "A.N.T matches the code to master data, then gathers the product's pictures from SharePoint, already sorted into packshots, pictures with people and set-ups.",
-                ldSampleBrand: 'Sample brand', ldTryLabel: 'Type a sample EAN, article code or product name', ldTryNone: 'Not in the sample data. Try one below.', ldTryMore: 'more',
+                ldSampleBrand: 'Sample brand', ldTryLabel: 'Type a sample EAN, article code or product name', ldTryNone: 'Not in the sample data. Try one below.', ldTryMore: 'more', ldTryHint: 'Type an EAN, article code or name. This is sample data, not the real master data.', ldTryIn: 'Code in,', ldTryOut: 'pictures out.', ldTryTitle: 'Code in, pictures out.', ldTryAlso: 'Also matches',
                 ldPackTitle: 'Packshots come first', ldPackText: 'A packshot is the object on a plain ground, its whole shape in view. A.N.T puts them first, then pictures with people, set-ups, collections and artwork; every correction someone makes teaches it.',
-                ldPackCap1: 'Scent bottle, 1779 · The Met', ldPackCap2: 'Apothecary jar, about 1800 · The Met', ldPackCap3: 'Lithyalin scent bottle, about 1830 · Art Institute of Chicago',
-                ldHowTitle: 'From a code to the pictures', ldStep1: 'Paste a code. EAN, article code or name.', ldStep1More: 'A whole list works too: upload a CSV or TXT file.',
-                ldStep2: 'A.N.T finds the product in master data.', ldStep2More: 'Renewed and old codes noted in the WARNING column are followed too.',
-                ldStep3: 'The pictures arrive sorted, ready to download.', ldStep3More: 'One picture downloads the original; several become a ZIP with a folder per type.',
-                ldHowFound: 'Matched by EAN', ldHowCode: 'Article code', ldHowOld: 'Old code',
-                ldToolsTitle: 'What you can do in A.N.T', ldToolsLead: 'From one EAN to its pictures, the retailer file, the Directo price file and the pallet that ships.', ldCmdGo: 'Open {area}', toLanding: 'A.N.T · Home page', ldCmdPlaceholder: 'Find a task', ldCmdNone: 'No task matches.', ldCmdOpen: 'Click again to open it.',
+                ldPackSide: 'The six kinds of picture A.N.T tells apart, one per tile. Unsure ones wait for a person to confirm.', 
+                ldHowTitle: 'From a code to the pictures', ldHowNote: 'Times measured on a computer running A.N.T, for a code with 12 pictures.', ldDur1: 'A second', ldDur2: 'Instant', ldDur3: 'One to four seconds', ldDur4: 'About a second', ldStep1: 'First, paste an EAN, article code or name; a CSV list works too.',
+                ldStep2: 'Then A.N.T finds the product in master data, old codes in the WARNING column included.',
+                ldStep3: 'Next it gathers every picture of the code on SharePoint, without duplicates.', ldStep4: 'Last, it sorts the pictures by type, ready to pick and download.',
+                                ldToolsTitle: 'What you can do in A.N.T', ldToolsLead: 'From one EAN to its pictures, the retailer file, the Directo price file and the pallet that ships.', ldCmdGo: 'Open {area}', toLanding: 'A.N.T · Home page', ldCmdPlaceholder: 'Find a task', ldCmdNone: 'No task matches.', ldCmdOpen: 'Click again to open it.',
                 ldCmdSearch: 'Search by EAN, code or name', ldCmdSearchSay: 'The search is on every screen; A.N.T tells an EAN from an article code or a name.',
                 ldCmdList: 'Look up a whole list', ldCmdListSay: 'Upload a CSV or TXT file; A.N.T matches every code and says which are missing.',
                 ldCmdZip: 'Download originals by type', ldCmdZipSay: 'One picture is the original file; several become a ZIP with a folder per type.',
@@ -1433,8 +1535,8 @@
                 ldCmdFill: 'Fill retailer files', ldCmdFillSay: 'Fill the Excel templates of Douglas, Nocibé, Zalando and the Baltics from master data.',
                 ldCmdPrice: 'Update prices in Directo', ldCmdPriceSay: 'Combine the formula and template files into a Directo upload, row by row before export.', ldCmdPallet: 'Load a pallet', ldCmdPalletSay: 'Work out the most cartons by size, height and weight, then adjust each one in 3D.',
                 ldCmdBrands: 'Open the brand library', ldCmdBrandsSay: '{n} brands with normalised logos and pictures per brand.',
-                ldEndA: 'Find the pictures for a code', ldEndGo: 'Find pictures', ldEndNote: 'Opens the workspace and searches this code. The GitHub Pages copy uses sample data; real data runs on a computer with A.N.T.',
-                ldFootWhat: 'Product pictures and data, in one place', ldFootCredit: 'Object photographs',
+                ldEndA: 'Got a code? Find its pictures now.', ldEndTry: 'Sample codes to try', ldEndGo: 'Find pictures', ldEndNote: 'Opens the workspace and searches this code. The GitHub Pages copy uses sample data; real data runs on a computer with A.N.T.',
+                ldFootWhat: 'Product pictures and data, in one place', ldFootRun: 'With the real data', ldFootRun1: 'Run run-ant.bat on the A.N.T computer', ldFootRun2: 'Open this page with ?local=1', ldFootRun3: 'Master data and SharePoint pictures come through serve.py', ldFootPage: 'This page', ldFootLegal: '© 2026 A.N.T · Illustrations drawn for A.N.T', ldFootTop: 'Back to top',
                 dataProducts: 'products', spConnected: 'SharePoint connected', spLogin: 'SharePoint needs sign-in', connOffline: 'Disconnected', connDemo: 'Demo data', connOnlineHint: 'Using master data and SharePoint images through the A.N.T server (serve.py).', connOfflineHint: 'Cannot reach the A.N.T server on this computer. Run run-ant.bat in the ANT folder; A.N.T reconnects by itself.', connOfflineSharedHint: 'Lost the A.N.T server. Reload the page (you may need to sign in again); if it persists, tell the server owner.', liveLoginServer: 'The A.N.T server\'s SharePoint session has expired. Ask the server owner to sign in again on the server.', connDemoHint: 'This preview uses demo data. Open the link with ?local=1 on a computer running A.N.T for live data.', comingSoon: 'This function is being prepared.',
                 workspace: 'Workspace', tools: 'Tools', soon: 'Soon', uploadLookup: 'Upload lookup file', logoLibrary: 'Logo library', shortcuts: 'Shortcuts', brandLibraryTitle: 'Brand library',
                 mainPage: 'Home', aboutAnt: 'About A.N.T', lightMode: 'Light mode', overview: 'Overview', ready: 'Ready', requestMeta: 'Assign and follow the photos you need', suggestions: 'Suggested brands', viewAll: 'View all', openLibrary: 'Open library', recent: 'Recent', recentEmpty: 'No activity yet. Search an EAN or open a brand to get started.', colName: 'Name', colType: 'Type', colTime: 'Time', typeSearch: 'Search', typeBrand: 'Brand', typeTool: 'Tool',
@@ -1452,11 +1554,6 @@
         };
         let language = localStorage.getItem('ant-language') === 'en' ? 'en' : 'vi';
         const t = key => translations[language][key] || key;
-        const productContentEn = {
-            1: { category: 'Premium furniture', desc: 'A Scandinavian-inspired sofa with an oak frame and supportive high-density cushions.', specs: '200 × 85 × 75 cm. Oak frame and premium upholstery.', origin: 'Scandinavian Design · 24-month warranty.' },
-            2: { category: 'Audio equipment', desc: 'Wireless over-ear headphones with active noise cancellation and up to 40 hours of battery life.', specs: '40 mm dynamic drivers, Bluetooth 5.3, Hi-Res Audio / LDAC.', origin: 'Official distribution · 12-month warranty.' },
-            3: { category: 'Technology accessories', desc: 'A smartwatch with a bright AMOLED display, health tracking, and 100+ workout modes.', specs: '466 × 466 AMOLED display, 5ATM water resistance, titanium case.', origin: 'Official distribution · 12-month warranty.' }
-        };
         function setLanguage(next) {
             language = next === 'en' ? 'en' : 'vi';
             localStorage.setItem('ant-language', language);
@@ -1485,11 +1582,11 @@
             if (isResultPageVisible) { renderProductText(); updateImageVisual(); }
         }
         // Brands & Library Database
+        // Sample pictures, where no real product image may appear (the demo and the landing): the
+        // landing's own flat drawings of cosmetics, in A.N.T's colours.
+        const DEMO_ART = ['dropper', 'jar', 'pump', 'toner', 'tube', 'cushion', 'mask'];
         function demoPackshot(brandIndex, imageIndex) {
-            const hues = [192, 200, 186, 205, 196, 182, 210, 190];
-            const hue = hues[(brandIndex + imageIndex) % hues.length];
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><rect width="600" height="600" fill="hsl(${hue} 29% 94%)"/><ellipse cx="300" cy="520" rx="145" ry="19" fill="hsl(${hue} 16% 80%)"/><rect x="231" y="106" width="138" height="51" rx="9" fill="hsl(${hue} 12% 33%)"/><rect x="198" y="151" width="204" height="354" rx="29" fill="hsl(${hue} 24% 97%)" stroke="hsl(${hue} 18% 71%)" stroke-width="5"/><rect x="214" y="246" width="172" height="162" rx="3" fill="hsl(${hue} 23% 83%)"/><text x="300" y="320" text-anchor="middle" fill="hsl(${hue} 25% 29%)" font-family="Arial" font-weight="bold" font-size="25">A.N.T</text><text x="300" y="354" text-anchor="middle" fill="hsl(${hue} 18% 38%)" font-family="Arial" font-size="16">DEMO ${String(imageIndex + 1).padStart(2, '0')}</text></svg>`;
-            return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+            return `assets/art/${DEMO_ART[(brandIndex + imageIndex) % DEMO_ART.length]}.svg`;
         }
         const withDemoProducts = (brand, brandIndex) => ({
             ...brand,
@@ -1515,60 +1612,23 @@
             ldCmdRender();  // the landing's library line counts the brands too
         }
 
-        // Original Search Products Database
-        const productsDatabase = [
-            {
-                id: 1,
-                ean: '8809000000001',
-                articleCode: 'ANT-SOFA-01',
-                name: "Ghế Sofa Bọc Ni Ergonomic Minimalist",
-                category: "Nội Thất Cao Cấp",
-                price: "12,500,000 VNĐ",
-                rating: "4.9 (84 đánh giá)",
-                desc: "Thiết kế hiện đại mang phong cách Bắc Âu. Khung gỗ sồi tự nhiên kết hợp nệm bọt biển mật độ cao chống lún.",
-                specs: "Kích thước: 200cm x 85cm x 75cm. Khung gỗ sồi, vải nỉ cao cấp nhập khẩu.",
-                origin: "Chính hãng Scandinavian Design - BH 24 tháng.",
-                images: [
-                    "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80",
-                    "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80",
-                    "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80"
-                ]
-            },
-            {
-                id: 2,
-                ean: '8809000000002',
-                articleCode: 'ANT-AUDIO-02',
-                name: "Tai Nghe Over-Ear Wireless Noise Cancelling",
-                category: "Thiết Bị Âm Thanh",
-                price: "6,890,000 VNĐ",
-                rating: "4.8 (210 đánh giá)",
-                desc: "Công nghệ chống ồn chủ động thông minh ANC. Thời lượng pin lên tới 40 giờ liên tục với sạc nhanh Type-C.",
-                specs: "Driver 40mm Dynamic, Bluetooth 5.3, Hỗ trợ Hi-Res Audio / LDAC.",
-                origin: "Nhập khẩu phân phối chính hãng - BH 12 tháng.",
-                images: [
-                    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80",
-                    "https://images.unsplash.com/photo-1484704849700-f032a568e944?auto=format&fit=crop&w=800&q=80",
-                    "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80"
-                ]
-            },
-            {
-                id: 3,
-                ean: '8809000000003',
-                articleCode: 'ANT-WATCH-03',
-                name: "Đồng Hồ Thông Minh Sport Edition V2",
-                category: "Phụ Kiện Công Nghệ",
-                price: "4,200,000 VNĐ",
-                rating: "4.7 (95 đánh giá)",
-                desc: "Màn hình AMOLED 1.4 inch sắc nét. Tích hợp đo nhịp tim, nồng độ SpO2 và 100+ chế độ luyện tập thể thao.",
-                specs: "Màn hình AMOLED 466x466 px, Chống nước 5ATM, Khung vỏ Titan.",
-                origin: "Phân phối chính hãng - BH 12 tháng.",
-                images: [
-                    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80",
-                    "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=800&q=80",
-                    "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=800&q=80"
-                ]
-            }
+
+        // Sample products. Their EANs are in GS1's 200-299 range, numbers for internal use that no
+        // product on a shelf carries; the pictures are the drawings in assets/art (demoPackshot).
+        const LD_SAMPLES = [
+            { ean: '2000104001000', code: 'MAU0101', name: 'Apricot Peeling Gel', volume: '100ml', group: 'active', set: { '01_packshot': 6, '02_lifestyle_human': 2, '02_lifestyle_scene_setup': 4 } },
+            { ean: '2000104002007', code: 'MAU0102', name: 'Centella Moisturising Cream', volume: '50ml', group: 'active', set: { '01_packshot': 5, '02_lifestyle_scene_setup': 3, '02_lifestyle_collection': 1 } },
+            { ean: '2000104003004', code: 'MAU0103', name: 'Green Tea Cleansing Foam', volume: '150ml', group: 'upcoming', set: { '01_packshot': 3, '03_artwork': 2 } },
+            { ean: '2000104004001', code: 'MAU0104', name: 'Rice Essence', volume: '30ml', group: 'active', old: 'MAU0094', set: { '01_packshot': 8, '02_lifestyle_human': 3, '02_lifestyle_scene_setup': 5, '02_lifestyle_color_background_or_packshot_low_priority': 2 } },
+            { ean: '2000104005008', code: 'MAU0105', name: 'Kaolin Clay Mask', volume: '120g', group: 'inactive', set: { '01_packshot': 2 } },
+            { ean: '2000104006005', code: 'MAU0106', name: 'Daily Sun Cream SPF50', volume: '50ml', group: 'active', set: { '01_packshot': 4, '02_lifestyle_human': 4, '02_lifestyle_scene_setup': 2 } },
         ];
+        // Demo search (no A.N.T server, as on GitHub Pages): the same sample cosmetics as the landing,
+        // with drawn pictures, so a code tried on the landing is found in the workspace too.
+        const productsDatabase = LD_SAMPLES.map((p, i) => ({
+            id: i + 1, sample: true, ean: p.ean, articleCode: p.code, name: `${p.name} ${p.volume}`, group: p.group, set: p.set,
+            images: [0, 1, 2].map(k => demoPackshot(i, k)),
+        }));
 
         // View States tracking
         let currentView = 'SEARCH_MAIN'; // 'SEARCH_MAIN', 'LIB_BRANDS', 'LIB_GRID', 'LIB_PRODUCT_DETAIL'
@@ -1588,7 +1648,6 @@
         window.addEventListener('DOMContentLoaded', () => {
             setLanguage(language);
             showRoute();
-            ldWatchSteps();
             ldWatchRise();
             // A link with ?q= opens straight onto that search (shareable product links).
             const linked = new URLSearchParams(location.search).get('q');
@@ -1715,6 +1774,10 @@
         function renderHome() {
             renderRecent();
             const h = liveOnline && liveHealth && liveHealth.stats ? liveHealth : null;
+            const demo = !liveOnline && !liveMode && !liveOptIn;
+            document.getElementById('home-dashboard').classList.toggle('is-demo', demo);
+            document.getElementById('demo-samples').innerHTML = demo ? LD_SAMPLES.map((p, i) => `<button type="button" class="om-sample" onclick="tryDemoSearch('${p.code}')">
+                <img src="${demoPackshot(i, 0)}" alt="" loading="lazy"><strong>${esc(p.name)}</strong><small>${p.code} · ${p.volume}</small></button>`).join('') : '';
             const st = h && h.stats;
             // Products by status: the six statuses add up to the file's rows.
             document.getElementById('st-total').textContent = st ? num(String(st.rows)) : '—';
@@ -1778,18 +1841,22 @@
             }).join('') : '';
             document.getElementById('cp-note').textContent = st ? fill(t('omEanNotes'), { invalid: num(String(st.eanInvalid)), shared: num(String(st.eanShared)), cleaned: num(String(st.eanCleaned)) }) : '';
             // Labelled pictures: one dot for a few pictures, packshots in orange.
-            const labelled = (h && h.labelled) || {};
+            const labelled = (h && h.labelled) || (demo ? LD_SAMPLES.reduce((sum, p) => {
+                for (const [c, n] of Object.entries(p.set)) sum[c] = (sum[c] || 0) + n;
+                return sum;
+            }, {}) : {});
             const total = Object.values(labelled).reduce((a, b) => a + b, 0);
             const per = Math.max(1, Math.ceil(total / 40));
             const dots = CAT_ORDER.flatMap(c => Array.from({ length: Math.round((labelled[c] || 0) / per) }, () => c));
             const dotsEl = document.getElementById('labels-dots');
-            document.getElementById('labels-total').textContent = h ? num(String(total)) : '—';
+            document.getElementById('labels-total').textContent = h || demo ? num(String(total)) : '—';
             const dotClass = c => `om-dot${c === '01_packshot' ? ' is-main' : c === '02_lifestyle_human' ? ' is-alt' : ''}`;
             dotsEl.innerHTML = dots.map(c => `<i class="${dotClass(c)}"></i>`).join('');
             document.getElementById('labels-key').innerHTML = CAT_ORDER.filter(c => labelled[c])
                 .map(c => `<li><i class="${dotClass(c)}" aria-hidden="true"></i>${esc(catName(c))}<b>${num(String(labelled[c]))}</b></li>`).join('');
             dotsEl.setAttribute('aria-label', CAT_ORDER.filter(c => labelled[c]).map(c => `${catName(c)} ${labelled[c]}`).join(', ') || t('omNeedsData'));
-            document.getElementById('labels-note').textContent = h ? t('omPerDot').replace('{n}', per) : t('omNeedsData');
+            document.getElementById('labels-note').textContent = h ? t('omPerDot').replace('{n}', per)
+                : demo ? `${fill(t('omDemoSet'), { n: LD_SAMPLES.length })} · ${t('omPerDot').replace('{n}', per)}` : t('omNeedsData');
             renderHomeProduct();
         }
         // The last product opened, shown by its own packshot.
@@ -1800,7 +1867,7 @@
             const item = items[index];
             el.classList.toggle('is-dark', !(item && liveMode));
             if (!item || !liveMode) {
-                el.innerHTML = `<div class="om-product-empty"><h2>${t('omLastProduct')}</h2><p>${t('omLastProductEmpty')}</p></div>`;
+                el.innerHTML = `<div class="om-product-empty"><img src="assets/art/jar.svg" alt="" aria-hidden="true"><h2>${t('omLastProduct')}</h2><p>${t('omLastProductEmpty')}</p></div>`;
                 return;
             }
             el.innerHTML = `<img src="${IMG_API}/thumb/${item.cover}?size=c1600x1600" alt="${esc(item.label)}">
@@ -2142,8 +2209,8 @@
             event.preventDefault();
             document.getElementById('search-input').focus();
         });
-        function tryDemoSearch() {
-            document.getElementById('search-input').value = productsDatabase[0].ean;
+        function tryDemoSearch(code = productsDatabase[0].ean) {
+            document.getElementById('search-input').value = code;
             executeSearch();
         }
         async function executeSearch() {
@@ -2175,27 +2242,27 @@
             renderMultiProductPanel();
         }
 
+        const demoTitle = product => product.sample ? product.name : `${product.brandName} · ${t('demoProduct')} ${product.demoNumber}`;
         function renderProductText() {
             const product = activeResultProducts[currentProductIndex];
-            const copy = product.demo ? {
+            const copy = product.sample ? {
+                category: `${t('ldSampleBrand')} · ${groupName(product.group)}`,
+                desc: CAT_ORDER.filter(c => product.set[c]).map(c => `${catName(c)} ${product.set[c]}`).join(' · '),
+                specs: `EAN ${product.ean} · ${product.articleCode}`,
+            } : {
                 category: `${product.brandName} · ${t('demoData')}`,
                 desc: t('demoAssets'),
                 specs: product.articleCode,
-                origin: t('demoUnavailable')
-            } : language === 'en' ? productContentEn[product.id] : product;
-            document.getElementById('detail-title').innerText = product.demo ? `${product.brandName} · ${t('demoProduct')} ${product.demoNumber}` : product.name;
-            document.getElementById('detail-desc-label').textContent = t(product.demo ? 'imageInfo' : 'description');
-            document.getElementById('detail-specs-label').textContent = t(product.demo ? 'lookupCode' : 'specifications');
-            document.getElementById('detail-origin-label').textContent = t(product.demo ? 'dataSource' : 'origin');
+            };
+            document.getElementById('detail-title').innerText = demoTitle(product);
+            document.getElementById('detail-desc-label').textContent = t('imageInfo');
+            document.getElementById('detail-specs-label').textContent = t('lookupCode');
+            document.getElementById('detail-origin-label').textContent = t('dataSource');
             document.getElementById('detail-category').innerText = copy.category;
-            document.getElementById('detail-price').innerText = product.price || '';
-            document.getElementById('detail-price').classList.toggle('hidden', !!product.demo);
-            document.getElementById('detail-rating-block').classList.toggle('hidden', !!product.demo);
-            document.getElementById('detail-actions').classList.toggle('hidden', !!product.demo);
-            if (!product.demo) document.getElementById('detail-rating').innerText = language === 'en' ? product.rating.replace('đánh giá', 'reviews') : product.rating;
+            for (const id of ['detail-price', 'detail-rating-block', 'detail-actions']) document.getElementById(id).classList.add('hidden');
             document.getElementById('detail-desc').innerText = copy.desc;
             document.getElementById('detail-specs').innerText = copy.specs;
-            document.getElementById('detail-origin').innerText = copy.origin;
+            document.getElementById('detail-origin').innerText = t('demoUnavailable');
         }
 
         function nextImage() {
@@ -2208,7 +2275,7 @@
             const product = activeResultProducts[currentProductIndex];
             const imgElement = document.getElementById('visual-image');
             imgElement.src = product.images[currentImageIndex];
-            imgElement.alt = product.demo ? `${product.brandName} · ${t('demoProduct')} ${product.demoNumber}` : product.name;
+            imgElement.alt = demoTitle(product);
 
             document.getElementById('img-counter').innerText = `${currentImageIndex + 1} / ${product.images.length}`;
             document.getElementById('visual-tag').innerText = `${t('image')} ${currentImageIndex + 1}: ${product.brandName || product.name.split(' ')[0]}`;
@@ -2293,11 +2360,11 @@
 
             container.innerHTML = visibleProductIndexes.map(idx => {
                 const prod = activeResultProducts[idx];
-                const productName = prod.demo ? `${prod.brandName} · ${t('demoProduct')} ${prod.demoNumber}` : prod.name;
+                const productName = demoTitle(prod);
                 return `
                 <button type="button" onclick="selectProduct(${idx})" aria-pressed="${idx === currentProductIndex}" class="ant-mini-card">
                     <img src="${prod.images[0]}" alt="" loading="lazy">
-                    <span class="min-w-0"><strong>${productName}</strong><small>${prod.price || prod.articleCode}</small></span>
+                    <span class="min-w-0"><strong>${productName}</strong><small>${prod.articleCode}</small></span>
                 </button>
             `; }).join('');
         }
@@ -2976,16 +3043,6 @@
         }
 
         // ================= LANDING (sample data only: nothing from master data or SharePoint) =================
-        // Sample products. Their EANs are in GS1's 200-299 range, numbers for internal use that no
-        // product on a shelf carries; the pictures are drawn by demoPackshot.
-        const LD_SAMPLES = [
-            { ean: '2000104001000', code: 'MAU0101', name: 'Apricot Peeling Gel', volume: '100ml', group: 'active', set: { '01_packshot': 6, '02_lifestyle_human': 2, '02_lifestyle_scene_setup': 4 } },
-            { ean: '2000104002007', code: 'MAU0102', name: 'Centella Moisturising Cream', volume: '50ml', group: 'active', set: { '01_packshot': 5, '02_lifestyle_scene_setup': 3, '02_lifestyle_collection': 1 } },
-            { ean: '2000104003004', code: 'MAU0103', name: 'Green Tea Cleansing Foam', volume: '150ml', group: 'upcoming', set: { '01_packshot': 3, '03_artwork': 2 } },
-            { ean: '2000104004001', code: 'MAU0104', name: 'Rice Essence', volume: '30ml', group: 'active', old: 'MAU0094', set: { '01_packshot': 8, '02_lifestyle_human': 3, '02_lifestyle_scene_setup': 5, '02_lifestyle_color_background_or_packshot_low_priority': 2 } },
-            { ean: '2000104005008', code: 'MAU0105', name: 'Kaolin Clay Mask', volume: '120g', group: 'inactive', set: { '01_packshot': 2 } },
-            { ean: '2000104006005', code: 'MAU0106', name: 'Daily Sun Cream SPF50', volume: '50ml', group: 'active', set: { '01_packshot': 4, '02_lifestyle_human': 4, '02_lifestyle_scene_setup': 2 } },
-        ];
         const ldTotal = p => Object.values(p.set).reduce((a, b) => a + b, 0);
         function ldSetHtml(set, legend = true) {
             const order = CAT_ORDER.filter(c => set[c]);
@@ -2997,31 +3054,35 @@
             <p class="ld-frag-name">${esc(p.name)}</p>
             <p class="ant-object-meta"><span>${t('ldSampleBrand')}</span><span>${esc(p.volume)}</span><span class="ant-status is-${p.group}">${groupName(p.group)}</span></p>
             <div class="ant-id-row"><span class="ant-copy">${fieldLabel('BAR CODE')} <b>${p.ean}</b></span><span class="ant-copy">${fieldLabel('CODE')} <b>${p.code}</b></span></div></div></div>`;
-        function ldRenderHero() {
-            const i = 3, p = LD_SAMPLES[i];
+        // Masthead: the sample code's picture set in numbers, beside the photographs.
+        function ldRenderMast() {
+            const p = LD_SAMPLES[3];
+            document.getElementById('ld-mast-num').textContent = ldTotal(p);
+            document.getElementById('ld-mast-code').textContent = fill(t('ldMastCode'), { ean: p.ean });
+            document.getElementById('ld-mast-kinds').innerHTML = CAT_ORDER.filter(c => p.set[c])
+                .map(c => `<li><i class="${c === '01_packshot' ? 'is-main' : ''}" aria-hidden="true"></i>${esc(catName(c))}<b>${p.set[c]}</b></li>`).join('');
+        }
+        // Try it: the typed line searches the sample products the way the workspace searches master data;
+        // the first match shows as the workspace shows it, the others are named under it.
+        function ldTry() {
+            const q = document.getElementById('ld-try-input').value.trim();
+            const words = fold(q).split(/\s+/).filter(Boolean);
+            const hits = words.length ? LD_SAMPLES.map((p, i) => [p, i]).filter(([p]) => words.every(w => fold(`${p.ean} ${p.code} ${p.name} ${p.volume}`).includes(w))) : [];
+            const out = document.getElementById('ld-try-out');
+            if (!hits.length) { out.innerHTML = `<p class="ld-try-none">${t(words.length ? 'ldTryNone' : 'ldTryLabel')}</p>`; return; }
+            const [p, i] = hits[0];
             const tiles = [0, 1, 2, 3].map(k => `<div class="ant-img-card${k < 2 ? ' is-selected' : ''}">
                 <span class="ant-img-check"><input type="checkbox" tabindex="-1" aria-hidden="true"${k < 2 ? ' checked' : ''}></span>
                 <span class="ant-img-thumb"><img src="${demoPackshot(i, k)}" alt=""></span>
                 <span class="ant-img-name">${p.ean}_${k + 1}.jpg</span>
                 <span class="ant-img-meta">${k === 0 ? `<span class="ant-badge is-person">${t('liveByPerson')}</span>` : `<span>${[0, 94, 88, 81][k]}%</span>`}<span>${['2.4', '1.8', '3.1', '2.2'][k]} MB</span></span></div>`).join('');
-            document.getElementById('ld-hero-frag').innerHTML = `<div class="ld-panel">${ldHead(p, i)}
+            out.innerHTML = `<div class="ld-panel">${ldHead(p, i)}
                 <div class="ant-tabs"><span class="ant-tab is-on">${t('liveTabImages')} <span class="ant-tab-count">${ldTotal(p)}</span></span><span class="ant-tab">${t('liveTabInfo')}</span></div>
                 ${ldSetHtml(p.set)}
                 <div class="ld-frag-tools"><span class="ant-btn ant-btn-secondary">${t('liveEdit')}</span><span class="ant-btn ant-btn-primary">${t('liveDownloadSelected')} (2)</span></div>
                 <div class="ld-frag-head">${catName('01_packshot')}<span class="ant-chip">${p.set['01_packshot']}</span></div>
-                <div class="ld-frag-grid">${tiles}</div></div>`;
-        }
-        // Try it: the typed line searches the sample products the way the workspace searches master data.
-        function ldTry() {
-            const q = document.getElementById('ld-try-input').value.trim();
-            const words = fold(q).split(/\s+/).filter(Boolean);
-            const hits = words.length ? LD_SAMPLES.map((p, i) => [p, i]).filter(([p]) => words.every(w => fold(`${p.ean} ${p.code} ${p.name} ${p.volume}`).includes(w))) : [];
-            document.getElementById('ld-try-answer').innerHTML = hits.length ? hits.slice(0, 3).map(([p, i]) => `<div class="ld-row">
-                <span class="ld-row-cover"><img src="${demoPackshot(i, 0)}" alt=""></span>
-                <span class="min-w-0"><span class="ld-row-name">${esc(p.name)} ${esc(p.volume)}</span>
-                <span class="ant-result-meta"><span class="ant-status is-${p.group}">${groupName(p.group)}</span><span class="ant-mono">${p.ean}</span><span class="ant-mono">${p.code}</span><span>${ldTotal(p)} ${t('liveImages')}</span></span>${ldSetHtml(p.set, false)}</span></div>`).join('')
-                + (hits.length > 3 ? `<p class="ld-try-more">+${hits.length - 3} ${t('ldTryMore')}</p>` : '')
-                : `<p class="ld-try-none">${t(words.length ? 'ldTryNone' : 'ldTryLabel')}</p>`;
+                <div class="ld-frag-grid">${tiles}</div></div>
+                ${hits.length > 1 ? `<p class="ld-try-more">${t('ldTryAlso')}: ${hits.slice(1).map(([o]) => esc(`${o.name} ${o.volume}`)).join(' · ')}</p>` : ''}`;
         }
         function ldTryExample(value) {
             const input = document.getElementById('ld-try-input');
@@ -3029,23 +3090,11 @@
             ldTry();
             input.focus();
         }
-        // How it works: one fragment, three states, switched by the statement in the middle of the screen.
-        function ldRenderHow() {
-            const i = 3, p = LD_SAMPLES[i];
-            document.getElementById('ld-how-frag').innerHTML = `
-                <div class="ld-state" data-for="1"><div class="ld-panel"><div class="ant-searchbar ld-search"><span class="ant-search-go" aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span><span class="ld-typed ant-mono">${p.ean}</span><span class="ld-caret-sm" aria-hidden="true"></span></div></div></div>
-                <div class="ld-state" data-for="2"><div class="ld-panel">${ldHead(p, i)}<dl class="ld-chain"><div><dt>${t('ldHowFound')}</dt><dd class="ant-mono">${p.ean}</dd></div><div><dt>${t('ldHowCode')}</dt><dd class="ant-mono">${p.code}</dd></div><div><dt>${t('ldHowOld')}</dt><dd class="ant-mono">${p.old}</dd></div></dl></div></div>
-                <div class="ld-state" data-for="3"><div class="ld-panel">${ldSetHtml(p.set)}<ul class="ld-groups">${CAT_ORDER.filter(c => p.set[c]).map(c => `<li><span>${catName(c)}</span><b>${p.set[c]}</b></li>`).join('')}</ul></div></div>`;
-        }
-        function ldWatchSteps() {
-            const frag = document.getElementById('ld-how-frag');
-            const steps = [...document.querySelectorAll('.ld-step')];
-            const io = new IntersectionObserver(entries => entries.forEach(entry => {
-                if (!entry.isIntersecting) return;
-                steps.forEach(step => step.classList.toggle('is-on', step === entry.target));
-                frag.dataset.state = entry.target.dataset.step;
-            }), { rootMargin: '-45% 0px -45% 0px' });
-            steps.forEach(step => io.observe(step));
+        // Close: a sample code goes into the search, ready to send.
+        function ldSample(value) {
+            const input = document.getElementById('ld-end-input');
+            input.value = value;
+            input.focus();
         }
         // Tools: the capabilities as A.N.T's own command list. Typing filters, arrows move, Enter or a second click opens it.
         const LD_CMDS = [
@@ -3113,9 +3162,8 @@
             document.querySelectorAll('#landing-view [data-rise]').forEach(el => io.observe(el));
         }
         function renderLanding() {
-            ldRenderHero();
+            ldRenderMast();
             ldTry();
-            ldRenderHow();
             ldCmdRender();
         }
 
