@@ -1,41 +1,41 @@
-/* A.N.T accent (electric blue) for the two same-origin integrated tools. */
+/* A.N.T accent (teal, framed sheet) for the two same-origin integrated tools. */
 .minima-app button.bg-primary,
 .minima-app button.export-cta,
 .minima-app .rail button.active {
-  background: #2f2fff !important;
+  background: #1b6c80 !important;
   color: #fff !important;
 }
 .minima-app button.bg-primary:hover,
 .minima-app button.export-cta:hover,
 .minima-app .rail button.active:hover {
-  background: #4848ff !important;
+  background: #155868 !important;
 }
 .minima-app button.bg-secondary {
-  color: #2f2fff !important;
+  color: #1b6c80 !important;
 }
 .minima-app .rail button:hover:not(.active) {
-  color: #2f2fff !important;
+  color: #1b6c80 !important;
 }
 .app-shell .primary-button {
-  background: #2f2fff !important;
-  border-color: #2f2fff !important;
+  background: #1b6c80 !important;
+  border-color: #1b6c80 !important;
   color: #fff !important;
 }
 .app-shell .primary-button:hover {
-  background: #4848ff !important;
+  background: #155868 !important;
 }
 .app-shell .secondary-button,
 .app-shell .text-action {
-  color: #2f2fff !important;
-  border-color: #2f2fff !important;
+  color: #1b6c80 !important;
+  border-color: #1b6c80 !important;
 }
 .app-shell .nav-item.active {
-  color: #2f2fff !important;
+  color: #1b6c80 !important;
 }
 .app-shell .stepper-item.current .step-circle {
-  background: #2f2fff !important;
+  background: #1b6c80 !important;
   color: #fff !important;
 }
 .app-shell .workflow-card.selected {
-  border-color: #2f2fff !important;
+  border-color: #1b6c80 !important;
 }
