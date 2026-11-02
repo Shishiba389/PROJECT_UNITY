@@ -2,7 +2,7 @@
 const brandNames = [
   'JONE', 'SKINHOUSE', 'SHANGPREE', 'REALBARRIER', 'MEDIHEAL', 'COXIR',
   'MOMSBATHRECIPE', 'BANILA', 'ITSSKIN', 'SKIN79', 'ENATURE', 'CHASINRABBITS',
-  'DIXIONIST', 'BRÄNDITA', 'STAY_WELL', 'MISSHA', 'DRAN', 'DRORACLE', 'TCFS',
+  'DIXIONIST', 'STAY_WELL', 'MISSHA', 'DRAN', 'DRORACLE', 'TCFS',
   'LAMUSE', 'LETMESKIN', 'MDOC', 'LISSEDERM', 'WHEN', 'SKINLOVERS',
   'somebymi', 'SKINLITE', 'SHILLS', 'VINOIR', 'SKINFOOD', 'ATOPALM',
   'A´PIEU', 'HOLIKA', 'LEADERS', 'VEGANGLOW', 'DERMA-B', 'MIZON', 'DERMAL',
@@ -49,7 +49,7 @@ const brandDisplayOverrides = {
   '8THETHALASSO': '8 THE THALASSO', NATURAL_MOONY: 'NATURAL MOONY',
   ROUNDLAB: 'ROUND LAB', BIOHEALBOH: 'BIOHEAL BOH',
   DEARDAHLIA: 'DEAR DAHLIA', THEORDINARY: 'THE ORDINARY',
-  lookatme: 'LOOK AT ME', 'A´PIEU': "A'PIEU"
+  lookatme: 'LOOK AT ME', QA: 'Q+A', 'A´PIEU': "A'PIEU"
 };
 
 const brandLogoFiles = {
@@ -79,7 +79,6 @@ const lightLogoBrands = new Set([
 const brandCatalog = (() => {
   const byKey = new Map();
   for (const rawName of brandNames) {
-    if (rawName === 'QA') continue; // Source placeholder, not a brand.
     const name = brandDisplayOverrides[rawName] || rawName.replaceAll('_', ' ');
     const key = brandSearchKey(name);
     let brand = byKey.get(key);

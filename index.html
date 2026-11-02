@@ -188,6 +188,7 @@
         html[lang="en"] .ant-dock button::after { content: attr(data-short-en); }
         .ant-dock button:hover { color: var(--text); }
         .ant-dock button.ant-tool-active { background: var(--ink-dark); color: var(--on-dark); }
+        @media (max-width: 480px) { .ant-dock .ant-dock-soon { display: none; } }
 
         /* Main page: title row, then a bento of live figures */
         .ant-title-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 24px; padding: 8px 0 20px; }
@@ -218,7 +219,7 @@
         .om-total { display: flex; align-items: baseline; gap: 8px; margin-top: 18px; }
         .om-total small { font-size: 14px; color: var(--on-dark-2); }
         /* Recent work: times on the left, each item a white chip on the dark card */
-        .om-recent { grid-column: span 6; min-height: 300px; }
+        .om-recent { grid-column: span 5; min-height: 300px; }
         .om-timeline { display: grid; gap: 10px; margin-top: 20px; }
         .om-tl-row { display: grid; grid-template-columns: 104px minmax(0, 1fr); align-items: center; gap: 12px; }
         .om-tl-time { font-size: 13px; color: var(--on-dark-2); font-variant-numeric: tabular-nums; }
@@ -227,14 +228,18 @@
         .om-tl-item strong { display: block; overflow: hidden; font-size: 15px; font-weight: 500; white-space: nowrap; text-overflow: ellipsis; }
         .om-tl-item small { display: block; font-size: 13px; color: #6b6b6b; }
         .om-tl-item i { width: 32px; height: 32px; flex: none; display: grid; place-items: center; border-radius: 50%; background: #262626; color: #fff; font-size: 12px; }
-        .om-kpis { grid-column: span 3; display: grid; gap: var(--gap); }
         /* Labelled pictures: one dot per few pictures, packshots in orange */
-        .om-labels { grid-column: span 3; display: flex; flex-direction: column; }
+        .om-labels { grid-column: span 4; display: flex; flex-direction: column; }
         .om-dots { display: flex; flex-wrap: wrap-reverse; justify-content: flex-end; align-content: flex-start; gap: 8px; margin: 18px 0 12px auto; max-width: 236px; }
         .om-dot { width: 20px; height: 20px; border-radius: 50%; background: #4a4a4c; }
         .om-dot.is-main { background: var(--primary); }
         .om-dot.is-pending { background: transparent; box-shadow: inset 0 0 0 2px #4a4a4c; }
-        .om-labels .om-note { margin-top: auto; }
+        .om-dot.is-alt { background: #8e8e90; }
+        .om-key { display: grid; gap: 6px; font-size: 13px; color: var(--on-dark-2); }
+        .om-key li { display: flex; align-items: center; gap: 8px; }
+        .om-key .om-dot { width: 10px; height: 10px; }
+        .om-key b { margin-left: auto; font-weight: 500; color: var(--on-dark); font-variant-numeric: tabular-nums; }
+        .om-labels .om-note { margin-top: 10px; }
         /* The last product opened: its packshot, as Omni's portrait card */
         .om-product { grid-column: span 3; min-height: 380px; overflow: hidden; padding: 0; }
         .om-product > img { position: absolute; inset: 0; width: 100%; height: 100%; padding: 28px 28px 92px; object-fit: contain; background: #fff; }
@@ -246,36 +251,82 @@
         .om-product-bar button:hover { transform: scale(1.06); }
         .om-product-empty { height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; padding: 24px; }
         .om-product-empty p { font-size: 15px; color: var(--on-dark-2); }
-        .om-mid { grid-column: span 4; display: grid; grid-template-rows: auto 1fr; gap: var(--gap); }
-        .om-mid-kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); }
-        .om-mid .om-kpi { min-height: 124px; }
-        .om-mid .om-big { font-size: 32px; }
-        .om-tools { display: flex; flex-direction: column; }
-        .om-tool-icons { display: flex; margin-top: 18px; }
-        .om-tool-icons span { width: 52px; height: 52px; display: grid; place-items: center; margin-right: -8px; border: 3px solid var(--surface); border-radius: 50%; font-size: 17px; }
-        .om-tool-icons .is-dark { background: var(--ink-dark); color: var(--on-dark); }
-        .om-tool-icons .is-orange { background: var(--primary); color: #1a1a1a; }
-        .om-tool-icons .is-grey { background: #8f8f8f; color: #fff; }
-        .om-tool-icons .is-light { background: var(--surface-3); color: var(--text); }
-        .om-tool-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto; padding-top: 20px; }
-        .om-tool-actions .om-icon-btn { width: 44px; padding: 0; }
+        /* a value still loading: a flat bar at the size of the figure it stands for */
+        .om-skel { display: inline-block; width: 2.4em; height: .8em; border-radius: 6px; background: var(--surface-3); vertical-align: baseline; }
+        .is-dark .om-skel { background: #3a3a3c; }
         /* Brands with the most products: stepped bars, the first in near-black, the second in orange */
-        .om-brands { grid-column: span 5; display: flex; flex-direction: column; }
+        .om-brands { grid-column: span 7; display: flex; flex-direction: column; }
+        /* Products by status: one stacked bar of the six statuses, then each with its count and share */
+        .om-status { grid-column: span 8; }
+        .om-stack { display: flex; gap: 3px; height: 28px; margin-top: 20px; overflow: hidden; border-radius: 8px; }
+        .om-stack span { min-width: 3px; }
+        .s-active { background: var(--primary); }
+        .s-limited { background: #ffb594; }
+        .s-upcoming { background: var(--text); }
+        .s-nonactive { background: #bdbdbd; }
+        .s-discontinued { background: #8a8a8a; }
+        .s-unknown { background: repeating-linear-gradient(45deg, #cfcfcf 0 3px, var(--surface-2) 3px 7px); }
+        .om-status-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 24px; margin-top: 22px; }
+        .om-status-list > div { display: grid; grid-template-columns: 12px minmax(0, 1fr); column-gap: 10px; align-content: start; }
+        .om-status-list i { width: 12px; height: 12px; margin-top: 4px; border-radius: 3px; }
+        .om-status-list dt { font-size: 14px; color: var(--text-2); }
+        .om-status-list dd { grid-column: 2; font-size: 26px; line-height: 1.2; letter-spacing: -.025em; font-variant-numeric: tabular-nums; }
+        .om-status-list dd small { margin-left: 6px; font-size: 13px; letter-spacing: 0; color: var(--text-3); }
+        .om-status-list .om-raw { grid-column: 2; margin-top: 2px; font-size: 12px; color: var(--text-3); }
+        /* Data source: the file, when it was saved, its size; a warning when the export was cut */
+        .om-source { grid-column: span 4; display: flex; flex-direction: column; }
+        .om-src-list { display: grid; gap: 8px; margin: 16px 0 18px; }
+        .om-src-list > div { display: flex; justify-content: space-between; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid #3a3a3c; }
+        .om-src-list dt { font-size: 14px; color: var(--on-dark-2); }
+        .om-src-list dd { font-size: 14px; text-align: right; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+        /* Changes since the previous export: four figures, then where they come from */
+        .om-changes { margin-bottom: 16px; }
+        .om-changes h3 { font-size: 14px; color: var(--on-dark-2); letter-spacing: 0; }
+        .om-ch-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+        .om-moves:empty { display: none; }
+        .om-moves { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line); }
+        .om-moves h3 { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; font-weight: 500; color: var(--text-2); }
+        .om-moves h3 b { font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums; }
+        .om-moves ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 32px; margin-top: 10px; font-size: 14px; color: var(--text-2); }
+        .om-moves li { display: flex; align-items: center; gap: 8px; min-width: 0; }
+        .om-moves li i { flex: none; width: 10px; height: 10px; border-radius: 3px; }
+        .om-moves li b { margin-left: auto; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums; }
+        .om-ch-grid div { display: flex; flex-direction: column-reverse; justify-content: flex-end; padding: 10px 10px 8px; border-radius: 12px; background: #333335; }
+        .om-ch-grid dd { font-size: 24px; line-height: 1.1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+        .om-ch-grid dd.is-up { color: var(--primary); }
+        .om-ch-grid dt { margin-top: 2px; font-size: 12px; color: var(--on-dark-2); }
+        .om-ch-lines { display: grid; gap: 6px; margin-top: 12px; font-size: 13px; color: var(--on-dark-2); }
+        .om-ch-lines li { display: flex; justify-content: space-between; gap: 12px; }
+        .om-ch-lines b { font-weight: 500; color: var(--on-dark); font-variant-numeric: tabular-nums; }
+        .om-ch-lines li.is-stack { display: grid; gap: 2px; }
+        .om-ch-note { margin-top: 10px; font-size: 12px; line-height: 1.45; color: var(--on-dark-2); }
+        .om-cut { margin-top: auto; padding: 14px 16px; border-radius: 14px; background: var(--primary); color: #1a1a1a; }
+        .om-cut strong { display: block; font-size: 15px; font-weight: 600; }
+        .om-cut p { margin-top: 6px; font-size: 13px; line-height: 1.45; }
+        /* Data completeness for the products on sale: one meter per field, orange when under 60% */
+        .om-complete { grid-column: span 5; display: flex; flex-direction: column; }
+        .om-meters { display: grid; gap: 12px; margin-top: 18px; }
+        .om-meters li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; align-items: baseline; font-size: 14px; }
+        .om-meters b { font-weight: 500; font-variant-numeric: tabular-nums; }
+        .om-meters b small { margin-left: 6px; font-weight: 400; color: var(--text-3); }
+        .om-meter { grid-column: 1 / -1; height: 8px; overflow: hidden; border-radius: 999px; background: var(--surface-3); }
+        .om-meter span { display: block; height: 100%; border-radius: inherit; background: var(--text); }
+        .om-meter span.is-low { background: var(--primary); }
+        .om-complete .om-note-line { margin-top: auto; padding-top: 14px; font-size: 13px; color: var(--text-3); }
         .om-huge { margin-top: 18px; font-size: 56px; font-weight: 400; line-height: 1; letter-spacing: -.045em; font-variant-numeric: tabular-nums; }
         .om-steps { flex: 1; min-height: 200px; display: flex; align-items: stretch; margin-top: 22px; }
         .om-step { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; }
-        .om-step-bar { position: relative; height: calc(var(--h) * 1%); min-height: 34px; padding: 8px 10px; border-top: 4px solid var(--primary); background: #d9d9d9; color: #1a1a1a; font-size: 13px; font-variant-numeric: tabular-nums; }
-        .om-step:nth-child(3) .om-step-bar { background: #a9a9a9; }
-        .om-step:nth-child(4) .om-step-bar { background: #c9c9c9; }
-        .om-step:nth-child(5) .om-step-bar { background: #dcdcdc; }
-        .om-step:nth-child(6) .om-step-bar { background: #e9e9e9; }
-        .om-step.is-dark .om-step-bar { background: var(--ink-dark); color: var(--on-dark); }
-        .om-step.is-main .om-step-bar { background: var(--primary); border-top-color: var(--ink-dark); }
+        .om-step-n { margin-bottom: 4px; font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums; }
+        .om-step-bar { position: relative; overflow: hidden; height: calc((100% - 66px) * var(--h) / 100); min-height: 12px; margin-right: 6px; border-radius: 6px 6px 0 0; }
+        .om-step-bar i { position: absolute; left: 0; right: 0; }
+        .om-step-bar .s-active { bottom: 0; height: var(--a); }
+        .om-step-bar .s-upcoming { bottom: var(--a); height: var(--u); }
+        .om-step-key { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 12px; font-size: 12px; color: var(--text-3); }
+        .om-step-key i { display: inline-block; width: 9px; height: 9px; margin-right: 6px; border-radius: 2px; vertical-align: -1px; }
         .om-step small { display: block; overflow: hidden; margin-top: 8px; padding-right: 6px; font-size: 12px; color: var(--text-3); white-space: nowrap; text-overflow: ellipsis; }
         @media (max-width: 1280px) {
-            .om-recent, .om-brands { grid-column: span 12; }
-            .om-kpis, .om-labels, .om-product { grid-column: span 4; }
-            .om-mid { grid-column: span 8; }
+            .om-status, .om-brands, .om-recent { grid-column: span 12; }
+            .om-source, .om-complete, .om-product, .om-labels { grid-column: span 6; }
         }
         @media (max-width: 760px) {
             .om-bento { grid-template-columns: minmax(0, 1fr); }
@@ -283,6 +334,8 @@
             .om-tl-row { grid-template-columns: 1fr; gap: 4px; }
             .om-tl-item { margin-left: 0; }
             .om-huge { font-size: 44px; }
+            .om-status-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .om-moves ul { grid-template-columns: minmax(0, 1fr); }
             .ant-title-row h1 { font-size: 24px; }
             body:not(.ant-home) .om-actions { display: none; }
         }
@@ -382,29 +435,36 @@
         .ld-groups li { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--line); font-size: 14px; }
         .ld-groups b { font-weight: 500; font-variant-numeric: tabular-nums; }
         /* Tools: A.N.T's capabilities as its own command list, set large */
-        .ld-tools { padding-top: 160px; }
-        .ld-cmd { margin-top: 32px; }
-        .ld-cmd-input { width: min(100%, 83%); height: 1.9em; padding: 0 .5em; border: 0; border-radius: var(--radius-sm); background: var(--surface-2); color: var(--text); font-size: clamp(24px, 3vw, 44px); outline: none; }
+        .ld-tools { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 5vw, 88px); align-items: start; padding-top: 160px; }
+        .ld-tools-side { position: sticky; top: 96px; }
+        .ld-tools-lead { max-width: 36ch; margin-top: 14px; font-size: 18px; line-height: 1.5; color: var(--text-2); }
+        .ld-cmd-detail { margin-top: 40px; padding: 28px; border-radius: var(--radius-lg); background: var(--ink-dark); color: var(--on-dark); }
+        .ld-cmd-detail h3 { font-size: 28px; font-weight: 500; line-height: 1.15; letter-spacing: -.02em; color: var(--on-dark); }
+        .ld-cmd-detail p { max-width: 44ch; margin-top: 10px; font-size: 16px; line-height: 1.55; color: var(--on-dark-2); }
+        .ld-cmd-detail .ant-btn { margin-top: 24px; }
+        .ld-cmd { padding: 8px; border-radius: var(--radius-lg); background: var(--surface); }
+        .ld-cmd-input { width: 100%; height: 52px; padding: 0 20px; border: 0; border-radius: 999px; background: var(--surface-2); color: var(--text); font-size: 17px; outline: none; }
         .ld-cmd-input::placeholder { color: var(--text-3); }
         .ld-cmd-input:focus-visible { outline: 2px solid var(--primary-ink); }
-        .ld-cmd-list { margin-top: 24px; }
-        .ld-cmd-row { width: 100%; display: block; padding: .1em .25em; border-radius: var(--radius-sm); text-align: left; color: var(--text); transition: background-color .15s, color .15s; }
+        .ld-cmd-list { margin-top: 6px; }
+        .ld-cmd-row { width: 100%; display: grid; gap: 2px; padding: 13px 20px; border-radius: var(--radius); text-align: left; color: var(--text); transition: background-color .15s, color .15s; }
         .ld-cmd-row:hover { background: var(--surface-2); }
-        .ld-cmd-row[aria-selected="true"] { background: var(--primary); color: #1a1a1a; }
-        .ld-cmd-name { display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: var(--ld-display); font-weight: 500; line-height: 1.1; letter-spacing: -.025em; }
-        .ld-key { flex: none; min-width: .7em; height: .7em; display: inline-grid; place-items: center; padding: 0 .15em; border-radius: var(--radius-sm); background: var(--surface-3); color: var(--text-2); font-family: inherit; font-size: .5em; font-weight: 500; letter-spacing: 0; }
-        .ld-cmd-say { display: none; max-width: 60ch; padding: 6px 0 14px; font-size: 17px; line-height: 1.5; }
-        .ld-cmd-row[aria-selected="true"] .ld-cmd-say { display: block; }
+        .ld-cmd-row[aria-selected="true"] { background: var(--ink-dark); color: var(--on-dark); }
+        .ld-cmd-name { display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 19px; font-weight: 500; line-height: 1.3; letter-spacing: -.01em; }
+        .ld-key { flex: none; min-width: 26px; height: 26px; display: inline-grid; place-items: center; padding: 0 8px; border-radius: 999px; background: var(--surface-3); color: var(--text-2); font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0; }
+        .ld-cmd-say { overflow: hidden; font-size: 14px; line-height: 1.45; color: var(--text-3); white-space: nowrap; text-overflow: ellipsis; }
+        .ld-cmd-row[aria-selected="true"] .ld-cmd-say { color: var(--on-dark-2); }
         .ld-cmd-none { padding: 16px 0; font-size: 17px; color: var(--text-2); }
         /* Close: the sentence's blank is the form */
         .ld-end { padding-top: 200px; }
-        .ld-end h2 { max-width: 17em; font-size: var(--ld-display); font-weight: 500; line-height: 1.15; letter-spacing: -.025em; }
-        .ld-end-input { width: 5.5em; height: 1.15em; padding: 0 .2em; border: 0; border-radius: var(--radius-sm); background: var(--surface-2); color: var(--text); font: inherit; letter-spacing: inherit; vertical-align: baseline; }
+        .ld-end h2 { font-size: clamp(32px, 4.4vw, 64px); font-weight: 500; line-height: 1.1; letter-spacing: -.025em; }
+        .ld-end-bar { display: flex; gap: 8px; max-width: 680px; margin-top: 28px; padding: 6px; border-radius: 999px; background: var(--surface); }
+        .ld-end-input { flex: 1; min-width: 0; height: 52px; padding: 0 20px; border: 0; border-radius: 999px; background: transparent; color: var(--text); font-size: 17px; outline: none; }
         .ld-end-input::placeholder { color: var(--text-3); }
-        .ld-end-go { height: 1.15em; padding: 0 .25em; border-radius: var(--radius-sm); background: var(--ld-stage); color: #fff; font: inherit; letter-spacing: inherit; transition: background-color .15s; }
-        .ld-end-go:hover { background: #000; }
+        .ld-end-input:focus-visible { outline: 2px solid var(--primary-ink) !important; outline-offset: 0; }
+        .ld-end-bar .ant-btn { flex: none; min-height: 52px; }
         .ld-end-note { max-width: 60ch; margin-top: 20px; font-size: 16px; line-height: 1.55; color: var(--text-2); }
-        .ld-foot { display: grid; grid-template-columns: 1fr auto 1fr; align-items: baseline; gap: 24px; margin-top: 30svh; padding-bottom: 30px; font-size: 14px; color: var(--text-2); }
+        .ld-foot { display: grid; grid-template-columns: 1fr auto 1fr; align-items: baseline; gap: 24px; margin-top: clamp(120px, 18svh, 220px); padding-bottom: 30px; font-size: 14px; color: var(--text-2); }
         .ld-foot nav { display: flex; gap: 24px; }
         .ld-foot a { color: var(--text); }
         .ld-foot > :last-child { justify-self: end; text-align: right; }
@@ -438,7 +498,10 @@
             .ld-pack.ld-grid { display: block; }
             .ld-pack-main { margin-top: 32px; }
             .ld-pack-side { grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
-            .ld-cmd-input { width: 100%; height: 56px; font-size: 20px; }
+            .ld-tools { grid-template-columns: minmax(0, 1fr); }
+            .ld-tools-side { position: static; }
+            .ld-cmd-detail { display: none; } /* a tap on a task opens it */
+            .ld-cmd-say { white-space: normal; }
         }
         @media (max-width: 700px) {
             .ld-grid.ld-how { display: flex; flex-direction: column; }
@@ -447,12 +510,10 @@
             .ld-step { min-height: 60svh; }
             .ld-step-say { font-size: 22px; }
             .ld-how-frag { width: calc(100% - 32px); }
-            .ld-cmd-name { font-size: 8.5vw; }
             .ld-key { display: none; }
-            .ld-cmd-say { font-size: 16px; }
             .ld-end { padding-top: 140px; }
-            .ld-end h2 { font-size: 10vw; }
-            .ld-end-input { width: 5.6em; }
+            .ld-end h2 { font-size: 32px; }
+            .ld-end-bar .ant-btn { padding: 0 18px; }
             .ld-foot { display: flex; flex-direction: column; gap: 8px; margin-top: 20svh; padding-bottom: 24px; }
             .ld-foot nav { flex-wrap: wrap; gap: 8px 20px; }
             .ld-foot > :last-child { text-align: left; }
@@ -622,6 +683,7 @@
         .ant-brand-card:hover, .ant-brand-card:focus-visible { background: var(--surface-2); border-color: var(--line-strong); }
         .ant-brand-plate { height: 76px; display: grid; place-items: center; padding: 10px; border-radius: var(--radius-sm); background: var(--plate); }
         .ant-brand-name { overflow: hidden; padding: 0 2px; white-space: nowrap; text-overflow: ellipsis; font-size: 12.5px; font-weight: 500; color: var(--text-2); }
+        .ant-brand-count { margin-top: -8px; padding: 0 2px; font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; }
         .ant-brand-logo { display: block; width: min(100%, 124px); max-height: 52px; object-fit: contain; }
         .ant-brand-logo.logo-invert { filter: invert(1); }
         .ant-logo-placeholder { width: 44px; height: 44px; display: grid; place-items: center; border-radius: var(--radius); color: #9aa0ab; }
@@ -658,6 +720,7 @@
         .ant-workspace-card { width: 100%; min-height: 600px; overflow: hidden; background: var(--surface); border-radius: var(--radius-lg); }
         .ant-workspace-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
         .ant-workspace-frame { display: block; width: 100%; height: min(76vh, 850px); min-height: 560px; border: 0; background: #fff; }
+        #pallet-frame { background: var(--bg); } /* the pallet tool follows the theme, so no white flash while it loads */
         .ant-workspace-placeholder { min-height: 520px; display: grid; place-items: center; padding: 30px; text-align: center; color: var(--text-3); }
         /* A tool fills the sheet; the sidebar (or the bar at the foot) switches tools. */
         body.ant-workspace-mode #main-scroll-container { padding: 0 !important; overflow: hidden; }
@@ -768,7 +831,11 @@
             </section>
 
             <section id="ld-tools" class="ld-tools ld-wrap" aria-labelledby="ld-tools-title">
-                <h2 id="ld-tools-title" data-i18n="ldToolsTitle" data-rise>Việc làm được trong A.N.T</h2>
+                <div class="ld-tools-side">
+                    <h2 id="ld-tools-title" data-i18n="ldToolsTitle" data-rise>Việc làm được trong A.N.T</h2>
+                    <p class="ld-tools-lead" data-i18n="ldToolsLead" data-rise>Từ một mã EAN tới bộ ảnh, file cho nhà bán lẻ, file giá cho Directo và pallet xuất kho.</p>
+                    <div id="ld-cmd-detail" class="ld-cmd-detail" aria-live="polite" data-rise style="--rise: 1"></div>
+                </div>
                 <div class="ld-cmd" data-ui data-rise style="--rise: 1">
                     <input id="ld-cmd-input" class="ld-cmd-input" type="text" placeholder="Tìm một việc" data-i18n-placeholder="ldCmdPlaceholder" aria-label="Tìm một việc" data-i18n-aria="ldCmdPlaceholder" aria-controls="ld-cmd-list" autocomplete="off" oninput="ldCmdRender()" onkeydown="ldCmdKey(event)">
                     <ul id="ld-cmd-list" class="ld-cmd-list" role="listbox" aria-labelledby="ld-tools-title"></ul>
@@ -776,8 +843,10 @@
             </section>
 
             <section class="ld-end ld-wrap" aria-labelledby="ld-end-title">
-                <form onsubmit="event.preventDefault(); ldOpen()">
-                    <h2 id="ld-end-title" data-rise><span data-i18n="ldEndA">Tìm ảnh cho mã</span> <input id="ld-end-input" class="ld-end-input" type="text" inputmode="numeric" autocomplete="off" aria-label="Mã EAN" data-i18n-aria="ldEndInput"> <button type="submit" class="ld-end-go" data-i18n="ldEndGo">ngay</button></h2>
+                <h2 id="ld-end-title" data-i18n="ldEndA" data-rise>Tìm ảnh cho một mã</h2>
+                <form class="ld-end-bar" role="search" onsubmit="event.preventDefault(); ldOpen()" data-rise style="--rise: 1">
+                    <input id="ld-end-input" class="ld-end-input" type="text" autocomplete="off" placeholder="EAN, mã hàng hoặc tên sản phẩm" data-i18n-placeholder="searchPlaceholder" aria-label="EAN, mã hàng hoặc tên sản phẩm" data-i18n-aria="searchPlaceholder">
+                    <button type="submit" class="ant-btn ant-btn-primary"><span data-i18n="ldEndGo">Tìm ảnh</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
                 </form>
                 <p class="ld-end-note" data-i18n="ldEndNote" data-rise style="--rise: 1">Mở không gian làm việc và tìm mã này. Bản trên GitHub Pages dùng dữ liệu mẫu; dữ liệu thật chạy trên máy có A.N.T.</p>
             </section>
@@ -795,7 +864,7 @@
 
     <!-- TOP BAR: brand, search, the screens as one pill, then data status, theme and language -->
     <header id="ant-topbar">
-        <button type="button" class="ant-brand" onclick="openSearchView(); resetToFrontPage()" aria-label="A.N.T">
+        <button type="button" class="ant-brand" onclick="leaveApp()" aria-label="A.N.T · Trang giới thiệu" data-i18n-aria="toLanding" title="Trang giới thiệu" data-i18n-title="toLanding">
             <span class="ant-brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" focusable="false"><path d="M6.5 17.5 12 6.5l5.5 11h-11Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="6.5" r="2.8" fill="currentColor"/><circle cx="6.5" cy="17.5" r="2.8" fill="currentColor"/><circle cx="17.5" cy="17.5" r="2.8" fill="currentColor"/></svg></span><span class="ant-brand-sep" aria-hidden="true"></span><span class="ant-brand-word">A.N.T</span>
         </button>
         <div class="ant-topbar-search">
@@ -813,6 +882,7 @@
             <button type="button" onclick="triggerTool('IMG EDIT')" data-i18n="imageEdit">Chỉnh ảnh</button>
             <button type="button" onclick="triggerTool('AUTO FILL')" data-i18n="autoFill">Tự điền file</button>
             <button type="button" onclick="triggerTool('PRICE SYNC')" data-i18n="priceSync">Cập nhật giá</button>
+            <button type="button" onclick="triggerTool('PALLET')" data-i18n="pallet">Xếp pallet</button>
         </nav>
         <div id="ant-controls" class="ant-controls">
             <button type="button" id="live-conn" class="ant-conn" data-state="demo" onclick="retryLive()"><span></span></button>
@@ -865,6 +935,10 @@
                         <i class="fa-solid fa-tags" aria-hidden="true"></i>
                         <span class="hidden md:inline" data-i18n="priceSync">Cập nhật giá</span>
                     </button>
+                    <button onclick="triggerTool('PALLET')" class="ant-top-tab">
+                        <i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i>
+                        <span class="hidden md:inline" data-i18n="pallet">Xếp pallet</span>
+                    </button>
                     <button onclick="triggerTool('SETTING')" class="ant-top-tab">
                         <i class="fa-solid fa-gear" aria-hidden="true"></i>
                         <span class="hidden md:inline" data-i18n="settings">Cài đặt</span>
@@ -913,44 +987,46 @@
                 </button>
             </div>
 
-            <!-- MAIN PAGE: a bento of what A.N.T knows right now (renderHome fills it) -->
+            <!-- MAIN PAGE: figures counted from the master data file, then recent work (renderHome fills it) -->
             <div id="home-dashboard" class="om-bento">
+                <section class="om-card om-status" aria-labelledby="st-title">
+                    <h2 id="st-title" data-i18n="omStatusTitle">Sản phẩm theo trạng thái</h2>
+                    <p id="st-total" class="om-huge">—</p>
+                    <p id="st-sub" class="om-sub"></p>
+                    <div id="st-bar" class="om-stack" role="img"></div>
+                    <dl id="st-list" class="om-status-list"></dl>
+                    <div id="st-moves" class="om-moves"></div>
+                </section>
+                <section class="om-card is-dark om-source" aria-labelledby="src-title">
+                    <h2 id="src-title" data-i18n="omSourceTitle">Nguồn dữ liệu</h2>
+                    <dl id="src-list" class="om-src-list"></dl>
+                    <div id="src-changes" class="om-changes"></div>
+                    <div id="src-cut" class="om-cut" role="status" hidden></div>
+                </section>
+                <section class="om-card om-brands" aria-labelledby="brands-title">
+                    <div class="om-card-head"><h2 id="brands-title" data-i18n="omTopBrands">Thương hiệu nhiều sản phẩm nhất</h2><button type="button" class="ant-btn ant-btn-dark" style="min-height: 36px; padding: 0 14px; font-size: 13px;" onclick="openLibraryView()" data-i18n="omAllBrands">Xem tất cả</button></div>
+                    <p id="brands-total" class="om-huge">—</p>
+                    <p id="brands-sub" class="om-sub"></p>
+                    <div id="brands-chart" class="om-steps"></div>
+                    <p id="brands-key" class="om-step-key"></p>
+                </section>
+                <section class="om-card om-complete" aria-labelledby="cp-title">
+                    <h2 id="cp-title" data-i18n="omCompleteTitle">Độ đầy đủ dữ liệu</h2>
+                    <p id="cp-sub" class="om-sub"></p>
+                    <ul id="cp-list" class="om-meters"></ul>
+                    <p id="cp-note" class="om-note-line"></p>
+                </section>
                 <section class="om-card is-dark om-recent" aria-labelledby="recent-title">
                     <div class="om-card-head"><h2 id="recent-title" data-i18n="recent">Gần đây</h2><button type="button" class="om-chip-btn" onclick="document.getElementById('search-input').focus()"><span data-i18n="omNewSearch">Tìm mới</span> /</button></div>
                     <div id="recent-list" class="om-timeline"></div>
                 </section>
-                <div class="om-kpis">
-                    <section class="om-card om-kpi" aria-labelledby="kpi-active-title"><h2 id="kpi-active-title" data-i18n="groupActive">Đang bán</h2><p class="om-kpi-value"><span id="kpi-active" class="om-big">—</span><small id="kpi-active-share"></small></p></section>
-                    <section class="om-card om-kpi" aria-labelledby="kpi-upcoming-title"><h2 id="kpi-upcoming-title" data-i18n="groupUpcoming">Sắp ra mắt</h2><p class="om-kpi-value"><span id="kpi-upcoming" class="om-big">—</span><small id="kpi-upcoming-share"></small></p></section>
-                </div>
+                <section id="home-product" class="om-card om-product" aria-label="Sản phẩm vừa xem" data-i18n-aria="omLastProduct"></section>
                 <section class="om-card is-dark om-labels" aria-labelledby="labels-title">
                     <div class="om-card-head"><h2 id="labels-title" data-i18n="omLabelled">Ảnh đã gắn nhãn</h2></div>
                     <p class="om-total"><span id="labels-total" class="om-big">—</span><small data-i18n="omTotal">tổng</small></p>
                     <div id="labels-dots" class="om-dots" role="img"></div>
+                    <ul id="labels-key" class="om-key"></ul>
                     <p id="labels-note" class="om-note"></p>
-                </section>
-                <section id="home-product" class="om-card om-product" aria-label="Sản phẩm vừa xem" data-i18n-aria="omLastProduct"></section>
-                <div class="om-mid">
-                    <div class="om-mid-kpis">
-                        <section class="om-card om-kpi" aria-labelledby="kpi-inactive-title"><h2 id="kpi-inactive-title" data-i18n="groupInactive">Ngừng bán</h2><p class="om-kpi-value"><span id="kpi-inactive" class="om-big">—</span><small id="kpi-inactive-share"></small></p></section>
-                        <section class="om-card om-kpi" aria-labelledby="kpi-logos-title"><h2 id="kpi-logos-title" data-i18n="omLogoLibrary">Thư viện logo</h2><p class="om-kpi-value"><span id="kpi-logos" class="om-big">—</span><small id="library-card-meta"></small></p></section>
-                    </div>
-                    <section class="om-card om-tools" aria-labelledby="tools-title">
-                        <div class="om-card-head"><h2 id="tools-title"><span data-i18n="tools">Công cụ</span> (4)</h2><button type="button" class="om-round" onclick="openLibraryView()" aria-label="Thư viện" data-i18n-aria="library"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button></div>
-                        <p class="om-sub" data-i18n="omToolsSub">Chỉnh ảnh, điền file nhà bán lẻ và cập nhật giá ngay trong A.N.T.</p>
-                        <div class="om-tool-icons" aria-hidden="true"><span class="is-dark"><i class="fa-solid fa-wand-magic-sparkles"></i></span><span class="is-orange"><i class="fa-solid fa-bolt"></i></span><span class="is-grey"><i class="fa-solid fa-tags"></i></span><span class="is-light"><i class="fa-solid fa-folder-open"></i></span></div>
-                        <div class="om-tool-actions">
-                            <button type="button" class="ant-btn ant-btn-dark" onclick="triggerTool('IMG EDIT')"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i><span data-i18n="imageEdit">Chỉnh ảnh</span></button>
-                            <button type="button" class="ant-btn ant-btn-secondary" onclick="triggerTool('AUTO FILL')"><i class="fa-solid fa-bolt" aria-hidden="true"></i><span data-i18n="autoFill">Tự điền file</span></button>
-                            <button type="button" class="ant-btn ant-btn-secondary om-icon-btn" onclick="triggerTool('PRICE SYNC')" aria-label="Cập nhật giá" data-i18n-aria="priceSync" title="Cập nhật giá"><i class="fa-solid fa-tags" aria-hidden="true"></i></button>
-                        </div>
-                    </section>
-                </div>
-                <section class="om-card om-brands" aria-labelledby="brands-title">
-                    <div class="om-card-head"><h2 id="brands-title" data-i18n="omTopBrands">Thương hiệu nhiều sản phẩm nhất</h2><span class="ant-btn ant-btn-dark" style="min-height: 36px; padding: 0 14px; font-size: 13px;">Master data</span></div>
-                    <p id="brands-total" class="om-huge">—</p>
-                    <p id="brands-sub" class="om-sub"></p>
-                    <div id="brands-chart" class="om-steps"></div>
                 </section>
             </div>
 
@@ -1211,6 +1287,7 @@
                 <iframe id="image-edit-frame" class="ant-workspace-frame hidden" data-src="/PROJECT_UNITY/project-m2/" title="MINIMA image editor" allow="clipboard-read; clipboard-write"></iframe>
                 <iframe id="auto-fill-frame" class="ant-workspace-frame hidden" data-src="/PROJECT_UNITY/auto-fill/" data-local="auto-fill/" title="PROJECT_AUTO file autofill" allow="local-network-access"></iframe>
                 <iframe id="price-sync-frame" class="ant-workspace-frame hidden" data-src="/PROJECT_UNITY/price-sync/app.html" data-local="price-sync/app.html" title="PriceSync Tracker" allow="local-network-access"></iframe>
+                <iframe id="pallet-frame" class="ant-workspace-frame hidden" data-src="/PROJECT_UNITY/pallet-3d/" title="Pallet 3D"></iframe>
                 <div id="tool-placeholder" class="ant-workspace-placeholder hidden"></div>
             </div>
         </div>
@@ -1228,7 +1305,7 @@
                 <i class="fa-solid fa-folder-open ant-ico-yellow" aria-hidden="true"></i>
                 <span data-i18n="library">Thư viện</span>
             </button>
-            <button onclick="triggerTool('REQUEST')" data-short-vi="Yêu cầu" data-short-en="Request">
+            <button onclick="triggerTool('REQUEST')" class="ant-dock-soon" data-short-vi="Yêu cầu" data-short-en="Request">
                 <i class="fa-solid fa-paper-plane ant-ico-green" aria-hidden="true"></i>
                 <span data-i18n="request">Yêu cầu ảnh</span>
             </button>
@@ -1240,7 +1317,11 @@
                 <i class="fa-solid fa-tags ant-ico-green" aria-hidden="true"></i>
                 <span data-i18n="priceSync">Cập nhật giá</span>
             </button>
-            <button onclick="triggerTool('SETTING')" data-short-vi="Cài đặt" data-short-en="Settings">
+            <button onclick="triggerTool('PALLET')" data-short-vi="Pallet" data-short-en="Pallet">
+                <i class="fa-solid fa-boxes-stacked ant-ico-gray" aria-hidden="true"></i>
+                <span data-i18n="pallet">Xếp pallet</span>
+            </button>
+            <button onclick="triggerTool('SETTING')" class="ant-dock-soon" data-short-vi="Cài đặt" data-short-en="Settings">
                 <i class="fa-solid fa-gear ant-ico-gray" aria-hidden="true"></i>
                 <span data-i18n="settings">Cài đặt</span>
             </button>
@@ -1252,7 +1333,7 @@
     <script src="logos/distributor-logos.js"></script>
     <script src="logos/popular-logos.js"></script>
     <script src="logos/community-logos.js"></script>
-    <script src="brands.js"></script>
+    <script src="brands.js?v=2"></script>
     <!-- JAVASCRIPT LOGIC -->
     <script>
         const translations = {
@@ -1261,9 +1342,19 @@
                 expandProducts: 'Mở danh sách sản phẩm', collapseProducts: 'Đóng danh sách sản phẩm', relatedProducts: 'Các sản phẩm liên quan tìm thấy:', imageEdit: 'Chỉnh ảnh', library: 'Thư viện', request: 'Yêu cầu ảnh', autoFill: 'Tự điền file', settings: 'Cài đặt',
                 next: 'Tiếp', moreImagesHint: 'Bấm nút bên phải để xem thêm ảnh', description: 'Mô tả sản phẩm: ', specifications: 'Chất liệu & Thông số: ', origin: 'Bảo hành & Xuất xứ: ', addToOrder: 'Thêm vào đơn hàng',
                 chooseBrand: 'Chọn thương hiệu', chooseBrandHint: 'Tìm tên brand và chọn logo để xem thư viện', nextPage: 'Trang tiếp', backToBrands: 'Về thương hiệu', brandOverview: 'Tổng quan thương hiệu', imageLibrary: 'Thư viện ảnh', featuredImage: 'Ảnh nổi bật', featureHint: 'Chọn ảnh để xem đầy đủ', swipeHint: 'Vuốt ngang để xem ba phần của thư viện.', brandFilter: 'Tìm thương hiệu...', demoAssets: 'Ảnh minh họa bố cục · chưa có dữ liệu thật của brand', demoImage: 'Ảnh mẫu', brandMasterData: 'Master data · thương hiệu', demoData: 'Dữ liệu demo', canonicalBrand: 'Tên chuẩn', brandCode: 'Mã tra cứu', brandAliases: 'Tên gốc / bí danh', masterStatus: 'Dữ liệu sản phẩm', notConnected: 'Chưa kết nối', pendingLogo: 'Logo đang chờ xác minh',
-                back: 'Quay lại', singleViewer: 'Xem ảnh sản phẩm', products: 'sản phẩm', brandSelection: 'Chọn thương hiệu', backToSearch: 'Về tìm kiếm', backToGrid: 'Về thư viện', image: 'Ảnh', brandLibrary: 'Thư viện', viewing: 'Đang xem', receivedFile: 'Đã nhận file', fileMatches: 'Sản phẩm demo khớp trong file', noFileMatches: 'Không có mã hoặc tên nào trong file khớp với sản phẩm demo. Hỗ trợ danh sách CSV/TXT.', toolReady: 'Sẵn sàng', noResult: 'Không tìm thấy sản phẩm phù hợp', noResultHelp: 'Không tìm thấy sản phẩm. Thử tên khác, mã EAN hoặc article code.', tryDemo: 'Thử EAN mẫu', noBrands: 'Không tìm thấy thương hiệu. Thử tên khác hoặc tên viết tắt.', showMoreBrands: 'Xem thêm thương hiệu', addedToOrder: 'Đã thêm vào đơn hàng', saved: 'Đã lưu', nextPageReady: 'Đây là bản xem trước thư viện', imageEditHint: 'MINIMA Resize Studio · chỉnh sửa và xuất ảnh', autoFillHint: 'Grand Archives · xử lý và điền file Excel', priceSync: 'Cập nhật giá', priceSyncHint: 'PriceSync Tracker · ghép formula với template thành file upload Directo',
+                back: 'Quay lại', singleViewer: 'Xem ảnh sản phẩm', products: 'sản phẩm', brandSelection: 'Chọn thương hiệu', backToSearch: 'Về tìm kiếm', backToGrid: 'Về thư viện', image: 'Ảnh', brandLibrary: 'Thư viện', viewing: 'Đang xem', receivedFile: 'Đã nhận file', fileMatches: 'Sản phẩm demo khớp trong file', noFileMatches: 'Không có mã hoặc tên nào trong file khớp với sản phẩm demo. Hỗ trợ danh sách CSV/TXT.', toolReady: 'Sẵn sàng', noResult: 'Không tìm thấy sản phẩm phù hợp', noResultHelp: 'Không tìm thấy sản phẩm. Thử tên khác, mã EAN hoặc article code.', tryDemo: 'Thử EAN mẫu', noBrands: 'Không tìm thấy thương hiệu. Thử tên khác hoặc tên viết tắt.', showMoreBrands: 'Xem thêm thương hiệu', addedToOrder: 'Đã thêm vào đơn hàng', saved: 'Đã lưu', nextPageReady: 'Đây là bản xem trước thư viện', imageEditHint: 'MINIMA Resize Studio · chỉnh sửa và xuất ảnh', autoFillHint: 'Grand Archives · xử lý và điền file Excel', priceSync: 'Cập nhật giá', priceSyncHint: 'PriceSync Tracker · ghép formula với template thành file upload Directo', pallet: 'Xếp pallet', palletHint: 'Pallet 3D · số thùng tối đa trên một pallet, chỉnh tay trong 3D và kiểm chứng hình học',
                 connOnline: 'Dữ liệu thật', darkMode: 'Chế độ tối', kpiLabelled: 'Ảnh đã gắn nhãn',
-                omNewSearch: 'Tìm mới', omStart: 'Bắt đầu', omStartEan: 'Tìm một mã EAN', omStartEanSub: 'Hoặc mã hàng, tên sản phẩm', omStartList: 'Tra cả danh sách mã', omStartListSub: 'File CSV hoặc TXT', omStartLibrary: 'Mở thư viện thương hiệu', omLabelled: 'Ảnh đã gắn nhãn', omTotal: 'tổng', omPerDot: 'Mỗi chấm {n} ảnh', omNeedsData: 'Cần dữ liệu thật (serve.py)', omOfProducts: 'sản phẩm',
+                stActive: 'Đang bán', stLimited: 'Bán giới hạn', stUpcoming: 'Sắp ra mắt', stNonactive: 'Không hoạt động', stDiscontinued: 'Ngừng sản xuất', stUnknown: 'Chưa rõ trạng thái', omBlank: 'để trống',
+                omStatusTitle: 'Sản phẩm theo trạng thái', omStatusSub: 'sản phẩm trong master data, chia theo cột STATUS', omStatusSubCut: 'sản phẩm trong file, chia theo cột STATUS. File xuất bị cắt nên thực tế nhiều hơn', omCutShort: 'file bị cắt', spOk: 'Đã kết nối', spNeed: 'Cần đăng nhập', omSourceTitle: 'Nguồn dữ liệu', omSrcFile: 'Tệp', omSrcModified: 'Lưu lúc', omSrcRows: 'Dòng × cột', omSrcSkipped: 'Bỏ qua', omSrcSkippedRows: 'dòng {rows} · tiêu đề lặp lại', omAllBrands: 'Xem tất cả', omKeyOnSale: 'Đang bán (gồm bán giới hạn)', omKeyRest: 'Còn lại',
+                omCutTitle: 'File xuất bị cắt ở {cap} dòng', omCutText: 'So với bản đầy đủ gần nhất {ref}, file này thiếu khoảng {n} mã ({brands}). Directo cắt không theo thứ tự nên mã thiếu nằm rải rác; chúng chưa tìm được trong A.N.T.',
+                omCutPending: 'Đang so với bản xuất đầy đủ gần nhất…', omCutFix: 'Cách sửa: xuất lại từ Directo không giới hạn dòng, hoặc chia thành hai file.',
+                omBrandsSub: 'thương hiệu, đã gộp các cách viết khác nhau · {m} mã không có thương hiệu (để trống hoặc BRÄNDITA)', omOnSale: 'đang bán',
+                omCompleteTitle: 'Độ đầy đủ dữ liệu', omCompleteSub: 'Trên {n} sản phẩm đang bán, bán giới hạn và sắp ra mắt',
+                cpEan: 'EAN hợp lệ', cpSize: 'Kích thước (R × C × S)', cpWeight: 'Khối lượng tịnh', cpCarton: 'Số lượng mỗi thùng', cpIngredients: 'Thành phần (INCI), trừ dụng cụ', cpCpnp: 'CPNP hoàn tất, trừ dụng cụ', cpSupplier: 'Tên nhà cung cấp',
+                omEanNotes: 'Cả file: {invalid} EAN sai số kiểm tra · {shared} EAN dùng chung cho nhiều mã · {cleaned} EAN đã bỏ dấu thừa',
+                chTitle: 'So với {file} · {date}', chNew: 'mới', chRecovered: 'có lại', chRemoved: 'bị xóa', chMoved: 'đổi trạng thái', chNewBrands: 'Mới nhiều nhất', chEan: 'Mã đổi EAN',
+                chRecoveredNote: '“Có lại” là mã file trước không có nhưng từng có trong một file cũ hơn (đã xét {n} file); “mới” là mã chưa từng xuất hiện.', chCutNote: 'File trước bị cắt ở {cap} dòng, và Directo xuất không theo thứ tự cố định nên mỗi lần cắt lại thiếu những mã khác.', chOtherMoves: 'Đổi trạng thái khác', stMovesTitle: 'Đổi trạng thái so với {file}', stMovesCount: '{n} mã', chPending: 'Đang so với file trước…', chNone: 'Chưa có file trước để so.',
+                omNewSearch: 'Tìm mới', omStart: 'Bắt đầu', omStartEan: 'Tìm một mã EAN', omStartEanSub: 'Hoặc mã hàng, tên sản phẩm', omStartList: 'Tra cả danh sách mã', omStartListSub: 'File CSV hoặc TXT', omStartLibrary: 'Mở thư viện thương hiệu', omStartPalletSub: 'Số thùng tối đa, chỉnh trong 3D', omLabelled: 'Ảnh đã gắn nhãn', omTotal: 'tổng', omPerDot: 'Mỗi chấm {n} ảnh', omNeedsData: 'Cần dữ liệu thật (serve.py)', omOfProducts: 'sản phẩm',
                 omTopBrands: 'Thương hiệu nhiều sản phẩm nhất', omProductsIn: 'sản phẩm của', omBrandsWord: 'thương hiệu', omLastProduct: 'Sản phẩm vừa xem',
                 omLastProductEmpty: 'Mở một sản phẩm, ảnh packshot của nó sẽ nằm ở đây.', omOpen: 'Mở', omToolsSub: 'Chỉnh ảnh, điền file nhà bán lẻ và cập nhật giá ngay trong A.N.T.',
                 omLogoLibrary: 'Thư viện logo', omPictureSet: 'Bộ ảnh', typeProduct: 'Sản phẩm',
@@ -1277,16 +1368,16 @@
                 ldStep2: 'A.N.T tìm đúng sản phẩm trong master data.', ldStep2More: 'Mã đổi mới hay mã cũ ghi trong cột WARNING cũng được dò theo.',
                 ldStep3: 'Ảnh về đã chia loại, sẵn để tải.', ldStep3More: 'Một ảnh tải bản gốc, nhiều ảnh thành ZIP chia thư mục theo loại.',
                 ldHowFound: 'Khớp theo EAN', ldHowCode: 'Mã hàng', ldHowOld: 'Mã cũ',
-                ldToolsTitle: 'Việc làm được trong A.N.T', ldCmdPlaceholder: 'Tìm một việc', ldCmdNone: 'Không có việc nào khớp.', ldCmdOpen: 'Bấm lần nữa để mở.',
+                ldToolsTitle: 'Việc làm được trong A.N.T', ldToolsLead: 'Từ một mã EAN tới bộ ảnh, file cho nhà bán lẻ, file giá cho Directo và pallet xuất kho.', ldCmdGo: 'Mở {area}', toLanding: 'A.N.T · Trang giới thiệu', ldCmdPlaceholder: 'Tìm một việc', ldCmdNone: 'Không có việc nào khớp.', ldCmdOpen: 'Bấm lần nữa để mở.',
                 ldCmdSearch: 'Tìm theo EAN, mã hoặc tên', ldCmdSearchSay: 'Ô tìm kiếm có ở mọi màn hình; A.N.T tự nhận ra đó là EAN, mã hàng hay tên.',
                 ldCmdList: 'Tra cả danh sách mã', ldCmdListSay: 'Tải lên file CSV hoặc TXT; A.N.T khớp từng mã và báo mã nào không có.',
                 ldCmdZip: 'Tải ảnh gốc theo loại', ldCmdZipSay: 'Một ảnh là file gốc, nhiều ảnh thành ZIP chia thư mục theo loại ảnh.',
                 ldCmdTeach: 'Sửa loại ảnh, A.N.T học theo', ldCmdTeachSay: 'Đổi loại cho ảnh xếp sai; lần sau A.N.T tự xếp đúng hơn.',
                 ldCmdEdit: 'Gửi ảnh sang Chỉnh ảnh', ldCmdEditSay: 'Ảnh gốc vào thẳng MINIMA để resize theo preset và xuất hàng loạt.',
                 ldCmdFill: 'Tự điền file nhà bán lẻ', ldCmdFillSay: 'Điền mẫu Excel của Douglas, Nocibé, Zalando và Baltics từ master data.',
-                ldCmdPrice: 'Cập nhật giá lên Directo', ldCmdPriceSay: 'Ghép file formula với template thành file upload Directo, xem từng dòng trước khi xuất.',
+                ldCmdPrice: 'Cập nhật giá lên Directo', ldCmdPriceSay: 'Ghép file formula với template thành file upload Directo, xem từng dòng trước khi xuất.', ldCmdPallet: 'Xếp thùng lên pallet', ldCmdPalletSay: 'Tính số thùng tối đa theo kích thước, chiều cao và tải trọng, rồi chỉnh từng thùng trong 3D.',
                 ldCmdBrands: 'Mở thư viện thương hiệu', ldCmdBrandsSay: '{n} thương hiệu với logo chuẩn hóa và ảnh xếp theo từng thương hiệu.',
-                ldEndA: 'Tìm ảnh cho mã', ldEndGo: 'ngay', ldEndInput: 'Mã EAN', ldEndNote: 'Mở không gian làm việc và tìm mã này. Bản trên GitHub Pages dùng dữ liệu mẫu; dữ liệu thật chạy trên máy có A.N.T.',
+                ldEndA: 'Tìm ảnh cho một mã', ldEndGo: 'Tìm ảnh', ldEndNote: 'Mở không gian làm việc và tìm mã này. Bản trên GitHub Pages dùng dữ liệu mẫu; dữ liệu thật chạy trên máy có A.N.T.',
                 ldFootWhat: 'Ảnh và dữ liệu sản phẩm, một chỗ', ldFootCredit: 'Ảnh hiện vật',
                 dataProducts: 'sản phẩm', spConnected: 'SharePoint đã kết nối', spLogin: 'SharePoint cần đăng nhập', connOffline: 'Mất kết nối', connDemo: 'Dữ liệu demo', connOnlineHint: 'Đang dùng master data và ảnh SharePoint qua máy chủ A.N.T (serve.py).', connOfflineHint: 'Chưa kết nối được máy chủ A.N.T trên máy này. Chạy run-ant.bat trong thư mục ANT, A.N.T sẽ tự kết nối lại.', connOfflineSharedHint: 'Mất kết nối máy chủ A.N.T. Tải lại trang (có thể phải đăng nhập lại); nếu vẫn lỗi, báo người quản lý máy chủ.', liveLoginServer: 'Phiên SharePoint của máy chủ A.N.T đã hết hạn. Báo người quản lý máy chủ đăng nhập lại trên máy chủ.', connDemoHint: 'Bản xem trước dùng dữ liệu demo. Mở link có ?local=1 trên máy đang chạy A.N.T để dùng dữ liệu thật.', comingSoon: 'Chức năng này đang được chuẩn bị.',
                 workspace: 'Không gian', tools: 'Công cụ', soon: 'Sắp có', uploadLookup: 'Tải file tra cứu', logoLibrary: 'Thư viện logo', shortcuts: 'Lối tắt', brandLibraryTitle: 'Thư viện thương hiệu',
@@ -1296,7 +1387,7 @@
                 howLead: 'Master data là cầu nối: mọi giá trị nhập vào được đổi thành một sản phẩm trước khi tìm ảnh.', step1Title: 'Nhập hoặc tải file', step1Text: 'Một EAN, article code, tên sản phẩm hay cả danh sách CSV.', step2Title: 'Khớp master data', step2Text: 'Barcode, mã hàng, mã cũ và tên được quy về đúng sản phẩm.', step3Title: 'Nhận ảnh và thông tin', step3Text: 'Packshot, ảnh hộp, lifestyle cùng kích thước, pháp lý và nhà cung cấp.', ctaTitle: 'Sẵn sàng tìm ảnh?', ctaText: 'Mở không gian làm việc và thử với một mã EAN mẫu.',
                 liveNoProduct: 'Không có sản phẩm này trong master data. Thử EAN, article code hoặc tên khác.', liveNoFileMatch: 'Không mã nào trong file có trong master data.', liveFileMatches: 'Sản phẩm khớp trong file', liveNotFound: 'mã không thấy', liveSearching: 'Đang tìm ảnh trên SharePoint…', liveClassifying: 'Đang phân loại ảnh…', livePending: 'Đang phân loại', liveByPerson: 'Đã xác nhận', liveReview: 'Cần xem lại', liveSelect: 'Chọn', liveCategory: 'Nhóm ảnh', liveLearned: 'Đã lưu, A.N.T sẽ học từ ảnh này', liveZipping: 'Đang nén ảnh gốc…', liveFailed: 'Không thực hiện được', liveSelectAll: 'Chọn tất cả', liveClearAll: 'Bỏ chọn', liveDownloadSelected: 'Tải ảnh đã chọn', liveImages: 'ảnh', liveToReview: 'cần xem lại', liveSelectedCount: 'đã chọn', liveLoginNeeded: 'Phiên đăng nhập SharePoint đã hết hạn.', liveLoginButton: 'Đăng nhập SharePoint', liveLoginOpen: 'Mở trang đăng nhập và nhập mã', liveLoginDone: 'Đã đăng nhập SharePoint', liveNotInMaster: 'Không có trong master data · tìm ảnh theo đúng mã đã nhập', liveAllFields: 'Tất cả trường master data', liveDownloadOriginal: 'Tải ảnh gốc', liveEdit: 'Chỉnh ảnh', liveEditLoading: 'Đang lấy ảnh gốc cho Chỉnh ảnh', liveEditSent: 'Đã gửi sang Chỉnh ảnh', liveClose: 'Đóng', liveNoImages: 'Không tìm thấy ảnh nào trên SharePoint cho sản phẩm này.',
                 catPackshot: 'Packshot', catHuman: 'Có người', catScene: 'Dàn cảnh', catCollection: 'Bộ sưu tập', catColor: 'Nền màu', catArtwork: 'Artwork', catUncertain: 'Không rõ',
-                liveTabImages: 'Hình ảnh', liveTabInfo: 'Thông tin chi tiết', liveProductsWord: 'sản phẩm', liveProductWord: 'Sản phẩm', liveStatusFilter: 'Lọc theo trạng thái', liveFilterResults: 'Lọc theo tên, EAN, mã…', liveNoMatchFilter: 'Không có mục nào khớp bộ lọc.', groupAll: 'Tất cả', groupActive: 'Đang bán', groupUpcoming: 'Sắp ra mắt', groupInactive: 'Ngừng bán', liveCopy: 'Sao chép', liveCopied: 'Đã sao chép', liveCopyIngredients: 'Sao chép thành phần',
+                liveTabImages: 'Hình ảnh', liveTabInfo: 'Thông tin chi tiết', liveProductsWord: 'sản phẩm', liveProductWord: 'Sản phẩm', liveStatusFilter: 'Lọc theo trạng thái', liveFilterResults: 'Lọc theo tên, EAN, mã…', liveNoMatchFilter: 'Không có mục nào khớp bộ lọc.', groupAll: 'Tất cả', groupActive: 'Đang bán', groupUpcoming: 'Sắp ra mắt', groupInactive: 'Không hoạt động', liveCopy: 'Sao chép', liveCopied: 'Đã sao chép', liveCopyIngredients: 'Sao chép thành phần',
                 factVolume: 'Dung tích', factSize: 'Kích thước', factSizeHint: 'rộng × cao × sâu', factWeight: 'Khối lượng tịnh', factGross: 'cả bì', factCarton: 'Đóng thùng', factPerCarton: 'sp/thùng', factPerInner: 'sp/hộp trong', unitMonths: 'tháng',
                 infoIdentity: 'Định danh', infoCompliance: 'Pháp lý & hạn dùng', infoSupply: 'Nhà cung cấp & sản xuất', infoNotes: 'Mô tả & ghi chú', infoPacking: 'Kích thước & đóng gói', infoIngredients: 'Thành phần (INCI)', infoOther: 'Trường khác', infoNoData: 'Master data chưa có thông tin này.',
                 packProduct: 'Sản phẩm', packInner: 'Hộp trong', packCarton: 'Thùng', packSize: 'Kích thước (mm)', packWeight: 'Khối lượng (g)', packQty: 'Số lượng', packNet: 'tịnh', packGross: 'cả bì', packPerLayer: '/lớp',
@@ -1307,9 +1398,19 @@
                 expandProducts: 'Expand product list', collapseProducts: 'Close product list', relatedProducts: 'Related products found:', imageEdit: 'Image edit', library: 'Library', request: 'Image request', autoFill: 'Auto fill', settings: 'Settings',
                 next: 'Next', moreImagesHint: 'Use the button on the right to see more images', description: 'Description: ', specifications: 'Materials & specifications: ', origin: 'Warranty & origin: ', addToOrder: 'Add to order',
                 chooseBrand: 'Choose a brand', chooseBrandHint: 'Search a brand name and select its logo to view the library', nextPage: 'Next page', backToBrands: 'Back to brands', brandOverview: 'Brand overview', imageLibrary: 'Image library', featuredImage: 'Featured image', featureHint: 'Select the image to view it fully', swipeHint: 'Swipe sideways to explore the three library panels.', brandFilter: 'Find a brand...', demoAssets: 'Layout preview · real brand assets have not been added', demoImage: 'Sample image', brandMasterData: 'Brand master data', demoData: 'Demo data', canonicalBrand: 'Standard name', brandCode: 'Search key', brandAliases: 'Source names / aliases', masterStatus: 'Product data', notConnected: 'Not connected', pendingLogo: 'Logo awaiting verification',
-                back: 'Back', singleViewer: 'Product image viewer', products: 'products', brandSelection: 'Brand selection', backToSearch: 'Back to search', backToGrid: 'Back to library', image: 'Image', brandLibrary: 'Library', viewing: 'Viewing', receivedFile: 'File received', fileMatches: 'Matching demo products in file', noFileMatches: 'No code or name in this file matches a demo product. CSV/TXT lists are supported.', toolReady: 'Ready', noResult: 'No matching product found', noResultHelp: 'No product found. Try another name, EAN, or article code.', tryDemo: 'Try a sample EAN', noBrands: 'No brands found. Try another name or abbreviation.', showMoreBrands: 'Show more brands', addedToOrder: 'Added to order', saved: 'Saved', nextPageReady: 'This is a library preview', imageEditHint: 'MINIMA Resize Studio · edit and export images', autoFillHint: 'Grand Archives · process and fill Excel files', priceSync: 'Price update', priceSyncHint: 'PriceSync Tracker · build the Directo upload file from formula and template',
+                back: 'Back', singleViewer: 'Product image viewer', products: 'products', brandSelection: 'Brand selection', backToSearch: 'Back to search', backToGrid: 'Back to library', image: 'Image', brandLibrary: 'Library', viewing: 'Viewing', receivedFile: 'File received', fileMatches: 'Matching demo products in file', noFileMatches: 'No code or name in this file matches a demo product. CSV/TXT lists are supported.', toolReady: 'Ready', noResult: 'No matching product found', noResultHelp: 'No product found. Try another name, EAN, or article code.', tryDemo: 'Try a sample EAN', noBrands: 'No brands found. Try another name or abbreviation.', showMoreBrands: 'Show more brands', addedToOrder: 'Added to order', saved: 'Saved', nextPageReady: 'This is a library preview', imageEditHint: 'MINIMA Resize Studio · edit and export images', autoFillHint: 'Grand Archives · process and fill Excel files', priceSync: 'Price update', priceSyncHint: 'PriceSync Tracker · build the Directo upload file from formula and template', pallet: 'Pallet load', palletHint: 'Pallet 3D · the most cartons a pallet takes, hand edits in 3D, geometric checks',
                 connOnline: 'Live data', darkMode: 'Dark mode', kpiLabelled: 'Labelled images',
-                omNewSearch: 'New search', omStart: 'Start', omStartEan: 'Search an EAN', omStartEanSub: 'Or an article code or a name', omStartList: 'Look up a list of codes', omStartListSub: 'A CSV or TXT file', omStartLibrary: 'Open the brand library', omLabelled: 'Labelled pictures', omTotal: 'total', omPerDot: 'Each dot {n} pictures', omNeedsData: 'Needs live data (serve.py)', omOfProducts: 'of products',
+                stActive: 'Active', stLimited: 'Limited', stUpcoming: 'Upcoming', stNonactive: 'Non-active', stDiscontinued: 'Discontinued', stUnknown: 'No clear status', omBlank: 'blank',
+                omStatusTitle: 'Products by status', omStatusSub: 'products in master data, by the STATUS column', omStatusSubCut: 'products in the file, by the STATUS column. The export was cut, so there are more', omCutShort: 'export cut', spOk: 'Connected', spNeed: 'Sign-in needed', omSourceTitle: 'Data source', omSrcFile: 'File', omSrcModified: 'Saved', omSrcRows: 'Rows × columns', omSrcSkipped: 'Skipped', omSrcSkippedRows: 'row {rows} · repeated header', omAllBrands: 'See all', omKeyOnSale: 'On sale (incl. limited)', omKeyRest: 'Other',
+                omCutTitle: 'The export stops at {cap} rows', omCutText: 'Against the last complete export {ref}, this file lacks about {n} codes ({brands}). Directo cuts in no fixed order, so they are spread through the list; they cannot be found in A.N.T yet.',
+                omCutPending: 'Comparing with the last complete export…', omCutFix: 'To fix it: export again from Directo without the row limit, or in two files.',
+                omBrandsSub: 'brands, spellings merged · {m} codes without a brand (blank or BRÄNDITA)', omOnSale: 'on sale',
+                omCompleteTitle: 'Data completeness', omCompleteSub: 'Across the {n} products that are active, limited or upcoming',
+                cpEan: 'Valid EAN', cpSize: 'Size (W × H × D)', cpWeight: 'Net weight', cpCarton: 'Carton quantity', cpIngredients: 'Ingredients (INCI), tools excluded', cpCpnp: 'CPNP completed, tools excluded', cpSupplier: 'Supplier name',
+                omEanNotes: 'Whole file: {invalid} EANs with a wrong check digit · {shared} EANs shared by several codes · {cleaned} EANs cleaned of stray marks',
+                chTitle: 'Against {file} · {date}', chNew: 'new', chRecovered: 'back', chRemoved: 'removed', chMoved: 'status changed', chNewBrands: 'Most new', chEan: 'Codes with a new EAN',
+                chRecoveredNote: '“Back” are codes the previous file lacks that an older export listed ({n} files checked); “new” never appeared before.', chCutNote: 'The previous file was cut at {cap} rows, and Directo exports in no fixed order, so each cut loses different codes.', chOtherMoves: 'Other status changes', stMovesTitle: 'Status changes since {file}', stMovesCount: '{n} codes', chPending: 'Comparing with the previous file…', chNone: 'No earlier file to compare with.',
+                omNewSearch: 'New search', omStart: 'Start', omStartEan: 'Search an EAN', omStartEanSub: 'Or an article code or a name', omStartList: 'Look up a list of codes', omStartListSub: 'A CSV or TXT file', omStartLibrary: 'Open the brand library', omStartPalletSub: 'The most cartons, adjusted in 3D', omLabelled: 'Labelled pictures', omTotal: 'total', omPerDot: 'Each dot {n} pictures', omNeedsData: 'Needs live data (serve.py)', omOfProducts: 'of products',
                 omTopBrands: 'Brands with the most products', omProductsIn: 'products from', omBrandsWord: 'brands', omLastProduct: 'Last product',
                 omLastProductEmpty: 'Open a product and its packshot shows up here.', omOpen: 'Open', omToolsSub: 'Edit images, fill retailer files and update prices without leaving A.N.T.',
                 omLogoLibrary: 'Logo library', omPictureSet: 'Picture set', typeProduct: 'Product',
@@ -1323,16 +1424,16 @@
                 ldStep2: 'A.N.T finds the product in master data.', ldStep2More: 'Renewed and old codes noted in the WARNING column are followed too.',
                 ldStep3: 'The pictures arrive sorted, ready to download.', ldStep3More: 'One picture downloads the original; several become a ZIP with a folder per type.',
                 ldHowFound: 'Matched by EAN', ldHowCode: 'Article code', ldHowOld: 'Old code',
-                ldToolsTitle: 'What you can do in A.N.T', ldCmdPlaceholder: 'Find a task', ldCmdNone: 'No task matches.', ldCmdOpen: 'Click again to open it.',
+                ldToolsTitle: 'What you can do in A.N.T', ldToolsLead: 'From one EAN to its pictures, the retailer file, the Directo price file and the pallet that ships.', ldCmdGo: 'Open {area}', toLanding: 'A.N.T · Home page', ldCmdPlaceholder: 'Find a task', ldCmdNone: 'No task matches.', ldCmdOpen: 'Click again to open it.',
                 ldCmdSearch: 'Search by EAN, code or name', ldCmdSearchSay: 'The search is on every screen; A.N.T tells an EAN from an article code or a name.',
                 ldCmdList: 'Look up a whole list', ldCmdListSay: 'Upload a CSV or TXT file; A.N.T matches every code and says which are missing.',
                 ldCmdZip: 'Download originals by type', ldCmdZipSay: 'One picture is the original file; several become a ZIP with a folder per type.',
                 ldCmdTeach: 'Correct a type, A.N.T learns', ldCmdTeachSay: 'Move a misplaced picture; next time A.N.T sorts it better.',
                 ldCmdEdit: 'Send pictures to Image edit', ldCmdEditSay: 'Originals go straight into MINIMA to resize by preset and export in bulk.',
                 ldCmdFill: 'Fill retailer files', ldCmdFillSay: 'Fill the Excel templates of Douglas, Nocibé, Zalando and the Baltics from master data.',
-                ldCmdPrice: 'Update prices in Directo', ldCmdPriceSay: 'Combine the formula and template files into a Directo upload, row by row before export.',
+                ldCmdPrice: 'Update prices in Directo', ldCmdPriceSay: 'Combine the formula and template files into a Directo upload, row by row before export.', ldCmdPallet: 'Load a pallet', ldCmdPalletSay: 'Work out the most cartons by size, height and weight, then adjust each one in 3D.',
                 ldCmdBrands: 'Open the brand library', ldCmdBrandsSay: '{n} brands with normalised logos and pictures per brand.',
-                ldEndA: 'Find the pictures for', ldEndGo: 'now', ldEndInput: 'An EAN', ldEndNote: 'Opens the workspace and searches this code. The GitHub Pages copy uses sample data; real data runs on a computer with A.N.T.',
+                ldEndA: 'Find the pictures for a code', ldEndGo: 'Find pictures', ldEndNote: 'Opens the workspace and searches this code. The GitHub Pages copy uses sample data; real data runs on a computer with A.N.T.',
                 ldFootWhat: 'Product pictures and data, in one place', ldFootCredit: 'Object photographs',
                 dataProducts: 'products', spConnected: 'SharePoint connected', spLogin: 'SharePoint needs sign-in', connOffline: 'Disconnected', connDemo: 'Demo data', connOnlineHint: 'Using master data and SharePoint images through the A.N.T server (serve.py).', connOfflineHint: 'Cannot reach the A.N.T server on this computer. Run run-ant.bat in the ANT folder; A.N.T reconnects by itself.', connOfflineSharedHint: 'Lost the A.N.T server. Reload the page (you may need to sign in again); if it persists, tell the server owner.', liveLoginServer: 'The A.N.T server\'s SharePoint session has expired. Ask the server owner to sign in again on the server.', connDemoHint: 'This preview uses demo data. Open the link with ?local=1 on a computer running A.N.T for live data.', comingSoon: 'This function is being prepared.',
                 workspace: 'Workspace', tools: 'Tools', soon: 'Soon', uploadLookup: 'Upload lookup file', logoLibrary: 'Logo library', shortcuts: 'Shortcuts', brandLibraryTitle: 'Brand library',
@@ -1342,7 +1443,7 @@
                 howLead: 'Master data is the bridge: every input is resolved to one product before images are fetched.', step1Title: 'Type or upload a file', step1Text: 'One EAN, article code, product name, or a whole CSV list.', step2Title: 'Match master data', step2Text: 'Barcodes, article codes, old codes and names resolve to the right product.', step3Title: 'Get images and details', step3Text: 'Packshots, box and lifestyle shots with dimensions, compliance and supplier data.', ctaTitle: 'Ready to find images?', ctaText: 'Open the workspace and try it with a sample EAN.',
                 liveNoProduct: 'This product is not in master data. Try another EAN, article code or name.', liveNoFileMatch: 'No code in the file is in master data.', liveFileMatches: 'Products matched in the file', liveNotFound: 'codes not found', liveSearching: 'Searching SharePoint for images…', liveClassifying: 'Classifying images…', livePending: 'Classifying', liveByPerson: 'Confirmed', liveReview: 'Check', liveSelect: 'Select', liveCategory: 'Image type', liveLearned: 'Saved; A.N.T will learn from this image', liveZipping: 'Zipping the originals…', liveFailed: 'That did not work', liveSelectAll: 'Select all', liveClearAll: 'Clear selection', liveDownloadSelected: 'Download selected', liveImages: 'images', liveToReview: 'to check', liveSelectedCount: 'selected', liveLoginNeeded: 'The SharePoint session has expired.', liveLoginButton: 'Sign in to SharePoint', liveLoginOpen: 'Open the sign-in page and enter the code', liveLoginDone: 'Signed in to SharePoint', liveNotInMaster: 'Not in master data · searching images for the code as typed', liveAllFields: 'All master data fields', liveDownloadOriginal: 'Download original', liveEdit: 'Edit', liveEditLoading: 'Fetching originals for Image edit', liveEditSent: 'Sent to Image edit', liveClose: 'Close', liveNoImages: 'No images found on SharePoint for this product.',
                 catPackshot: 'Packshot', catHuman: 'With people', catScene: 'Scene setup', catCollection: 'Collection', catColor: 'Color background', catArtwork: 'Artwork', catUncertain: 'Unclear',
-                liveTabImages: 'Images', liveTabInfo: 'Details', liveProductsWord: 'products', liveProductWord: 'Product', liveStatusFilter: 'Filter by status', liveFilterResults: 'Filter by name, EAN, code…', liveNoMatchFilter: 'Nothing matches the filter.', groupAll: 'All', groupActive: 'On sale', groupUpcoming: 'Upcoming', groupInactive: 'Discontinued', liveCopy: 'Copy', liveCopied: 'Copied', liveCopyIngredients: 'Copy ingredients',
+                liveTabImages: 'Images', liveTabInfo: 'Details', liveProductsWord: 'products', liveProductWord: 'Product', liveStatusFilter: 'Filter by status', liveFilterResults: 'Filter by name, EAN, code…', liveNoMatchFilter: 'Nothing matches the filter.', groupAll: 'All', groupActive: 'On sale', groupUpcoming: 'Upcoming', groupInactive: 'Inactive', liveCopy: 'Copy', liveCopied: 'Copied', liveCopyIngredients: 'Copy ingredients',
                 factVolume: 'Volume', factSize: 'Size', factSizeHint: 'width × height × depth', factWeight: 'Net weight', factGross: 'gross', factCarton: 'Carton', factPerCarton: 'per carton', factPerInner: 'per inner box', unitMonths: 'months',
                 infoIdentity: 'Identity', infoCompliance: 'Compliance & shelf life', infoSupply: 'Supplier & manufacturer', infoNotes: 'Description & notes', infoPacking: 'Size & packing', infoIngredients: 'Ingredients (INCI)', infoOther: 'Other fields', infoNoData: 'Master data has nothing here yet.',
                 packProduct: 'Product', packInner: 'Inner box', packCarton: 'Carton', packSize: 'Size (mm)', packWeight: 'Weight (g)', packQty: 'Quantity', packNet: 'net', packGross: 'gross', packPerLayer: 'per layer',
@@ -1362,6 +1463,7 @@
             document.documentElement.lang = language;
             document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
             document.querySelectorAll('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
+            document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(el.dataset.i18nTitle); });
             document.getElementById('brand-filter').placeholder = t('brandFilter');
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.dataset.i18nPlaceholder); });
             document.getElementById('search-input').setAttribute('aria-label', t('searchPlaceholder'));
@@ -1372,7 +1474,6 @@
             if (currentView === 'TOOL') updateToolLabels();
             document.querySelectorAll('.ant-lang [data-lang]').forEach(el => { el.setAttribute('aria-pressed', String(el.dataset.lang === language)); });
             renderBrandCards();
-            renderOverview();
             updateThemeButtons();
             renderHome();
             renderConnection();
@@ -1390,14 +1491,29 @@
             const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><rect width="600" height="600" fill="hsl(${hue} 29% 94%)"/><ellipse cx="300" cy="520" rx="145" ry="19" fill="hsl(${hue} 16% 80%)"/><rect x="231" y="106" width="138" height="51" rx="9" fill="hsl(${hue} 12% 33%)"/><rect x="198" y="151" width="204" height="354" rx="29" fill="hsl(${hue} 24% 97%)" stroke="hsl(${hue} 18% 71%)" stroke-width="5"/><rect x="214" y="246" width="172" height="162" rx="3" fill="hsl(${hue} 23% 83%)"/><text x="300" y="320" text-anchor="middle" fill="hsl(${hue} 25% 29%)" font-family="Arial" font-weight="bold" font-size="25">A.N.T</text><text x="300" y="354" text-anchor="middle" fill="hsl(${hue} 18% 38%)" font-family="Arial" font-size="16">DEMO ${String(imageIndex + 1).padStart(2, '0')}</text></svg>`;
             return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
         }
-        const brandsDatabase = brandCatalog.map((brand, brandIndex) => ({
+        const withDemoProducts = (brand, brandIndex) => ({
             ...brand,
             products: Array.from({ length: 8 }, (_, imageIndex) => ({
                 id: `${brand.id}-sample-${imageIndex}`,
                 name: `Demo ${imageIndex + 1}`,
                 images: [0, 1, 2].map(offset => demoPackshot(brandIndex, imageIndex + offset))
             }))
-        }));
+        });
+        let brandsDatabase = brandCatalog.map(withDemoProducts);
+        // With real data the library lists master data's brands: a known brand keeps its logo and
+        // aliases, a brand only master data has comes without a logo, a name master data lacks is left out.
+        // `data` is the brand as master data has it: its spelling there and its product counts.
+        function syncLibraryBrands(list) {
+            const live = new Map(list.map(b => [brandSearchKey(b.name), b]));
+            const match = b => [b.name, ...b.aliases].map(n => live.get(brandSearchKey(n))).find(Boolean);
+            const kept = brandCatalog.filter(match).map(b => ({ ...b, data: match(b) }));
+            const known = new Set(kept.map(b => b.data));
+            const added = list.filter(b => !known.has(b))
+                .map(b => ({ id: `brand-${brandSearchKey(b.name)}`, name: b.name.replaceAll('_', ' '), aliases: b.name.includes('_') ? [b.name] : [], logo: null, invertLogo: false, data: b }));
+            brandsDatabase = [...kept, ...added].map(withDemoProducts);
+            renderBrandCards();
+            ldCmdRender();  // the landing's library line counts the brands too
+        }
 
         // Original Search Products Database
         const productsDatabase = [
@@ -1494,13 +1610,6 @@
         }
 
         // Logo coverage for the sidebar meter and the library shortcut.
-        function renderOverview() {
-            const total = brandsDatabase.length;
-            const withLogo = brandsDatabase.filter(brand => brand.logo).length;
-            document.getElementById('kpi-logos').textContent = withLogo;
-            document.getElementById('library-card-meta').textContent = language === 'vi' ? `logo · ${total} thương hiệu` : `logos · ${total} brands`;
-        }
-
         // Theme: light by default (the framed sheet), dark when the viewer picks it (remembered in this browser).
         function updateThemeButtons() {
             const dark = document.documentElement.dataset.theme === 'dark';
@@ -1535,6 +1644,14 @@
         function enterApp() {
             location.hash = 'app';
         }
+        // The logo: back to the landing page, with the workspace reset to its main page for the way back in.
+        function leaveApp() {
+            if (currentView !== 'SEARCH_MAIN') openSearchView();
+            resetToFrontPage();
+            history.pushState(null, '', location.pathname + location.search);  // keeps ?local=1
+            showRoute();
+        }
+        window.addEventListener('popstate', showRoute);
         window.addEventListener('hashchange', showRoute);
 
         // Recent activity for the main page (this browser only).
@@ -1558,17 +1675,18 @@
         function escapeHtml(value) {
             return String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
         }
-        const recentIcons = { search: 'fa-magnifying-glass', product: 'fa-box', brand: 'fa-folder-open', 'IMG EDIT': 'fa-wand-magic-sparkles', 'AUTO FILL': 'fa-bolt', 'PRICE SYNC': 'fa-tags' };
+        const recentIcons = { search: 'fa-magnifying-glass', product: 'fa-box', brand: 'fa-folder-open', 'IMG EDIT': 'fa-wand-magic-sparkles', 'AUTO FILL': 'fa-bolt', 'PRICE SYNC': 'fa-tags', 'PALLET': 'fa-boxes-stacked' };
         // Recent work as Omni's calendar: the time on the left, each item a white chip on the dark card.
         function renderRecent() {
             const items = loadRecent().slice(0, 5);
             const container = document.getElementById('recent-list');
             if (!items.length) {
-                // Nothing yet: the three ways to start, in the same chips.
+                // Nothing yet: the ways to start, in the same chips.
                 container.innerHTML = [
                     [t('omStartEan'), t('omStartEanSub'), 'fa-magnifying-glass', "document.getElementById('search-input').focus()"],
                     [t('omStartList'), t('omStartListSub'), 'fa-file-arrow-up', "document.getElementById('file-upload').click()"],
                     [t('omStartLibrary'), `${brandsDatabase.length} ${t('omBrandsWord')}`, 'fa-folder-open', 'openLibraryView()'],
+                    [t('ldCmdPallet'), t('omStartPalletSub'), 'fa-boxes-stacked', "triggerTool('PALLET')"],
                 ].map(([title, sub, icon, action], index) => `<div class="om-tl-row" style="--i: ${index}"><span class="om-tl-time">${index ? '' : t('omStart')}</span>
                     <button type="button" class="om-tl-item" onclick="${action}"><span class="min-w-0"><strong>${title}</strong><small>${sub}</small></span><i class="fa-solid ${icon}" aria-hidden="true"></i></button></div>`).join('');
                 return;
@@ -1587,14 +1705,78 @@
             else triggerTool(item.key);
         }
 
-        // Main page bento: live figures when serve.py answers, dashes and a note otherwise.
+        // Main page: every figure is counted by serve.py from the master data file (stats in /health);
+        // without a live connection the cards show dashes and say so.
+        const STATUS_KEYS = ['active', 'limited', 'upcoming', 'nonactive', 'discontinued', 'unknown'];
+        const statusLabel = key => t({ active: 'stActive', limited: 'stLimited', upcoming: 'stUpcoming', nonactive: 'stNonactive', discontinued: 'stDiscontinued', unknown: 'stUnknown' }[key] || 'stUnknown');
+        const statusName = p => p.statusKey ? statusLabel(p.statusKey) : groupName(p.group);
+        const pct = (n, of) => of ? `${new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : 'en-GB', { maximumFractionDigits: 1 }).format(n / of * 100)}%` : '';
+        const fill = (text, values) => text.replace(/\{(\w+)\}/g, (_, k) => values[k] ?? '');
         function renderHome() {
             renderRecent();
-            const h = liveOnline && liveHealth;
-            for (const g of ['active', 'upcoming', 'inactive']) {
-                document.getElementById(`kpi-${g}`).textContent = h ? num(String(h.groups[g])) : '—';
-                document.getElementById(`kpi-${g}-share`).textContent = h ? `${Math.round(h.groups[g] / h.products * 100)}% ${t('omOfProducts')}` : t('omNeedsData');
-            }
+            const h = liveOnline && liveHealth && liveHealth.stats ? liveHealth : null;
+            const st = h && h.stats;
+            // Products by status: the six statuses add up to the file's rows.
+            document.getElementById('st-total').textContent = st ? num(String(st.rows)) : '—';
+            document.getElementById('st-sub').textContent = st ? t(h.truncated ? 'omStatusSubCut' : 'omStatusSub') : t('omNeedsData');
+            if (st) console.assert(STATUS_KEYS.reduce((sum, k) => sum + st.status[k], 0) === st.rows, 'statuses do not add up to the rows');
+            const bar = document.getElementById('st-bar');
+            bar.innerHTML = st ? STATUS_KEYS.filter(k => st.status[k]).map(k => `<span class="s-${k}" style="flex: ${st.status[k]}" title="${statusLabel(k)}: ${num(String(st.status[k]))}"></span>`).join('') : '';
+            bar.setAttribute('aria-label', st ? STATUS_KEYS.map(k => `${statusLabel(k)} ${st.status[k]}`).join(', ') : t('omNeedsData'));
+            const raw = st ? Object.entries(st.unknownRaw).sort((a, b) => b[1] - a[1]).map(([value, n]) => `${value || t('omBlank')} ${num(String(n))}`).join(' · ') : '';
+            document.getElementById('st-list').innerHTML = st ? STATUS_KEYS.map(k => `<div><i class="s-${k}" aria-hidden="true"></i><dt>${statusLabel(k)}</dt>
+                <dd>${num(String(st.status[k]))}<small>${pct(st.status[k], st.rows)}</small></dd>${k === 'unknown' && raw ? `<span class="om-raw">${esc(raw)}</span>` : ''}</div>`).join('') : '';
+            // Data source, and the warning when the export was cut at its row limit.
+            const saved = st && new Date(st.modified);
+            const modified = st ? `${saved.toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-GB')} · ${saved.toLocaleTimeString(language === 'vi' ? 'vi-VN' : 'en-GB', { hour: '2-digit', minute: '2-digit' })}` : '';
+            document.getElementById('src-list').innerHTML = (st ? [
+                [t('omSrcFile'), st.file], [t('omSrcModified'), modified], [t('omSrcRows'), `${num(String(st.rows))} × ${st.columns}`],
+                ...(st.skippedRows.length ? [[t('omSrcSkipped'), fill(t('omSrcSkippedRows'), { rows: st.skippedRows.join(', ') })]] : []),
+                ['SharePoint', t(h.sharepoint === 'ok' ? 'spOk' : 'spNeed')],
+            ] : [[t('omSrcFile'), '—']]).map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('');
+            const cut = h && h.truncated, cutEl = document.getElementById('src-cut');
+            cutEl.hidden = !cut;
+            if (cut) cutEl.innerHTML = `<strong>${fill(t('omCutTitle'), { cap: num(String(cut.cap)) })}</strong>
+                <p>${esc(cut.reference ? fill(t('omCutText'), { ref: cut.reference.replace(/\.xlsx$/i, ''), n: num(String(cut.missing)), brands: cut.brands.join(', ') }) : t('omCutPending'))}</p>
+                <p>${t('omCutFix')}</p>`;
+            // Changes since the previous export (worked out in the background after the file loads).
+            const ch = h && h.changes, chEl = document.getElementById('src-changes');
+            const date = iso => new Date(iso).toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-GB');
+            if (!h) chEl.innerHTML = '';
+            else if (!ch) chEl.innerHTML = `<p class="om-ch-note">${t(h.changesPending ? 'chPending' : 'chNone')}</p>`;
+            else chEl.innerHTML = `<h3>${fill(t('chTitle'), { file: ch.previous.replace(/\.xlsx$/i, ''), date: date(ch.previousModified) })}</h3>
+                <dl class="om-ch-grid">${[['chNew', ch.added, '+'], ['chRecovered', ch.recovered, ''], ['chRemoved', ch.removed, '−']]
+                    .map(([label, n, sign]) => `<div><dt>${t(label)}</dt><dd${n && sign === '+' ? ' class="is-up"' : ''}>${n ? sign : ''}${num(String(n))}</dd></div>`).join('')}</dl>
+                <ul class="om-ch-lines">
+                    ${ch.addedBrands.length ? `<li class="is-stack"><span>${t('chNewBrands')}</span><b>${ch.addedBrands.map(([b, n]) => `${esc(b)} ${num(String(n))}`).join(' · ')}</b></li>` : ''}
+                    <li><span>${t('chEan')}</span><b>${num(String(ch.eanChanged))}</b></li>
+                </ul>
+                ${ch.recovered ? `<p class="om-ch-note">${fill(t('chRecoveredNote'), { n: num(String(ch.olderFiles)) })}${ch.previousCut ? ' ' + fill(t('chCutNote'), { cap: num(String(ch.previousRows)) }) : ''}</p>` : ''}`;
+            // Status changes since the previous file, under the statuses they moved between (six places, the rest summed).
+            const moves = ch ? ch.moves : [], shown = moves.length > 6 ? moves.slice(0, 5) : moves;
+            const swatch = k => `<i class="s-${k}" aria-hidden="true"></i>`;
+            document.getElementById('st-moves').innerHTML = moves.length ? `<h3><span>${fill(t('stMovesTitle'), { file: ch.previous.replace(/\.xlsx$/i, '') })}</span><b>${fill(t('stMovesCount'), { n: num(String(ch.moved)) })}</b></h3>
+                <ul>${shown.map(m => `<li>${swatch(m.from)}<span>${statusLabel(m.from)} → </span>${swatch(m.to)}<span>${statusLabel(m.to)}</span><b>${num(String(m.n))}</b></li>`).join('')}
+                ${moves.length > 6 ? `<li><span>${t('chOtherMoves')}</span><b>${num(String(moves.slice(5).reduce((sum, m) => sum + m.n, 0)))}</b></li>` : ''}</ul>` : '';
+            // Brands: one count however a name is typed; the six largest with how many are on sale.
+            const top = st ? st.brandList.slice(0, 6) : [];
+            const max = top.length ? top[0].total : 1;
+            document.getElementById('brands-total').textContent = st ? num(String(st.brands)) : '—';
+            document.getElementById('brands-sub').textContent = st ? fill(t('omBrandsSub'), { m: num(String(st.noBrand)) }) : t('omNeedsData');
+            const share = (n, b) => `${(n / b.total * 100).toFixed(1)}%`;
+            document.getElementById('brands-chart').innerHTML = top.map(b => `<div class="om-step" style="--h: ${Math.max(16, Math.round(b.total / max * 100))}" title="${esc(b.name)}: ${num(String(b.total))} · ${num(String(b.active))} ${t('omOnSale')} · ${num(String(b.upcoming))} ${t('stUpcoming').toLowerCase()}">
+                <b class="om-step-n">${num(String(b.total))}</b><div class="om-step-bar s-nonactive" style="--a: ${share(b.active, b)}; --u: ${share(b.upcoming, b)}"><i class="s-active"></i><i class="s-upcoming"></i></div>
+                <small>${esc(b.name)}<br>${num(String(b.active))} ${t('omOnSale')}</small></div>`).join('');
+            document.getElementById('brands-key').innerHTML = st ? [['s-active', 'omKeyOnSale'], ['s-upcoming', 'stUpcoming'], ['s-nonactive', 'omKeyRest']].map(([c, k]) => `<span><i class="${c}" aria-hidden="true"></i>${t(k)}</span>`).join('') : '';
+            // Completeness of the fields the team relies on, for products on sale or coming.
+            const fields = [['ean', 'cpEan'], ['size', 'cpSize'], ['weight', 'cpWeight'], ['carton', 'cpCarton'], ['ingredients', 'cpIngredients'], ['cpnp', 'cpCpnp'], ['supplier', 'cpSupplier']];
+            document.getElementById('cp-sub').textContent = st ? fill(t('omCompleteSub'), { n: num(String(st.selling)) }) : t('omNeedsData');
+            document.getElementById('cp-list').innerHTML = st ? fields.map(([k, label]) => {
+                const { have, of } = st.complete[k], share = of ? have / of : 0;
+                return `<li><span>${t(label)}</span><b>${pct(have, of)}<small>${num(String(have))} / ${num(String(of))}</small></b>
+                    <span class="om-meter" aria-hidden="true"><span class="${share < .6 ? 'is-low' : ''}" style="width: ${(share * 100).toFixed(1)}%"></span></span></li>`;
+            }).join('') : '';
+            document.getElementById('cp-note').textContent = st ? fill(t('omEanNotes'), { invalid: num(String(st.eanInvalid)), shared: num(String(st.eanShared)), cleaned: num(String(st.eanCleaned)) }) : '';
             // Labelled pictures: one dot for a few pictures, packshots in orange.
             const labelled = (h && h.labelled) || {};
             const total = Object.values(labelled).reduce((a, b) => a + b, 0);
@@ -1602,16 +1784,12 @@
             const dots = CAT_ORDER.flatMap(c => Array.from({ length: Math.round((labelled[c] || 0) / per) }, () => c));
             const dotsEl = document.getElementById('labels-dots');
             document.getElementById('labels-total').textContent = h ? num(String(total)) : '—';
-            dotsEl.innerHTML = dots.map(c => `<i class="om-dot${c === '01_packshot' ? ' is-main' : ''}"></i>`).join('');
+            const dotClass = c => `om-dot${c === '01_packshot' ? ' is-main' : c === '02_lifestyle_human' ? ' is-alt' : ''}`;
+            dotsEl.innerHTML = dots.map(c => `<i class="${dotClass(c)}"></i>`).join('');
+            document.getElementById('labels-key').innerHTML = CAT_ORDER.filter(c => labelled[c])
+                .map(c => `<li><i class="${dotClass(c)}" aria-hidden="true"></i>${esc(catName(c))}<b>${num(String(labelled[c]))}</b></li>`).join('');
             dotsEl.setAttribute('aria-label', CAT_ORDER.filter(c => labelled[c]).map(c => `${catName(c)} ${labelled[c]}`).join(', ') || t('omNeedsData'));
-            document.getElementById('labels-note').textContent = h ? `${t('omPerDot').replace('{n}', per)} · ${catName('01_packshot')} ${labelled['01_packshot'] || 0}` : t('omNeedsData');
-            // Brands with the most products, in stepped bars.
-            const top = (h && h.topBrands) || [];
-            const max = top.length ? top[0][1] : 1;
-            document.getElementById('brands-total').textContent = h ? num(String(h.products)) : '—';
-            document.getElementById('brands-sub').textContent = h ? `${t('omProductsIn')} ${num(String(h.brands))} ${t('omBrandsWord')}` : t('omNeedsData');
-            document.getElementById('brands-chart').innerHTML = top.map(([name, n], k) => `<div class="om-step${k === 0 ? ' is-dark' : k === 1 ? ' is-main' : ''}" style="--h: ${Math.max(16, Math.round(n / max * 100))}" title="${esc(name)}: ${num(String(n))}">
-                <div class="om-step-bar">${num(String(n))}</div><small>${esc(name)}</small></div>`).join('');
+            document.getElementById('labels-note').textContent = h ? t('omPerDot').replace('{n}', per) : t('omNeedsData');
             renderHomeProduct();
         }
         // The last product opened, shown by its own packshot.
@@ -1720,6 +1898,7 @@
                 <button type="button" onclick="selectBrand('${brand.id}')" class="ant-brand-card" title="${brand.name}${brand.logo ? '' : ` · ${t('pendingLogo')}`}">
                     <span class="ant-brand-plate">${brand.logo ? `<img class="ant-brand-logo${brand.invertLogo ? ' logo-invert' : ''}" src="${brand.logo}" alt="" loading="lazy">` : `<span class="ant-logo-placeholder" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="12" r="2"/><path d="m6 23 7-7 5 5 4-4 4 5"/></svg></span>`}</span>
                     <span class="ant-brand-name">${brand.name}</span>
+                    ${brand.data ? `<span class="ant-brand-count">${num(String(brand.data.total))} ${t('omOfProducts')} · ${num(String(brand.data.active))} ${t('omOnSale')}</span>` : ''}
                 </button>
             `).join('') || `<p class="text-sm ant-muted col-span-full py-8 text-center">${t('noBrands')}</p>`;
         }
@@ -1736,7 +1915,26 @@
             if (!selectedBrand) return;
 
             pushRecent('brand', selectedBrand.id, selectedBrand.name);
+            if (liveMode && selectedBrand.data) return openLiveBrand(selectedBrand);
             showBrandGridView();
+        }
+        async function openLiveBrand(brand) {
+            let data;
+            try { data = await api(`brand?name=${encodeURIComponent(brand.data.name)}`); } catch (e) { return showLiveError(e); }
+            if (!data.products.length) { showToast(t('liveNoProduct')); return; }
+            exitLibraryView();
+            document.getElementById('search-input').value = '';
+            showLiveProducts(data.products, brand.name);
+            masterResultBrand = brand.id;
+            setReturnButton('backToBrands');
+            renderTitle();
+        }
+        function setReturnButton(key) {
+            const button = document.getElementById('return-to-master');
+            button.dataset.i18n = key;
+            button.textContent = t(key);
+            button.classList.toggle('hidden', !key);
+            button.classList.toggle('inline-flex', !!key);
         }
 
         // MOCKUP 2: Show Brand Product Grid View
@@ -1850,8 +2048,7 @@
             document.getElementById('search-view-wrapper').classList.remove('hidden');
             document.getElementById('bottom-toolbar-container').classList.remove('hidden');
             setActiveTool('');
-            document.getElementById('return-to-master').classList.remove('hidden');
-            document.getElementById('return-to-master').classList.add('inline-flex');
+            setReturnButton('backToMaster');
             document.getElementById('search-input').value = '';
             loadProductData(index);
             switchToResultPage();
@@ -1867,7 +2064,7 @@
             resetToFrontPage();
             selectedBrand = brandsDatabase.find(brand => brand.id === brandId);
             openLibraryView();
-            showBrandGridView();
+            if (!liveMode && selectedBrand) showBrandGridView();
             document.getElementById('main-scroll-container').scrollTop = 0;
         }
 
@@ -2137,9 +2334,9 @@
         }
 
         let activeTool = '';
-        const toolKeys = { 'IMG EDIT': 'imageEdit', 'AUTO FILL': 'autoFill', 'PRICE SYNC': 'priceSync', 'REQUEST': 'request', 'SETTING': 'settings' };
+        const toolKeys = { 'IMG EDIT': 'imageEdit', 'AUTO FILL': 'autoFill', 'PRICE SYNC': 'priceSync', 'PALLET': 'pallet', 'REQUEST': 'request', 'SETTING': 'settings' };
         // Tools that open in a frame: [frame id, description key].
-        const TOOL_FRAMES = { 'IMG EDIT': ['image-edit-frame', 'imageEditHint'], 'AUTO FILL': ['auto-fill-frame', 'autoFillHint'], 'PRICE SYNC': ['price-sync-frame', 'priceSyncHint'] };
+        const TOOL_FRAMES = { 'IMG EDIT': ['image-edit-frame', 'imageEditHint'], 'AUTO FILL': ['auto-fill-frame', 'autoFillHint'], 'PRICE SYNC': ['price-sync-frame', 'priceSyncHint'], 'PALLET': ['pallet-frame', 'palletHint'] };
         function styleToolFrame(frame) {
             const doc = frame.contentDocument;
             if (!doc || doc.querySelector('link[data-ant-theme]')) return;
@@ -2253,6 +2450,7 @@
         const EMPTY_VALUES = new Set(['', '-', '--', 'x', 'tbu', 'tbc', 'n/a', 'na', 'n/v', 'none', 'not given', 'nan']);
 
         let liveMode = false, liveProducts = [], liveIndex = 0, liveKey = '', liveDetail = null, liveImages = [], liveToken = 0, liveQuery = '';
+        let liveFetching = false;  // the product's pictures are still being searched on SharePoint
         let liveGroupFilter = 'all', liveTextFilter = '', liveImageFilter = 'all', liveTab = 'images';
         const liveSelected = new Set();
         const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -2289,7 +2487,10 @@
                 const response = await fetch(`${base}/health`, { cache: 'no-store' });
                 const data = response.ok ? await response.json() : {};
                 liveCanLogin = data.canLogin !== false;
-                if (data.ok) liveHealth = data;
+                if (data.ok) {
+                    if (data.stats && (!liveHealth || !liveHealth.stats || liveHealth.stats.file !== data.stats.file)) syncLibraryBrands(data.stats.brandList);
+                    liveHealth = data;
+                }
                 return data.ok === true;
             } catch (e) { return false; }
         }
@@ -2315,6 +2516,8 @@
         }
         const reconnectLive = () => { if (!liveOnline && (liveMode || liveOptIn) && !document.hidden) ensureLive(); };
         setInterval(reconnectLive, 10000);
+        // The comparisons with older exports run after the file loads; refresh the figures until they report.
+        setInterval(() => { if (liveOnline && liveHealth && (liveHealth.changesPending || (liveHealth.truncated && !liveHealth.truncated.reference)) && !document.hidden) probeLive(); }, 8000);
         document.addEventListener('visibilitychange', reconnectLive);
         function setLiveOffline() {
             liveOnline = false;
@@ -2378,6 +2581,8 @@
             showToast(`${t('liveFileMatches')}: ${products.length}` + (missing ? ` · ${missing} ${t('liveNotFound')}` : ''));
         }
         function showLiveProducts(products, query) {
+            masterResultBrand = null;
+            setReturnButton('');
             liveProducts = products;
             liveQuery = query;
             liveGroupFilter = 'all';
@@ -2392,13 +2597,13 @@
             const title = document.getElementById('app-title'), sub = document.getElementById('app-subtitle');
             const query = liveMode ? liveQuery : document.getElementById('search-input').value.trim();
             if (isResultPageVisible && query) {
-                title.textContent = `“${query}”`;
+                title.textContent = liveMode && masterResultBrand ? query : `“${query}”`;  // a brand, not a search
                 sub.textContent = `${num(String(liveMode ? liveProducts.length : visibleProductIndexes.length))} ${t('liveProductsWord')}`;
                 return;
             }
             title.textContent = t('mainPage');
             sub.textContent = liveOnline && liveHealth
-                ? [liveHealth.masterData.replace(/\.xlsx$/i, ''), `${num(String(liveHealth.products))} ${t('dataProducts')}`, t(liveHealth.sharepoint === 'ok' ? 'spConnected' : 'spLogin')].join(' · ')
+                ? [liveHealth.masterData.replace(/\.xlsx$/i, ''), `${num(String(liveHealth.products))} ${t('dataProducts')}${liveHealth.truncated ? ` (${t('omCutShort')})` : ''}`, t(liveHealth.sharepoint === 'ok' ? 'spConnected' : 'spLogin')].join(' · ')
                 : t(liveMode || liveOptIn ? offlineHint() : 'connDemoHint');
         }
         function renderLiveResults() {
@@ -2432,7 +2637,7 @@
             document.getElementById('live-results-list').innerHTML = rows.length ? rows.map(([p, i]) => `
                 <button type="button" class="ant-result-item" aria-current="${i === liveIndex}" onclick="selectLiveProduct(${i}, true)">
                     <span class="ant-result-name">${esc(p.name || p.key)}</span>
-                    <span class="ant-result-meta"><span class="ant-status is-${p.group}">${groupName(p.group)}</span>${p.ean ? `<span class="ant-mono">${esc(p.ean)}</span>` : ''}<span class="ant-mono">${esc(p.code)}</span>${p.volume ? `<span>${esc(p.volume)}</span>` : ''}</span>
+                    <span class="ant-result-meta"><span class="ant-status is-${p.group}">${statusName(p)}</span>${p.ean ? `<span class="ant-mono">${esc(p.ean)}</span>` : ''}<span class="ant-mono">${esc(p.code)}</span>${p.volume ? `<span>${esc(p.volume)}</span>` : ''}</span>
                 </button>`).join('') : `<p class="ant-results-empty">${t('liveNoMatchFilter')}</p>`;
         }
 
@@ -2446,16 +2651,26 @@
             liveKey = product.key;
             liveDetail = null;
             liveImages = [];
+            liveFetching = true;
             liveImageFilter = 'all';
             liveSelected.clear();
             if (liveProducts.length > 1) renderResultList();
             renderLiveProduct();
             renderLiveInfo();
-            renderBoard(t('liveSearching'));
+            renderBoard();
             updateLiveStatus(t('liveSearching'));
+            // Master data answers at once; the pictures wait for SharePoint, so they come separately.
+            api(`detail?key=${encodeURIComponent(product.key)}`).then(d => {
+                if (token !== liveToken || liveDetail) return;
+                liveDetail = d.product;
+                renderLiveProduct();
+                renderLiveInfo();
+            }).catch(() => {});
             let data;
-            try { data = await api(`product?key=${encodeURIComponent(product.key)}`); } catch (e) { if (token === liveToken) showLiveError(e); return; }
+            try { data = await api(`product?key=${encodeURIComponent(product.key)}`); }
+            catch (e) { if (token === liveToken) { liveFetching = false; renderLiveProduct(); showLiveError(e); } return; }
             if (token !== liveToken) return;
+            liveFetching = false;
             liveDetail = data.product;
             liveImages = data.images.map(img => ({ ...img, result: img.result || null }));
             rememberProduct();
@@ -2496,7 +2711,7 @@
                 <div class="om-prod-head">
                     <div class="min-w-0">
                         <${title}>${esc(p.name || p.key)}</${title}>
-                        <p class="om-prod-meta">${[p.brand, p.volume].filter(Boolean).map(v => `<span>${esc(v)}</span>`).join('')}${p.status ? `<span class="ant-status is-${p.group}" title="${esc(p.status)}">${groupName(p.group)}</span>` : ''}</p>
+                        <p class="om-prod-meta">${[p.brand, p.volume].filter(Boolean).map(v => `<span>${esc(v)}</span>`).join('')}${p.status ? `<span class="ant-status is-${p.group}" title="${esc(p.status)}">${statusName(p)}</span>` : ''}</p>
                         ${p.notInMaster ? `<p class="ant-muted text-sm mt-2">${t('liveNotInMaster')}</p>` : ''}
                     </div>
                     <div class="ant-id-row">${ids.map(([k, v]) => `<button type="button" class="ant-copy" onclick="copyText('${esc(v)}')" aria-label="${t('liveCopy')} ${fieldLabel(k)} ${esc(v)}">${fieldLabel(k)} <b>${esc(v)}</b><i class="fa-regular fa-copy" aria-hidden="true"></i></button>`).join('')}</div>
@@ -2505,8 +2720,8 @@
                     <span class="om-product-chip">${packshots.length} packshot</span>
                     <div class="om-product-bar"><div class="min-w-0"><strong>${esc(cover.name)}</strong><small>${(cover.size / 1e6).toFixed(1)} MB</small></div>
                     <button type="button" onclick="openLiveViewer(${liveImages.indexOf(cover)})" aria-label="${t('omOpen')} ${esc(cover.name)}"><i class="fa-solid fa-up-right-and-down-left-from-center" aria-hidden="true"></i></button></div>`
-                    : `<div class="om-product-empty"><p>${t(liveDetail ? 'liveNoImages' : 'liveSearching')}</p></div>`}</div>
-                <dl class="om-prod-facts">${!p.notInMaster ? facts.map(([label, value, hint]) => `<div class="om-card om-kpi"><dt>${label}</dt><dd><span class="om-big">${esc(value || '—')}</span>${value && hint ? `<small>${esc(hint)}</small>` : ''}</dd></div>`).join('') : ''}</dl>
+                    : `<div class="om-product-empty"><p>${t(liveFetching ? 'liveSearching' : 'liveNoImages')}</p></div>`}</div>
+                <dl class="om-prod-facts">${!p.notInMaster ? facts.map(([label, value, hint]) => `<div class="om-card om-kpi"><dt>${label}</dt><dd><span class="om-big">${value ? esc(value) : liveDetail ? '—' : '<span class="om-skel" aria-hidden="true"></span>'}</span>${value && hint ? `<small>${esc(hint)}</small>` : ''}</dd></div>`).join('') : ''}</dl>
                 <section class="om-card is-dark om-prod-set" aria-labelledby="live-set-title"><h3 id="live-set-title">${t('omPictureSet')}</h3><div id="live-set" class="flex flex-col flex-1"></div></section>
             </div>`;
             renderImageSet();
@@ -2515,7 +2730,7 @@
         function renderLiveInfo() {
             const panel = document.getElementById('live-panel-info');
             const p = liveDetail;
-            if (!p) { panel.innerHTML = `<p class="ant-info-empty mt-4">${t('liveSearching')}</p>`; return; }
+            if (!p) { panel.innerHTML = ''; return; }  // master data arrives within moments
             const f = p.fields || {};
             if (!Object.keys(f).length) { panel.innerHTML = `<p class="ant-info-empty mt-4">${t('liveNotInMaster')}</p>`; return; }
             const kv = keys => keys.map(k => [k, fieldValue(f, k)]).filter(([, v]) => v)
@@ -2564,14 +2779,16 @@
             const counts = { all: liveImages.length, review: liveImages.filter(isReview).length, confirmed: liveImages.filter(isConfirmed).length };
             document.getElementById('live-image-filters').innerHTML = liveImages.length ? ['all', 'review', 'confirmed']
                 .map(f => `<button type="button" class="ant-filter-chip" aria-pressed="${liveImageFilter === f}" onclick="liveImageFilter = '${f}'; renderBoard()">${t({ all: 'imgFilterAll', review: 'imgFilterReview', confirmed: 'imgFilterConfirmed' }[f])} <span>${counts[f]}</span></button>`).join('') : '';
-            document.getElementById('live-count-images').textContent = liveImages.length;
+            const tabCount = document.getElementById('live-count-images');
+            tabCount.textContent = liveImages.length;
+            tabCount.hidden = liveFetching && !liveImages.length; // not known yet, so not "0"
             renderImageSet();
         }
         // This product's pictures at a glance: one dot per picture, packshots in orange; the legend jumps to that group.
         function renderImageSet() {
             const el = document.getElementById('live-set');
             if (!el) return;
-            if (!liveImages.length) { el.innerHTML = `<p class="om-note mt-4">${t(liveDetail ? 'liveNoImages' : 'liveSearching')}</p>`; return; }
+            if (!liveImages.length) { el.innerHTML = `<p class="om-total"><span class="om-big">${liveFetching ? '<span class="om-skel" aria-hidden="true"></span>' : '0'}</span><small>${t('liveImages')}</small></p>`; return; }
             const counts = {};
             liveImages.forEach(img => { const c = img.result ? img.result.category : 'pending'; counts[c] = (counts[c] || 0) + 1; });
             const order = [...CAT_ORDER, 'pending'].filter(c => counts[c]);
@@ -2832,14 +3049,15 @@
         }
         // Tools: the capabilities as A.N.T's own command list. Typing filters, arrows move, Enter or a second click opens it.
         const LD_CMDS = [
-            ['ldCmdSearch', '/', () => { enterApp(); setTimeout(() => document.getElementById('search-input').focus(), 0); }],
-            ['ldCmdList', '', () => { enterApp(); document.getElementById('file-upload').click(); }],
-            ['ldCmdZip', '', () => enterApp()],
-            ['ldCmdTeach', '', () => enterApp()],
-            ['ldCmdEdit', '', () => { enterApp(); triggerTool('IMG EDIT'); }],
-            ['ldCmdFill', '', () => { enterApp(); triggerTool('AUTO FILL'); }],
-            ['ldCmdPrice', '', () => { enterApp(); triggerTool('PRICE SYNC'); }],
-            ['ldCmdBrands', '', () => { enterApp(); openLibraryView(); }],
+            ['ldCmdSearch', '/', () => { enterApp(); setTimeout(() => document.getElementById('search-input').focus(), 0); }, 'search'],
+            ['ldCmdList', '', () => { enterApp(); document.getElementById('file-upload').click(); }, 'search'],
+            ['ldCmdZip', '', () => enterApp(), 'search'],
+            ['ldCmdTeach', '', () => enterApp(), 'search'],
+            ['ldCmdEdit', '', () => { enterApp(); triggerTool('IMG EDIT'); }, 'imageEdit'],
+            ['ldCmdFill', '', () => { enterApp(); triggerTool('AUTO FILL'); }, 'autoFill'],
+            ['ldCmdPrice', '', () => { enterApp(); triggerTool('PRICE SYNC'); }, 'priceSync'],
+            ['ldCmdPallet', '', () => { enterApp(); triggerTool('PALLET'); }, 'pallet'],
+            ['ldCmdBrands', '', () => { enterApp(); openLibraryView(); }, 'library'],
         ];
         let ldCmdIndex = 0;
         const ldSay = key => t(`${key}Say`).replace('{n}', brandsDatabase.length);
@@ -2852,11 +3070,15 @@
             if (rows.length && !rows.includes(ldCmdIndex)) ldCmdIndex = rows[0];
             document.getElementById('ld-cmd-list').innerHTML = rows.length ? rows.map(i => `<li><button type="button" class="ld-cmd-row" role="option" data-i="${i}" aria-selected="${i === ldCmdIndex}" onclick="ldCmdClick(${i})">
                 <span class="ld-cmd-name">${t(LD_CMDS[i][0])}${LD_CMDS[i][1] ? `<kbd class="ld-key">${LD_CMDS[i][1]}</kbd>` : ''}</span>
-                <span class="ld-cmd-say">${esc(ldSay(LD_CMDS[i][0]))} ${t('ldCmdOpen')}</span></button></li>`).join('')
+                <span class="ld-cmd-say">${esc(ldSay(LD_CMDS[i][0]))}</span></button></li>`).join('')
                 : `<li class="ld-cmd-none">${t('ldCmdNone')}</li>`;
+            const [key, , , area] = LD_CMDS[ldCmdIndex];
+            document.getElementById('ld-cmd-detail').innerHTML = rows.length ? `<h3>${t(key)}</h3><p>${esc(ldSay(key))}</p>
+                <button type="button" class="ant-btn ant-btn-primary" onclick="LD_CMDS[ldCmdIndex][2]()">${fill(t('ldCmdGo'), { area: t(area) })}<i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>` : '';
         }
         function ldCmdClick(i) {
-            if (ldCmdIndex === i) return LD_CMDS[i][2]();
+            // A second click opens it; on a phone, where the detail card is folded away, the first one does.
+            if (ldCmdIndex === i || matchMedia('(max-width: 760px)').matches) return LD_CMDS[i][2]();
             ldCmdIndex = i;
             ldCmdRender();
         }
@@ -2895,7 +3117,6 @@
             ldTry();
             ldRenderHow();
             ldCmdRender();
-            document.getElementById('ld-end-input').placeholder = t('ldEndInput');
         }
 
         function showToast(message) {
