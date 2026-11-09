@@ -144,6 +144,12 @@
         .ant-lang button[aria-pressed="true"] { background: var(--ink-dark); color: var(--on-dark); }
         #toast { top: 84px; right: 24px; max-width: min(380px, calc(100vw - 32px)); border-radius: 16px !important; background: var(--ink-dark); color: var(--on-dark); }
         #main-scroll-container { background: var(--bg); }
+        /* The workspace is an app: double-clicking a label or an empty spot selects nothing (no stray caret or
+           highlight); the data people copy stays selectable, and inputs keep their own selection. */
+        #ant-app { -webkit-user-select: none; user-select: none; }
+        #ant-app :is(input, textarea, select, td, .om-prod-head h2, .om-prod-meta, .om-kpi dd, .ant-mono, .ant-copy b, .ant-result-name,
+            .ant-kv, .ant-inci, .ant-pack, .ant-img-name, .ant-doc-name span, #live-docs-sub, #live-viewer-name, #live-viewer-meta,
+            .om-src-list dd, .om-raw) { -webkit-user-select: text; user-select: text; }
         @media (min-width: 1024px) {
             #ant-topbar { flex-wrap: nowrap; gap: 12px; padding: 20px 32px 12px; }
             .ant-topbar-search { order: 0; flex: 0 1 420px; margin-left: 20px; }
