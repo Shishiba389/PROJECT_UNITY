@@ -693,6 +693,24 @@
         .ant-board-section { margin-top: 12px; padding: 20px; border-radius: var(--radius-lg); background: var(--surface); scroll-margin-top: 80px; }
         .ant-board-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; }
         .ant-board-head h3 { font-size: 18px; font-weight: 400; letter-spacing: -.01em; }
+        /* PDFs: artwork as cards (the first page), the dossier as versions, then document types, then files */
+        .ant-board-hint { flex-basis: 100%; font-size: 14px; color: var(--text-3); }
+        .ant-doc-card .ant-img-thumb { cursor: pointer; }
+        .ant-doc-set, .ant-doc-type { border-top: 1px solid var(--line); }
+        .ant-doc-set > summary, .ant-doc-type > summary { min-height: 48px; display: flex; align-items: center; gap: 10px; cursor: pointer; list-style: none; }
+        .ant-doc-set > summary::-webkit-details-marker, .ant-doc-type > summary::-webkit-details-marker { display: none; }
+        .ant-doc-set > summary::before, .ant-doc-type > summary::before { content: '\203A'; width: 12px; color: var(--text-3); transition: transform .15s; }
+        .ant-doc-set[open] > summary::before, .ant-doc-type[open] > summary::before { transform: rotate(90deg); }
+        .ant-doc-set > summary strong { min-width: 0; overflow: hidden; font-weight: 500; white-space: nowrap; text-overflow: ellipsis; }
+        .ant-doc-set > summary .ant-chip { flex: none; white-space: nowrap; }
+        .ant-doc-type { margin-left: 22px; }
+        .ant-doc-type > summary { min-height: 44px; font-size: 15px; }
+        .ant-doc-type > summary span { margin-left: auto; font-size: 13px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+        .ant-doc-type ul { display: grid; gap: 2px; margin: 0 0 10px 22px; }
+        .ant-doc-type li a { min-height: 40px; display: flex; align-items: center; gap: 10px; padding: 0 10px; border-radius: 10px; font-size: 14px; color: var(--text); }
+        .ant-doc-type li a:hover { background: var(--surface-2); }
+        .ant-doc-type li a span { min-width: 0; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .ant-doc-type li small { flex: none; font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; }
         .ant-board-actions { display: flex; gap: 6px; margin-left: auto; }
         .ant-board-actions .ant-btn { min-height: 36px; padding: 0 14px; font-size: 13px; }
         .ant-board-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: 12px; }
@@ -1237,6 +1255,7 @@
                         <div id="live-product"></div>
                         <div class="ant-tabs" role="tablist">
                             <button type="button" role="tab" id="live-tab-images" class="ant-tab" aria-selected="true" aria-controls="live-panel-images" onclick="setLiveTab('images')"><i class="fa-regular fa-images" aria-hidden="true"></i><span data-i18n="liveTabImages">Hình ảnh</span><span id="live-count-images" class="ant-tab-count">0</span></button>
+                            <button type="button" role="tab" id="live-tab-docs" class="ant-tab" aria-selected="false" aria-controls="live-panel-docs" onclick="setLiveTab('docs')"><i class="fa-regular fa-file-pdf" aria-hidden="true"></i><span data-i18n="liveTabDocs">Artwork &amp; tài liệu</span><span id="live-count-docs" class="ant-tab-count" hidden></span></button>
                             <button type="button" role="tab" id="live-tab-info" class="ant-tab" aria-selected="false" aria-controls="live-panel-info" onclick="setLiveTab('info')"><i class="fa-regular fa-rectangle-list" aria-hidden="true"></i><span data-i18n="liveTabInfo">Thông tin chi tiết</span></button>
                         </div>
                         <div id="live-panel-images" role="tabpanel" aria-labelledby="live-tab-images">
@@ -1251,6 +1270,7 @@
                             <p id="live-status" class="ant-muted text-sm mt-3" role="status"></p>
                             <div id="live-board"></div>
                         </div>
+                        <div id="live-panel-docs" role="tabpanel" aria-labelledby="live-tab-docs" hidden></div>
                         <div id="live-panel-info" role="tabpanel" aria-labelledby="live-tab-info" hidden></div>
                     </div>
                 </div>
@@ -1490,7 +1510,7 @@
                 howLead: 'Master data là cầu nối: mọi giá trị nhập vào được đổi thành một sản phẩm trước khi tìm ảnh.', step1Title: 'Nhập hoặc tải file', step1Text: 'Một EAN, article code, tên sản phẩm hay cả danh sách CSV.', step2Title: 'Khớp master data', step2Text: 'Barcode, mã hàng, mã cũ và tên được quy về đúng sản phẩm.', step3Title: 'Nhận ảnh và thông tin', step3Text: 'Packshot, ảnh hộp, lifestyle cùng kích thước, pháp lý và nhà cung cấp.', ctaTitle: 'Sẵn sàng tìm ảnh?', ctaText: 'Mở không gian làm việc và thử với một mã EAN mẫu.',
                 liveNoProduct: 'Không có sản phẩm này trong master data. Thử EAN, article code hoặc tên khác.', liveNoFileMatch: 'Không mã nào trong file có trong master data.', liveFileMatches: 'Sản phẩm khớp trong file', liveNotFound: 'mã không thấy', liveSearching: 'Đang tìm ảnh trên SharePoint…', liveClassifying: 'Đang phân loại ảnh…', livePending: 'Đang phân loại', liveByPerson: 'Đã xác nhận', liveReview: 'Cần xem lại', liveSelect: 'Chọn', liveCategory: 'Nhóm ảnh', liveLearned: 'Đã lưu, A.N.T sẽ học từ ảnh này', liveZipping: 'Đang nén ảnh gốc…', liveFailed: 'Không thực hiện được', liveSelectAll: 'Chọn tất cả', liveClearAll: 'Bỏ chọn', liveDownloadSelected: 'Tải ảnh đã chọn', liveImages: 'ảnh', liveToReview: 'cần xem lại', liveSelectedCount: 'đã chọn', liveLoginNeeded: 'Phiên đăng nhập SharePoint đã hết hạn.', liveLoginButton: 'Đăng nhập SharePoint', liveLoginOpen: 'Mở trang đăng nhập và nhập mã', liveLoginDone: 'Đã đăng nhập SharePoint', liveNotInMaster: 'Không có trong master data · tìm ảnh theo đúng mã đã nhập', liveAllFields: 'Tất cả trường master data', liveDownloadOriginal: 'Tải ảnh gốc', liveEdit: 'Chỉnh ảnh', liveEditLoading: 'Đang lấy ảnh gốc cho Chỉnh ảnh', liveEditSent: 'Đã gửi sang Chỉnh ảnh', liveClose: 'Đóng', liveNoImages: 'Không tìm thấy ảnh nào trên SharePoint cho sản phẩm này.',
                 catPackshot: 'Packshot', catHuman: 'Có người', catScene: 'Dàn cảnh', catCollection: 'Bộ sưu tập', catColor: 'Nền màu', catArtwork: 'Artwork', catUncertain: 'Không rõ',
-                liveTabImages: 'Hình ảnh', liveTabInfo: 'Thông tin chi tiết', liveProductsWord: 'sản phẩm', liveProductWord: 'Sản phẩm', liveStatusFilter: 'Lọc theo trạng thái', liveFilterResults: 'Lọc theo tên, EAN, mã…', liveNoMatchFilter: 'Không có mục nào khớp bộ lọc.', groupAll: 'Tất cả', groupActive: 'Đang bán', groupUpcoming: 'Sắp ra mắt', groupInactive: 'Không hoạt động', liveCopy: 'Sao chép', liveCopied: 'Đã sao chép', liveCopyIngredients: 'Sao chép thành phần',
+                liveTabImages: 'Hình ảnh', liveTabInfo: 'Thông tin chi tiết', liveTabDocs: 'Artwork & tài liệu', docsArtwork: 'Artwork', docsArtworkHint: 'File PDF nằm trong thư mục Artwork hoặc có EAN trong tên. Bấm để mở.', docsDossier: 'Hồ sơ sản phẩm', docsDossierHint: 'Thư mục mang EAN của sản phẩm: công thức, COA, MSDS, kiểm nghiệm, cam kết nhà sản xuất. Phiên bản mới nhất mở sẵn.', docsGeneral: 'Chung', docsNone: 'Không có artwork hay hồ sơ PDF nào mang EAN của sản phẩm này.', docsNoEan: 'Sản phẩm không có EAN, nên chưa tìm được PDF.', docsFailed: 'Chưa tải được danh sách PDF từ SharePoint.', docsFiles: 'file', liveProductsWord: 'sản phẩm', liveProductWord: 'Sản phẩm', liveStatusFilter: 'Lọc theo trạng thái', liveFilterResults: 'Lọc theo tên, EAN, mã…', liveNoMatchFilter: 'Không có mục nào khớp bộ lọc.', groupAll: 'Tất cả', groupActive: 'Đang bán', groupUpcoming: 'Sắp ra mắt', groupInactive: 'Không hoạt động', liveCopy: 'Sao chép', liveCopied: 'Đã sao chép', liveCopyIngredients: 'Sao chép thành phần',
                 factVolume: 'Dung tích', factSize: 'Kích thước', factSizeHint: 'rộng × cao × sâu', factWeight: 'Khối lượng tịnh', factGross: 'cả bì', factCarton: 'Đóng thùng', factPerCarton: 'sp/thùng', factPerInner: 'sp/hộp trong', unitMonths: 'tháng',
                 infoIdentity: 'Định danh', infoCompliance: 'Pháp lý & hạn dùng', infoSupply: 'Nhà cung cấp & sản xuất', infoNotes: 'Mô tả & ghi chú', infoPacking: 'Kích thước & đóng gói', infoIngredients: 'Thành phần (INCI)', infoOther: 'Trường khác', infoNoData: 'Master data chưa có thông tin này.',
                 packProduct: 'Sản phẩm', packInner: 'Hộp trong', packCarton: 'Thùng', packSize: 'Kích thước (mm)', packWeight: 'Khối lượng (g)', packQty: 'Số lượng', packNet: 'tịnh', packGross: 'cả bì', packPerLayer: '/lớp',
@@ -1545,7 +1565,7 @@
                 howLead: 'Master data is the bridge: every input is resolved to one product before images are fetched.', step1Title: 'Type or upload a file', step1Text: 'One EAN, article code, product name, or a whole CSV list.', step2Title: 'Match master data', step2Text: 'Barcodes, article codes, old codes and names resolve to the right product.', step3Title: 'Get images and details', step3Text: 'Packshots, box and lifestyle shots with dimensions, compliance and supplier data.', ctaTitle: 'Ready to find images?', ctaText: 'Open the workspace and try it with a sample EAN.',
                 liveNoProduct: 'This product is not in master data. Try another EAN, article code or name.', liveNoFileMatch: 'No code in the file is in master data.', liveFileMatches: 'Products matched in the file', liveNotFound: 'codes not found', liveSearching: 'Searching SharePoint for images…', liveClassifying: 'Classifying images…', livePending: 'Classifying', liveByPerson: 'Confirmed', liveReview: 'Check', liveSelect: 'Select', liveCategory: 'Image type', liveLearned: 'Saved; A.N.T will learn from this image', liveZipping: 'Zipping the originals…', liveFailed: 'That did not work', liveSelectAll: 'Select all', liveClearAll: 'Clear selection', liveDownloadSelected: 'Download selected', liveImages: 'images', liveToReview: 'to check', liveSelectedCount: 'selected', liveLoginNeeded: 'The SharePoint session has expired.', liveLoginButton: 'Sign in to SharePoint', liveLoginOpen: 'Open the sign-in page and enter the code', liveLoginDone: 'Signed in to SharePoint', liveNotInMaster: 'Not in master data · searching images for the code as typed', liveAllFields: 'All master data fields', liveDownloadOriginal: 'Download original', liveEdit: 'Edit', liveEditLoading: 'Fetching originals for Image edit', liveEditSent: 'Sent to Image edit', liveClose: 'Close', liveNoImages: 'No images found on SharePoint for this product.',
                 catPackshot: 'Packshot', catHuman: 'With people', catScene: 'Scene setup', catCollection: 'Collection', catColor: 'Color background', catArtwork: 'Artwork', catUncertain: 'Unclear',
-                liveTabImages: 'Images', liveTabInfo: 'Details', liveProductsWord: 'products', liveProductWord: 'Product', liveStatusFilter: 'Filter by status', liveFilterResults: 'Filter by name, EAN, code…', liveNoMatchFilter: 'Nothing matches the filter.', groupAll: 'All', groupActive: 'On sale', groupUpcoming: 'Upcoming', groupInactive: 'Inactive', liveCopy: 'Copy', liveCopied: 'Copied', liveCopyIngredients: 'Copy ingredients',
+                liveTabImages: 'Images', liveTabInfo: 'Details', liveTabDocs: 'Artwork & documents', docsArtwork: 'Artwork', docsArtworkHint: 'PDFs in an Artwork folder or with the EAN in their name. Click to open.', docsDossier: 'Product dossier', docsDossierHint: 'Folders named with the product\'s EAN: formula, COA, MSDS, tests, manufacturer declarations. The newest version is open.', docsGeneral: 'General', docsNone: 'No artwork or dossier PDFs carry this product\'s EAN.', docsNoEan: 'This product has no EAN, so no PDFs could be looked up.', docsFailed: 'Could not load the PDF list from SharePoint.', docsFiles: 'files', liveProductsWord: 'products', liveProductWord: 'Product', liveStatusFilter: 'Filter by status', liveFilterResults: 'Filter by name, EAN, code…', liveNoMatchFilter: 'Nothing matches the filter.', groupAll: 'All', groupActive: 'On sale', groupUpcoming: 'Upcoming', groupInactive: 'Inactive', liveCopy: 'Copy', liveCopied: 'Copied', liveCopyIngredients: 'Copy ingredients',
                 factVolume: 'Volume', factSize: 'Size', factSizeHint: 'width × height × depth', factWeight: 'Net weight', factGross: 'gross', factCarton: 'Carton', factPerCarton: 'per carton', factPerInner: 'per inner box', unitMonths: 'months',
                 infoIdentity: 'Identity', infoCompliance: 'Compliance & shelf life', infoSupply: 'Supplier & manufacturer', infoNotes: 'Description & notes', infoPacking: 'Size & packing', infoIngredients: 'Ingredients (INCI)', infoOther: 'Other fields', infoNoData: 'Master data has nothing here yet.',
                 packProduct: 'Product', packInner: 'Inner box', packCarton: 'Carton', packSize: 'Size (mm)', packWeight: 'Weight (g)', packQty: 'Quantity', packNet: 'net', packGross: 'gross', packPerLayer: 'per layer',
@@ -1575,7 +1595,7 @@
             renderHome();
             renderConnection();
             renderLanding();
-            if (liveMode && liveKey) { renderLiveResults(); renderLiveProduct(); renderLiveInfo(); renderBoard(); updateLiveStatus(); }
+            if (liveMode && liveKey) { renderLiveResults(); renderLiveProduct(); renderLiveInfo(); renderBoard(); renderDocs(); updateLiveStatus(); }
             if (currentView === 'LIB_BRANDS') showBrandSelectionView();
             if (currentView === 'LIB_GRID') showBrandGridView();
             if (currentView === 'LIB_PRODUCT_DETAIL') showLibProductDetailView();
@@ -2517,6 +2537,7 @@
         const EMPTY_VALUES = new Set(['', '-', '--', 'x', 'tbu', 'tbc', 'n/a', 'na', 'n/v', 'none', 'not given', 'nan']);
 
         let liveMode = false, liveProducts = [], liveIndex = 0, liveKey = '', liveDetail = null, liveImages = [], liveToken = 0, liveQuery = '';
+        let liveDocs = null, liveDocsEmpty = '';  // the product's PDFs, null while SharePoint is searched
         let liveFetching = false;  // the product's pictures are still being searched on SharePoint
         let liveGroupFilter = 'all', liveTextFilter = '', liveImageFilter = 'all', liveTab = 'images';
         const liveSelected = new Set();
@@ -2718,6 +2739,7 @@
             liveKey = product.key;
             liveDetail = null;
             liveImages = [];
+            liveDocs = null;
             liveFetching = true;
             liveImageFilter = 'all';
             liveSelected.clear();
@@ -2725,7 +2747,20 @@
             renderLiveProduct();
             renderLiveInfo();
             renderBoard();
+            renderDocs();
             updateLiveStatus(t('liveSearching'));
+            // PDFs come from their own search, so the pictures never wait for it.
+            api(`docs?key=${encodeURIComponent(product.key)}`).then(d => {
+                if (token !== liveToken) return;
+                liveDocs = d.documents;
+                liveDocsEmpty = d.ean ? 'docsNone' : 'docsNoEan';
+                renderDocs();
+            }).catch(() => {
+                if (token !== liveToken) return;
+                liveDocs = [];
+                liveDocsEmpty = 'docsFailed';
+                renderDocs();
+            });
             // Master data answers at once; the pictures wait for SharePoint, so they come separately.
             api(`detail?key=${encodeURIComponent(product.key)}`).then(d => {
                 if (token !== liveToken || liveDetail) return;
@@ -2829,10 +2864,38 @@
 
         function setLiveTab(tab) {
             liveTab = tab;
-            for (const name of ['images', 'info']) {
+            for (const name of ['images', 'docs', 'info']) {
                 document.getElementById(`live-tab-${name}`).setAttribute('aria-selected', String(name === tab));
                 document.getElementById(`live-panel-${name}`).hidden = name !== tab;
             }
+        }
+
+        // ---- PDFs: artwork and the product dossier ----
+        function renderDocs() {
+            const panel = document.getElementById('live-panel-docs'), count = document.getElementById('live-count-docs');
+            count.textContent = liveDocs ? liveDocs.length : '';
+            count.hidden = !liveDocs;
+            if (!liveDocs || !liveDocs.length) { panel.innerHTML = `<p class="ant-recent-empty">${t(liveDocs ? liveDocsEmpty : 'liveSearching')}</p>`; return; }
+            const open = d => `${IMG_API}/file/${d.id}?view=1`, size = d => `${(d.size / 1e6).toFixed(1)} MB`;
+            const head = (icon, title, n, hint) => `<div class="ant-board-head"><span class="ant-tile" aria-hidden="true"><i class="fa-solid ${icon}"></i></span>
+                <h3>${t(title)}</h3><span class="ant-chip is-muted">${n}</span><p class="ant-board-hint">${t(hint)}</p></div>`;
+            const art = liveDocs.filter(d => d.kind === 'artwork');
+            const sets = {};
+            liveDocs.filter(d => d.kind === 'dossier').forEach(d => ((sets[d.set] ||= {})[d.type] ||= []).push(d));
+            const version = name => +((name.match(/V\s*(\d+)/i) || [])[1] || 0);  // "…_EU (V6)" before "…_EU_V2"
+            const names = Object.keys(sets).sort((a, b) => version(b) - version(a) || a.localeCompare(b));
+            const files = list => list.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
+                .map(d => `<li><a href="${open(d)}" target="_blank" rel="noopener" title="${esc(d.folder)}"><i class="fa-regular fa-file-pdf" aria-hidden="true"></i><span>${esc(d.name)}</span><small>${size(d)}</small></a></li>`).join('');
+            panel.innerHTML = (art.length ? `<section class="ant-board-section" aria-label="${t('docsArtwork')}">${head('fa-file-pdf', 'docsArtwork', art.length, 'docsArtworkHint')}
+                    <div class="ant-board-grid">${art.map(d => `<a class="ant-img-card ant-doc-card" href="${open(d)}" target="_blank" rel="noopener" title="${esc(d.folder)}">
+                        <span class="ant-img-thumb"><img src="${IMG_API}/thumb/${d.id}" alt="" loading="lazy"></span>
+                        <span class="ant-img-name">${esc(d.name)}</span>
+                        <span class="ant-img-meta"><span>PDF</span><span>${size(d)}</span></span></a>`).join('')}</div></section>` : '')
+                + (names.length ? `<section class="ant-board-section" aria-label="${t('docsDossier')}">${head('fa-folder-open', 'docsDossier', liveDocs.length - art.length, 'docsDossierHint')}
+                    ${names.map((name, k) => `<details class="ant-doc-set"${k ? '' : ' open'}><summary><strong>${esc(name)}</strong><span class="ant-chip is-muted">${Object.values(sets[name]).flat().length} ${t('docsFiles')}</span></summary>
+                        ${Object.keys(sets[name]).sort((a, b) => a.localeCompare(b, undefined, { numeric: true })).map(type => `<details class="ant-doc-type"><summary>${esc(type || t('docsGeneral'))}<span>${sets[name][type].length}</span></summary>
+                            <ul>${files(sets[name][type])}</ul></details>`).join('')}
+                    </details>`).join('')}</section>` : '');
         }
 
         // ---- image board ----
