@@ -693,24 +693,53 @@
         .ant-board-section { margin-top: 12px; padding: 20px; border-radius: var(--radius-lg); background: var(--surface); scroll-margin-top: 80px; }
         .ant-board-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; }
         .ant-board-head h3 { font-size: 18px; font-weight: 400; letter-spacing: -.01em; }
-        /* PDFs: artwork as cards (the first page), the dossier as versions, then document types, then files */
-        .ant-board-hint { flex-basis: 100%; font-size: 14px; color: var(--text-3); }
-        .ant-doc-card .ant-img-thumb { cursor: pointer; }
-        .ant-doc-set, .ant-doc-type { border-top: 1px solid var(--line); }
-        .ant-doc-set > summary, .ant-doc-type > summary { min-height: 48px; display: flex; align-items: center; gap: 10px; cursor: pointer; list-style: none; }
+        /* PDFs: a button beside the tabs opens a small window; artwork rows, then the dossier by version and type */
+        .ant-tabs-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 20px; }
+        .ant-tabs-row .ant-tabs { margin-top: 0; }
+        .ant-docs-btn { min-height: 52px; display: inline-flex; align-items: center; gap: 8px; padding: 0 20px; border-radius: 999px; background: var(--surface); color: var(--text); font-size: 15px; white-space: nowrap; transition: background-color .15s; }
+        .ant-docs-btn:hover:not(:disabled) { background: var(--surface-3); }
+        .ant-docs-btn:disabled { color: var(--text-3); cursor: progress; }
+        .ant-docs-btn .ant-tab-count { padding: 1px 8px; border-radius: 999px; background: var(--primary); color: #1a1a1a; font-size: 12px; font-variant-numeric: tabular-nums; }
+        .ant-docs-btn:disabled .ant-tab-count { background: var(--surface-3); color: var(--text-2); }
+        .ant-docs { width: min(560px, calc(100vw - 32px)); max-width: none; max-height: min(680px, calc(100dvh - 48px)); padding: 0; border: 0; border-radius: var(--radius-lg); background: var(--surface); color: var(--text); }
+        .ant-docs[open] { display: flex; flex-direction: column; outline: none; }
+        .ant-docs::backdrop { background: rgba(0, 0, 0, .5); }
+        .ant-docs-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 20px 20px 12px 24px; }
+        .ant-docs-head h3 { font-size: 20px; font-weight: 400; letter-spacing: -.02em; }
+        .ant-docs-head p { margin-top: 4px; overflow: hidden; font-size: 14px; color: var(--text-3); white-space: nowrap; text-overflow: ellipsis; }
+        .ant-docs-body { min-height: 0; overflow-y: auto; padding: 0 12px 16px; overscroll-behavior: contain; }
+        .ant-docs-group { padding: 12px 12px 4px; }
+        .ant-docs-group + .ant-docs-group { border-top: 1px solid var(--line); }
+        .ant-docs-group-head { min-height: 40px; display: flex; align-items: center; gap: 8px; margin-left: -4px; }
+        .ant-docs-group-head h4 { font-size: 16px; font-weight: 500; }
+        .ant-docs-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px 16px 24px; border-top: 1px solid var(--line); }
+        .ant-docs-foot p { min-width: 0; font-size: 14px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+        .ant-docs-foot .ant-btn { flex: none; }
+        .ant-doc-pick { width: 32px; height: 40px; flex: none; display: grid; place-items: center; cursor: pointer; }
+        .ant-doc-pick input { width: 18px; height: 18px; accent-color: var(--ink-dark); cursor: pointer; }
+        [data-theme="dark"] .ant-doc-pick input { accent-color: var(--primary); }
+        .ant-docs-empty { padding: 24px 12px; font-size: 15px; color: var(--text-3); }
+        .ant-doc-row { min-height: 52px; display: flex; align-items: center; gap: 10px; padding: 4px 4px 4px 0; border-radius: 12px; }
+        .ant-doc-row:hover { background: var(--surface-2); }
+        .ant-doc-row > img { width: 44px; height: 44px; flex: none; border-radius: 8px; background: #fff; object-fit: contain; outline: 1px solid var(--line); }
+        .ant-doc-row > i { width: 20px; flex: none; text-align: center; color: var(--text-3); }
+        .ant-doc-row a.ant-doc-name { min-width: 0; flex: 1; display: flex; flex-direction: column; color: var(--text); }
+        .ant-doc-name span { overflow: hidden; font-size: 14px; white-space: nowrap; text-overflow: ellipsis; }
+        .ant-doc-name small { font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+        .ant-doc-name:hover span { text-decoration: underline; text-underline-offset: 3px; }
+        .ant-doc-get { width: 40px; height: 40px; flex: none; display: grid; place-items: center; border-radius: 50%; color: var(--text-2); transition: background-color .15s, color .15s; }
+        .ant-doc-get:hover { background: var(--surface-3); color: var(--text); }
+        .ant-doc-set { border-top: 1px solid var(--line); }
+        .ant-doc-set:first-of-type { border-top: 0; }
+        .ant-doc-set > summary, .ant-doc-type > summary { min-height: 44px; display: flex; align-items: center; gap: 8px; cursor: pointer; list-style: none; }
         .ant-doc-set > summary::-webkit-details-marker, .ant-doc-type > summary::-webkit-details-marker { display: none; }
-        .ant-doc-set > summary::before, .ant-doc-type > summary::before { content: '\203A'; width: 12px; color: var(--text-3); transition: transform .15s; }
+        .ant-doc-set > summary::before, .ant-doc-type > summary::before { content: '\203A'; width: 12px; flex: none; color: var(--text-3); transition: transform .15s; }
         .ant-doc-set[open] > summary::before, .ant-doc-type[open] > summary::before { transform: rotate(90deg); }
-        .ant-doc-set > summary strong { min-width: 0; overflow: hidden; font-weight: 500; white-space: nowrap; text-overflow: ellipsis; }
-        .ant-doc-set > summary .ant-chip { flex: none; white-space: nowrap; }
-        .ant-doc-type { margin-left: 22px; }
-        .ant-doc-type > summary { min-height: 44px; font-size: 15px; }
-        .ant-doc-type > summary span { margin-left: auto; font-size: 13px; color: var(--text-3); font-variant-numeric: tabular-nums; }
-        .ant-doc-type ul { display: grid; gap: 2px; margin: 0 0 10px 22px; }
-        .ant-doc-type li a { min-height: 40px; display: flex; align-items: center; gap: 10px; padding: 0 10px; border-radius: 10px; font-size: 14px; color: var(--text); }
-        .ant-doc-type li a:hover { background: var(--surface-2); }
-        .ant-doc-type li a span { min-width: 0; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-        .ant-doc-type li small { flex: none; font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+        .ant-doc-set > summary strong { min-width: 0; overflow: hidden; font-size: 14px; font-weight: 500; white-space: nowrap; text-overflow: ellipsis; }
+        .ant-doc-set > summary small, .ant-doc-type > summary small { flex: none; font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+        .ant-doc-type { margin-left: 20px; }
+        .ant-doc-type > summary { font-size: 14px; }
+        .ant-doc-type > summary small { margin-left: auto; padding-right: 12px; }
         .ant-board-actions { display: flex; gap: 6px; margin-left: auto; }
         .ant-board-actions .ant-btn { min-height: 36px; padding: 0 14px; font-size: 13px; }
         .ant-board-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: 12px; }
@@ -1253,10 +1282,12 @@
                     <aside id="live-results" class="ant-results" aria-label="Kết quả tìm kiếm" hidden></aside>
                     <div class="min-w-0">
                         <div id="live-product"></div>
+                        <div class="ant-tabs-row">
                         <div class="ant-tabs" role="tablist">
                             <button type="button" role="tab" id="live-tab-images" class="ant-tab" aria-selected="true" aria-controls="live-panel-images" onclick="setLiveTab('images')"><i class="fa-regular fa-images" aria-hidden="true"></i><span data-i18n="liveTabImages">Hình ảnh</span><span id="live-count-images" class="ant-tab-count">0</span></button>
-                            <button type="button" role="tab" id="live-tab-docs" class="ant-tab" aria-selected="false" aria-controls="live-panel-docs" onclick="setLiveTab('docs')"><i class="fa-regular fa-file-pdf" aria-hidden="true"></i><span data-i18n="liveTabDocs">Artwork &amp; tài liệu</span><span id="live-count-docs" class="ant-tab-count" hidden></span></button>
                             <button type="button" role="tab" id="live-tab-info" class="ant-tab" aria-selected="false" aria-controls="live-panel-info" onclick="setLiveTab('info')"><i class="fa-regular fa-rectangle-list" aria-hidden="true"></i><span data-i18n="liveTabInfo">Thông tin chi tiết</span></button>
+                        </div>
+                        <button type="button" id="live-docs-btn" class="ant-docs-btn" onclick="const d = document.getElementById('live-docs'); d.showModal(); d.focus()" aria-haspopup="dialog" disabled><i class="fa-regular fa-file-pdf" aria-hidden="true"></i><span data-i18n="liveTabDocs">Artwork &amp; tài liệu</span><span id="live-count-docs" class="ant-tab-count"></span></button>
                         </div>
                         <div id="live-panel-images" role="tabpanel" aria-labelledby="live-tab-images">
                             <div class="ant-live-toolbar">
@@ -1270,10 +1301,20 @@
                             <p id="live-status" class="ant-muted text-sm mt-3" role="status"></p>
                             <div id="live-board"></div>
                         </div>
-                        <div id="live-panel-docs" role="tabpanel" aria-labelledby="live-tab-docs" hidden></div>
                         <div id="live-panel-info" role="tabpanel" aria-labelledby="live-tab-info" hidden></div>
                     </div>
                 </div>
+                <dialog id="live-docs" class="ant-docs" aria-labelledby="live-docs-title" tabindex="-1" onclick="if (event.target === this) this.close()">
+                    <div class="ant-docs-head">
+                        <div class="min-w-0"><h3 id="live-docs-title" data-i18n="liveTabDocs">Artwork &amp; tài liệu</h3><p id="live-docs-sub"></p></div>
+                        <button type="button" class="om-round" onclick="document.getElementById('live-docs').close()" aria-label="Đóng" data-i18n-aria="liveClose"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+                    </div>
+                    <div id="live-docs-body" class="ant-docs-body" onchange="pickDocs(event.target)"></div>
+                    <div id="live-docs-foot" class="ant-docs-foot" hidden>
+                        <p id="live-docs-picked" role="status"></p>
+                        <button type="button" id="live-docs-get" class="ant-btn ant-btn-primary" onclick="downloadDocs()" disabled><i class="fa-solid fa-download" aria-hidden="true"></i><span data-i18n="docsDownloadPicked">Tải đã chọn</span></button>
+                    </div>
+                </dialog>
                 <dialog id="live-viewer" class="ant-viewer" aria-labelledby="live-viewer-name">
                     <div class="ant-viewer-body">
                         <img id="live-viewer-img" alt="">
@@ -1510,7 +1551,7 @@
                 howLead: 'Master data là cầu nối: mọi giá trị nhập vào được đổi thành một sản phẩm trước khi tìm ảnh.', step1Title: 'Nhập hoặc tải file', step1Text: 'Một EAN, article code, tên sản phẩm hay cả danh sách CSV.', step2Title: 'Khớp master data', step2Text: 'Barcode, mã hàng, mã cũ và tên được quy về đúng sản phẩm.', step3Title: 'Nhận ảnh và thông tin', step3Text: 'Packshot, ảnh hộp, lifestyle cùng kích thước, pháp lý và nhà cung cấp.', ctaTitle: 'Sẵn sàng tìm ảnh?', ctaText: 'Mở không gian làm việc và thử với một mã EAN mẫu.',
                 liveNoProduct: 'Không có sản phẩm này trong master data. Thử EAN, article code hoặc tên khác.', liveNoFileMatch: 'Không mã nào trong file có trong master data.', liveFileMatches: 'Sản phẩm khớp trong file', liveNotFound: 'mã không thấy', liveSearching: 'Đang tìm ảnh trên SharePoint…', liveClassifying: 'Đang phân loại ảnh…', livePending: 'Đang phân loại', liveByPerson: 'Đã xác nhận', liveReview: 'Cần xem lại', liveSelect: 'Chọn', liveCategory: 'Nhóm ảnh', liveLearned: 'Đã lưu, A.N.T sẽ học từ ảnh này', liveZipping: 'Đang nén ảnh gốc…', liveFailed: 'Không thực hiện được', liveSelectAll: 'Chọn tất cả', liveClearAll: 'Bỏ chọn', liveDownloadSelected: 'Tải ảnh đã chọn', liveImages: 'ảnh', liveToReview: 'cần xem lại', liveSelectedCount: 'đã chọn', liveLoginNeeded: 'Phiên đăng nhập SharePoint đã hết hạn.', liveLoginButton: 'Đăng nhập SharePoint', liveLoginOpen: 'Mở trang đăng nhập và nhập mã', liveLoginDone: 'Đã đăng nhập SharePoint', liveNotInMaster: 'Không có trong master data · tìm ảnh theo đúng mã đã nhập', liveAllFields: 'Tất cả trường master data', liveDownloadOriginal: 'Tải ảnh gốc', liveEdit: 'Chỉnh ảnh', liveEditLoading: 'Đang lấy ảnh gốc cho Chỉnh ảnh', liveEditSent: 'Đã gửi sang Chỉnh ảnh', liveClose: 'Đóng', liveNoImages: 'Không tìm thấy ảnh nào trên SharePoint cho sản phẩm này.',
                 catPackshot: 'Packshot', catHuman: 'Có người', catScene: 'Dàn cảnh', catCollection: 'Bộ sưu tập', catColor: 'Nền màu', catArtwork: 'Artwork', catUncertain: 'Không rõ',
-                liveTabImages: 'Hình ảnh', liveTabInfo: 'Thông tin chi tiết', liveTabDocs: 'Artwork & tài liệu', docsArtwork: 'Artwork', docsArtworkHint: 'File PDF nằm trong thư mục Artwork hoặc có EAN trong tên. Bấm để mở.', docsDossier: 'Hồ sơ sản phẩm', docsDossierHint: 'Thư mục mang EAN của sản phẩm: công thức, COA, MSDS, kiểm nghiệm, cam kết nhà sản xuất. Phiên bản mới nhất mở sẵn.', docsGeneral: 'Chung', docsNone: 'Không có artwork hay hồ sơ PDF nào mang EAN của sản phẩm này.', docsNoEan: 'Sản phẩm không có EAN, nên chưa tìm được PDF.', docsFailed: 'Chưa tải được danh sách PDF từ SharePoint.', docsFiles: 'file', liveProductsWord: 'sản phẩm', liveProductWord: 'Sản phẩm', liveStatusFilter: 'Lọc theo trạng thái', liveFilterResults: 'Lọc theo tên, EAN, mã…', liveNoMatchFilter: 'Không có mục nào khớp bộ lọc.', groupAll: 'Tất cả', groupActive: 'Đang bán', groupUpcoming: 'Sắp ra mắt', groupInactive: 'Không hoạt động', liveCopy: 'Sao chép', liveCopied: 'Đã sao chép', liveCopyIngredients: 'Sao chép thành phần',
+                liveTabImages: 'Hình ảnh', liveTabInfo: 'Thông tin chi tiết', liveTabDocs: 'Artwork & tài liệu', docsArtwork: 'Artwork', docsDossier: 'Hồ sơ sản phẩm', docsPickHint: 'Tick file cần tải; nhiều file thành một ZIP.', docsDownloadPicked: 'Tải đã chọn', docsPicked: '{n} file · {mb} MB', docsTooMany: 'Tối đa 300 file một lần', docsDownload: 'Tải về', docsZipping: 'Đang nén…', docsSelectGroup: 'Chọn cả nhóm', docsOpenHint: 'Bấm tên file để mở PDF', docsGeneral: 'Chung', docsNone: 'Không có artwork hay hồ sơ PDF nào mang EAN của sản phẩm này.', docsNoEan: 'Sản phẩm không có EAN, nên chưa tìm được PDF.', docsFailed: 'Chưa tải được danh sách PDF từ SharePoint.', docsFiles: 'file', liveProductsWord: 'sản phẩm', liveProductWord: 'Sản phẩm', liveStatusFilter: 'Lọc theo trạng thái', liveFilterResults: 'Lọc theo tên, EAN, mã…', liveNoMatchFilter: 'Không có mục nào khớp bộ lọc.', groupAll: 'Tất cả', groupActive: 'Đang bán', groupUpcoming: 'Sắp ra mắt', groupInactive: 'Không hoạt động', liveCopy: 'Sao chép', liveCopied: 'Đã sao chép', liveCopyIngredients: 'Sao chép thành phần',
                 factVolume: 'Dung tích', factSize: 'Kích thước', factSizeHint: 'rộng × cao × sâu', factWeight: 'Khối lượng tịnh', factGross: 'cả bì', factCarton: 'Đóng thùng', factPerCarton: 'sp/thùng', factPerInner: 'sp/hộp trong', unitMonths: 'tháng',
                 infoIdentity: 'Định danh', infoCompliance: 'Pháp lý & hạn dùng', infoSupply: 'Nhà cung cấp & sản xuất', infoNotes: 'Mô tả & ghi chú', infoPacking: 'Kích thước & đóng gói', infoIngredients: 'Thành phần (INCI)', infoOther: 'Trường khác', infoNoData: 'Master data chưa có thông tin này.',
                 packProduct: 'Sản phẩm', packInner: 'Hộp trong', packCarton: 'Thùng', packSize: 'Kích thước (mm)', packWeight: 'Khối lượng (g)', packQty: 'Số lượng', packNet: 'tịnh', packGross: 'cả bì', packPerLayer: '/lớp',
@@ -1565,7 +1606,7 @@
                 howLead: 'Master data is the bridge: every input is resolved to one product before images are fetched.', step1Title: 'Type or upload a file', step1Text: 'One EAN, article code, product name, or a whole CSV list.', step2Title: 'Match master data', step2Text: 'Barcodes, article codes, old codes and names resolve to the right product.', step3Title: 'Get images and details', step3Text: 'Packshots, box and lifestyle shots with dimensions, compliance and supplier data.', ctaTitle: 'Ready to find images?', ctaText: 'Open the workspace and try it with a sample EAN.',
                 liveNoProduct: 'This product is not in master data. Try another EAN, article code or name.', liveNoFileMatch: 'No code in the file is in master data.', liveFileMatches: 'Products matched in the file', liveNotFound: 'codes not found', liveSearching: 'Searching SharePoint for images…', liveClassifying: 'Classifying images…', livePending: 'Classifying', liveByPerson: 'Confirmed', liveReview: 'Check', liveSelect: 'Select', liveCategory: 'Image type', liveLearned: 'Saved; A.N.T will learn from this image', liveZipping: 'Zipping the originals…', liveFailed: 'That did not work', liveSelectAll: 'Select all', liveClearAll: 'Clear selection', liveDownloadSelected: 'Download selected', liveImages: 'images', liveToReview: 'to check', liveSelectedCount: 'selected', liveLoginNeeded: 'The SharePoint session has expired.', liveLoginButton: 'Sign in to SharePoint', liveLoginOpen: 'Open the sign-in page and enter the code', liveLoginDone: 'Signed in to SharePoint', liveNotInMaster: 'Not in master data · searching images for the code as typed', liveAllFields: 'All master data fields', liveDownloadOriginal: 'Download original', liveEdit: 'Edit', liveEditLoading: 'Fetching originals for Image edit', liveEditSent: 'Sent to Image edit', liveClose: 'Close', liveNoImages: 'No images found on SharePoint for this product.',
                 catPackshot: 'Packshot', catHuman: 'With people', catScene: 'Scene setup', catCollection: 'Collection', catColor: 'Color background', catArtwork: 'Artwork', catUncertain: 'Unclear',
-                liveTabImages: 'Images', liveTabInfo: 'Details', liveTabDocs: 'Artwork & documents', docsArtwork: 'Artwork', docsArtworkHint: 'PDFs in an Artwork folder or with the EAN in their name. Click to open.', docsDossier: 'Product dossier', docsDossierHint: 'Folders named with the product\'s EAN: formula, COA, MSDS, tests, manufacturer declarations. The newest version is open.', docsGeneral: 'General', docsNone: 'No artwork or dossier PDFs carry this product\'s EAN.', docsNoEan: 'This product has no EAN, so no PDFs could be looked up.', docsFailed: 'Could not load the PDF list from SharePoint.', docsFiles: 'files', liveProductsWord: 'products', liveProductWord: 'Product', liveStatusFilter: 'Filter by status', liveFilterResults: 'Filter by name, EAN, code…', liveNoMatchFilter: 'Nothing matches the filter.', groupAll: 'All', groupActive: 'On sale', groupUpcoming: 'Upcoming', groupInactive: 'Inactive', liveCopy: 'Copy', liveCopied: 'Copied', liveCopyIngredients: 'Copy ingredients',
+                liveTabImages: 'Images', liveTabInfo: 'Details', liveTabDocs: 'Artwork & documents', docsArtwork: 'Artwork', docsDossier: 'Product dossier', docsPickHint: 'Tick the files to download; several come as one ZIP.', docsDownloadPicked: 'Download selected', docsPicked: '{n} files · {mb} MB', docsTooMany: 'At most 300 files at a time', docsDownload: 'Download', docsZipping: 'Zipping…', docsSelectGroup: 'Select the whole group', docsOpenHint: 'Click a file name to open the PDF', docsGeneral: 'General', docsNone: 'No artwork or dossier PDFs carry this product\'s EAN.', docsNoEan: 'This product has no EAN, so no PDFs could be looked up.', docsFailed: 'Could not load the PDF list from SharePoint.', docsFiles: 'files', liveProductsWord: 'products', liveProductWord: 'Product', liveStatusFilter: 'Filter by status', liveFilterResults: 'Filter by name, EAN, code…', liveNoMatchFilter: 'Nothing matches the filter.', groupAll: 'All', groupActive: 'On sale', groupUpcoming: 'Upcoming', groupInactive: 'Inactive', liveCopy: 'Copy', liveCopied: 'Copied', liveCopyIngredients: 'Copy ingredients',
                 factVolume: 'Volume', factSize: 'Size', factSizeHint: 'width × height × depth', factWeight: 'Net weight', factGross: 'gross', factCarton: 'Carton', factPerCarton: 'per carton', factPerInner: 'per inner box', unitMonths: 'months',
                 infoIdentity: 'Identity', infoCompliance: 'Compliance & shelf life', infoSupply: 'Supplier & manufacturer', infoNotes: 'Description & notes', infoPacking: 'Size & packing', infoIngredients: 'Ingredients (INCI)', infoOther: 'Other fields', infoNoData: 'Master data has nothing here yet.',
                 packProduct: 'Product', packInner: 'Inner box', packCarton: 'Carton', packSize: 'Size (mm)', packWeight: 'Weight (g)', packQty: 'Quantity', packNet: 'net', packGross: 'gross', packPerLayer: 'per layer',
@@ -2538,6 +2579,7 @@
 
         let liveMode = false, liveProducts = [], liveIndex = 0, liveKey = '', liveDetail = null, liveImages = [], liveToken = 0, liveQuery = '';
         let liveDocs = null, liveDocsEmpty = '';  // the product's PDFs, null while SharePoint is searched
+        const liveDocsPicked = new Set();
         let liveFetching = false;  // the product's pictures are still being searched on SharePoint
         let liveGroupFilter = 'all', liveTextFilter = '', liveImageFilter = 'all', liveTab = 'images';
         const liveSelected = new Set();
@@ -2740,6 +2782,7 @@
             liveDetail = null;
             liveImages = [];
             liveDocs = null;
+            liveDocsPicked.clear();
             liveFetching = true;
             liveImageFilter = 'all';
             liveSelected.clear();
@@ -2864,38 +2907,76 @@
 
         function setLiveTab(tab) {
             liveTab = tab;
-            for (const name of ['images', 'docs', 'info']) {
+            for (const name of ['images', 'info']) {
                 document.getElementById(`live-tab-${name}`).setAttribute('aria-selected', String(name === tab));
                 document.getElementById(`live-panel-${name}`).hidden = name !== tab;
             }
         }
 
-        // ---- PDFs: artwork and the product dossier ----
+        // ---- PDFs: a button beside the tabs, the list in a small window; tick files, download the selection ----
         function renderDocs() {
-            const panel = document.getElementById('live-panel-docs'), count = document.getElementById('live-count-docs');
-            count.textContent = liveDocs ? liveDocs.length : '';
-            count.hidden = !liveDocs;
-            if (!liveDocs || !liveDocs.length) { panel.innerHTML = `<p class="ant-recent-empty">${t(liveDocs ? liveDocsEmpty : 'liveSearching')}</p>`; return; }
-            const open = d => `${IMG_API}/file/${d.id}?view=1`, size = d => `${(d.size / 1e6).toFixed(1)} MB`;
-            const head = (icon, title, n, hint) => `<div class="ant-board-head"><span class="ant-tile" aria-hidden="true"><i class="fa-solid ${icon}"></i></span>
-                <h3>${t(title)}</h3><span class="ant-chip is-muted">${n}</span><p class="ant-board-hint">${t(hint)}</p></div>`;
-            const art = liveDocs.filter(d => d.kind === 'artwork');
+            const btn = document.getElementById('live-docs-btn'), count = document.getElementById('live-count-docs');
+            const body = document.getElementById('live-docs-body'), p = liveDetail || liveProducts[liveIndex] || {};
+            count.innerHTML = liveDocs ? liveDocs.length : '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>';
+            btn.disabled = !liveDocs;
+            btn.title = liveDocs ? '' : t('liveSearching');
+            document.getElementById('live-docs-sub').textContent = [p.name || liveKey, p.ean].filter(Boolean).join(' · ');
+            document.getElementById('live-docs-foot').hidden = !liveDocs || !liveDocs.length;
+            if (!liveDocs || !liveDocs.length) { body.innerHTML = `<p class="ant-docs-empty">${t(liveDocs ? liveDocsEmpty : 'liveSearching')}</p>`; return; }
+            const size = d => `${(d.size / 1e6).toFixed(1)} MB`;
+            // a group's box ticks every file in its section or <details>; clicking a checkbox in a <summary> does not fold it
+            const pickAll = label => `<label class="ant-doc-pick" title="${t('docsSelectGroup')}"><input type="checkbox" data-group aria-label="${t('docsSelectGroup')}: ${esc(label)}"></label>`;
+            const row = (d, thumb) => `<li class="ant-doc-row"><label class="ant-doc-pick"><input type="checkbox" data-id="${d.id}"${liveDocsPicked.has(d.id) ? ' checked' : ''} aria-label="${t('liveSelect')} ${esc(d.name)}"></label>
+                ${thumb ? `<img src="${IMG_API}/thumb/${d.id}" alt="" loading="lazy">` : '<i class="fa-regular fa-file-pdf" aria-hidden="true"></i>'}
+                <a class="ant-doc-name" href="${IMG_API}/file/${d.id}?view=1" target="_blank" rel="noopener" title="${esc(d.name)}&#10;${esc(d.folder)}"><span>${esc(d.name)}</span><small>PDF · ${size(d)}</small></a>
+                <a class="ant-doc-get" href="${IMG_API}/file/${d.id}" download aria-label="${t('docsDownload')} ${esc(d.name)}" title="${t('docsDownload')}"><i class="fa-solid fa-download" aria-hidden="true"></i></a></li>`;
+            const byName = list => list.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+            const art = byName(liveDocs.filter(d => d.kind === 'artwork'));
             const sets = {};
             liveDocs.filter(d => d.kind === 'dossier').forEach(d => ((sets[d.set] ||= {})[d.type] ||= []).push(d));
             const version = name => +((name.match(/V\s*(\d+)/i) || [])[1] || 0);  // "…_EU (V6)" before "…_EU_V2"
             const names = Object.keys(sets).sort((a, b) => version(b) - version(a) || a.localeCompare(b));
-            const files = list => list.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
-                .map(d => `<li><a href="${open(d)}" target="_blank" rel="noopener" title="${esc(d.folder)}"><i class="fa-regular fa-file-pdf" aria-hidden="true"></i><span>${esc(d.name)}</span><small>${size(d)}</small></a></li>`).join('');
-            panel.innerHTML = (art.length ? `<section class="ant-board-section" aria-label="${t('docsArtwork')}">${head('fa-file-pdf', 'docsArtwork', art.length, 'docsArtworkHint')}
-                    <div class="ant-board-grid">${art.map(d => `<a class="ant-img-card ant-doc-card" href="${open(d)}" target="_blank" rel="noopener" title="${esc(d.folder)}">
-                        <span class="ant-img-thumb"><img src="${IMG_API}/thumb/${d.id}" alt="" loading="lazy"></span>
-                        <span class="ant-img-name">${esc(d.name)}</span>
-                        <span class="ant-img-meta"><span>PDF</span><span>${size(d)}</span></span></a>`).join('')}</div></section>` : '')
-                + (names.length ? `<section class="ant-board-section" aria-label="${t('docsDossier')}">${head('fa-folder-open', 'docsDossier', liveDocs.length - art.length, 'docsDossierHint')}
-                    ${names.map((name, k) => `<details class="ant-doc-set"${k ? '' : ' open'}><summary><strong>${esc(name)}</strong><span class="ant-chip is-muted">${Object.values(sets[name]).flat().length} ${t('docsFiles')}</span></summary>
-                        ${Object.keys(sets[name]).sort((a, b) => a.localeCompare(b, undefined, { numeric: true })).map(type => `<details class="ant-doc-type"><summary>${esc(type || t('docsGeneral'))}<span>${sets[name][type].length}</span></summary>
-                            <ul>${files(sets[name][type])}</ul></details>`).join('')}
+            body.innerHTML = (art.length ? `<section class="ant-docs-group"><div class="ant-docs-group-head">${pickAll(t('docsArtwork'))}<h4>${t('docsArtwork')}</h4><span class="ant-chip is-muted">${art.length}</span></div>
+                    <ul>${art.map(d => row(d, true)).join('')}</ul></section>` : '')
+                + (names.length ? `<section class="ant-docs-group"><div class="ant-docs-group-head"><h4>${t('docsDossier')}</h4><span class="ant-chip is-muted">${liveDocs.length - art.length}</span></div>
+                    ${names.map((name, k) => `<details class="ant-doc-set"${k ? '' : ' open'}><summary>${pickAll(name)}<strong>${esc(name)}</strong><small>${Object.values(sets[name]).flat().length} ${t('docsFiles')}</small></summary>
+                        ${Object.keys(sets[name]).sort((a, b) => a.localeCompare(b, undefined, { numeric: true })).map(type => `<details class="ant-doc-type"><summary>${pickAll(type || t('docsGeneral'))}${esc(type || t('docsGeneral'))}<small>${sets[name][type].length}</small></summary>
+                            <ul>${byName(sets[name][type]).map(d => row(d, false)).join('')}</ul></details>`).join('')}
                     </details>`).join('')}</section>` : '');
+            pickDocs();
+        }
+        // A file or a group box changed: update the selection, every group box (ticked, partly, empty) and the bar.
+        function pickDocs(box) {
+            const body = document.getElementById('live-docs-body');
+            const files = scope => [...scope.querySelectorAll('input[data-id]')];
+            if (box && box.matches('[data-group]')) files(box.closest('details, .ant-docs-group')).forEach(f => { f.checked = box.checked; });
+            if (box) files(body).forEach(f => f.checked ? liveDocsPicked.add(f.dataset.id) : liveDocsPicked.delete(f.dataset.id));
+            body.querySelectorAll('input[data-group]').forEach(g => {
+                const inside = files(g.closest('details, .ant-docs-group')), on = inside.filter(f => f.checked).length;
+                g.checked = on > 0 && on === inside.length;
+                g.indeterminate = on > 0 && on < inside.length;
+            });
+            const picked = (liveDocs || []).filter(d => liveDocsPicked.has(d.id));
+            const mb = (picked.reduce((sum, d) => sum + d.size, 0) / 1e6).toFixed(1);
+            document.getElementById('live-docs-picked').textContent = !picked.length ? t('docsPickHint')
+                : picked.length > 300 ? t('docsTooMany') : fill(t('docsPicked'), { n: picked.length, mb });
+            document.getElementById('live-docs-get').disabled = !picked.length || picked.length > 300;
+        }
+        // One file comes as itself; several as one ZIP, <EAN>/Artwork or <dossier version>/<type>/<file>.
+        async function downloadDocs() {
+            const btn = document.getElementById('live-docs-get');
+            const picked = liveDocs.filter(d => liveDocsPicked.has(d.id));
+            if (!picked.length || btn.disabled) return;
+            if (picked.length === 1) return downloadUrl(`${IMG_API}/file/${picked[0].id}`);
+            const label = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>${t('docsZipping')}`;
+            try {
+                await downloadZip(picked.map(d => d.id), Object.fromEntries(picked.map(d => [d.id, d.kind === 'artwork' ? 'Artwork' : `${d.set}/${d.type || t('docsGeneral')}`])),
+                    `${liveDetail?.ean || liveKey}_PDF`);
+            } catch { showToast(t('liveFailed')); }
+            btn.innerHTML = label;
+            pickDocs();
         }
 
         // ---- image board ----
@@ -3037,10 +3118,14 @@
             if (ids.length === 1) return downloadUrl(`${IMG_API}/file/${ids[0]}`);
             showToast(t('liveZipping'));
             const categories = Object.fromEntries(liveImages.filter(img => liveSelected.has(img.id) && img.result).map(img => [img.id, img.result.category]));
-            const response = await fetch(`${IMG_API}/zip`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids, key: liveDetail?.ean || liveKey, categories }) });
+            downloadZip(ids, categories, liveDetail?.ean || liveKey);
+        }
+        // Originals as one ZIP, <name>/<folder>/<file>; `categories` gives each file its folder.
+        async function downloadZip(ids, categories, name) {
+            const response = await fetch(`${IMG_API}/zip`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids, key: name, categories }) });
             if (!response.ok) { showToast(t('liveFailed')); return; }
             const url = URL.createObjectURL(await response.blob());
-            downloadUrl(url, `${liveDetail?.ean || liveKey}.zip`);
+            downloadUrl(url, `${name}.zip`);
             setTimeout(() => URL.revokeObjectURL(url), 5000);
         }
 
