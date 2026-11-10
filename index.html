@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A.N.T — Asset Nexus Technology</title>
+    <title>Grand Archives</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
     <script>try { document.documentElement.dataset.theme = localStorage.getItem('ant-theme') === 'dark' ? 'dark' : 'light'; } catch (e) { document.documentElement.dataset.theme = 'light'; }</script>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -122,7 +123,7 @@
         #ant-topbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 16px 8px; background: var(--bg); }
         .ant-brand { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 4px; text-align: left; }
         .ant-brand-mark { width: 30px; height: 30px; flex: none; color: var(--text); }
-        .ant-brand-mark svg { display: block; width: 100%; height: 100%; }
+        .ant-brand-mark svg, .ant-brand-mark img { display: block; width: 100%; height: 100%; border-radius: 8px; }
         .ant-brand-sep { width: 1px; height: 26px; background: var(--line-strong); }
         .ant-brand-word { font-size: 24px; font-weight: 500; letter-spacing: -.03em; line-height: 1; color: var(--text); }
         .ant-topbar-search { order: 3; flex: 1 1 100%; }
@@ -342,7 +343,7 @@
         .om-step-key { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 12px; font-size: 12px; color: var(--text-3); }
         .om-step-key i { display: inline-block; width: 9px; height: 9px; margin-right: 6px; border-radius: 2px; vertical-align: -1px; }
         .om-step small { display: block; overflow: hidden; margin-top: 8px; padding-right: 6px; font-size: 12px; color: var(--text-3); white-space: nowrap; text-overflow: ellipsis; }
-        /* Demo (no A.N.T server): the sample products stand in for the four master-data cards */
+        /* Demo (no Grand Archives server): the sample products stand in for the four master-data cards */
         .om-demo { display: none; grid-column: span 12; }
         .om-bento.is-demo .om-demo { display: block; }
         .om-bento.is-demo :is(.om-status, .om-source, .om-brands, .om-complete) { display: none; }
@@ -374,7 +375,7 @@
         }
 
         /* Landing page, after wix.com's way of selling a product (no Wix assets or words): a white page, centred
-           light-weight headlines, one dark pill as the main action, A.N.T's own interface as a floating collage on
+           light-weight headlines, one dark pill as the main action, Grand Archives' own interface as a floating collage on
            a soft warm gradient, a figures card, split section heads (title left, words and action right), a live
            try-it frame, an accordion of tools with a changing picture, a row of tall cards, a closing panel,
            questions and a light footer. Sample data and drawn pictures only (assets/art). */
@@ -404,40 +405,42 @@
         .ld-ghost:hover { background: var(--ld-card); }
 
         /* Navigation: stays at the top, the page shows through it */
+        .ld-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--primary); transform-origin: 0 50%; transform: scaleX(0); will-change: transform; }
         .ld-nav-bar { position: sticky; top: 0; z-index: 30; background: color-mix(in srgb, var(--ld-bg) 86%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
         .ld-nav { display: flex; align-items: center; gap: 40px; height: 76px; }
         .ld-word { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; color: var(--text); }
+        .ld-word-name { font-size: 14px; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
         .ld-links { display: flex; gap: 28px; }
         .ld-links a { font-size: 16px; color: var(--text-2); white-space: nowrap; transition: color .15s; }
         .ld-links a:hover { color: var(--text); }
         .ld-nav .ant-controls { margin-left: auto; }
         .ld-nav .ld-cta { min-height: 44px; padding: 0 22px; }
 
-        /* Hero: centred title, one line under it, the actions, then A.N.T itself floating on a warm field */
+        /* Hero: centred title, one line under it, the actions, then Grand Archives itself floating on a warm field */
         .ld-hero { padding-top: clamp(48px, 9svh, 112px); text-align: center; }
         .ld-hero h1 { text-wrap: balance; font-size: var(--ld-h1); font-weight: 400; line-height: 1.06; letter-spacing: -.04em; }
         .ld-line { display: block; overflow: hidden; padding-bottom: .08em; }
         .ld-line > span { display: inline-block; animation: ld-line .9s cubic-bezier(.16, 1, .3, 1) both; }
         .ld-line + .ld-line > span { animation-delay: .11s; }
         @keyframes ld-line { from { transform: translateY(108%); } }
-        .ld-lead { max-width: 48ch; margin: 24px auto 0; font-size: var(--ld-lead); line-height: 1.5; color: var(--text-2); }
+        .ld-lead { max-width: 54ch; margin: 24px auto 0; font-size: var(--ld-lead); line-height: 1.5; color: var(--text-2); }
         .ld-hero-actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; margin-top: 36px; }
         .ld-hero-note { margin-top: 18px; font-size: 14px; line-height: 1.5; color: var(--text-3); }
-        .ld-stage { position: relative; height: clamp(540px, 46vw, 660px); margin-top: clamp(48px, 7svh, 80px); overflow: hidden; border-radius: 32px; text-align: left;
+        .ld-stage { position: relative; isolation: isolate; animation: ld-stage-in 1.1s cubic-bezier(.16, 1, .3, 1) .1s backwards; height: clamp(540px, 46vw, 660px); margin-top: clamp(48px, 7svh, 80px); overflow: hidden; border-radius: 32px; text-align: left;
                     background: radial-gradient(42% 60% at 10% 16%, var(--ld-glow-1), transparent 70%), radial-gradient(40% 55% at 92% 10%, var(--ld-glow-2), transparent 70%), radial-gradient(60% 60% at 62% 104%, var(--ld-glow-3), transparent 70%), var(--ld-glow-base); }
-        .ld-window { position: absolute; left: 50%; top: 56px; width: min(620px, 56%); transform: translateX(-50%); overflow: hidden; border-radius: 20px; background: var(--surface); box-shadow: var(--ld-shadow); }
+        .ld-window { position: absolute; z-index: 1; left: 50%; top: 56px; width: min(620px, 56%); transform: translateX(-50%); overflow: hidden; border-radius: 20px; background: var(--surface); box-shadow: var(--ld-shadow); animation: ld-rise-in 1s cubic-bezier(.16, 1, .3, 1) .35s backwards; }
         .ld-window-bar { display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; }
         .ld-window-bar > i { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--surface-3); }
         #landing-view .ld-window-bar span { margin: 0 auto; padding: 3px 16px; border-radius: 999px; background: var(--surface-2); color: var(--text-3); font-size: 14px; }
         .ld-window-body { padding: 4px 16px 16px; }
         .ld-window .ld-panel, .ld-frame-out .ld-panel { padding: 0; background: none; }
-        .ld-float { position: absolute; margin: 0; border-radius: 18px; background: var(--surface); box-shadow: var(--ld-shadow); animation: ld-bob 7s ease-in-out infinite alternate; }
-        .ld-float.is-pic { left: 5%; top: 60px; width: 188px; padding: 10px; animation-delay: -2s; }
+        .ld-float { position: absolute; z-index: 2; margin: 0; border-radius: 18px; background: var(--surface); box-shadow: var(--ld-shadow); animation: ld-pop .9s cubic-bezier(.34, 1.56, .64, 1) backwards, ld-bob 7s ease-in-out infinite alternate; }
+        .ld-float.is-pic { right: calc(50% + 300px); top: 64px; width: 180px; padding: 10px; animation-delay: .75s, -2s; }
         .ld-float.is-pic img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 12px; background: var(--plate); }
         .ld-float.is-pic figcaption { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 4px 2px; font-weight: 500; }
-        .ld-float.is-find { left: 3%; bottom: 64px; width: 310px; padding: 14px 16px; animation-delay: -5s; }
-        .ld-float.is-docs { right: 3%; top: 44px; width: 310px; padding: 16px; animation-delay: -4s; }
-        .ld-float.is-pallet { right: 6%; bottom: 40px; width: 250px; padding: 14px; animation-delay: -1s; }
+        .ld-float.is-find { right: calc(50% + 290px); bottom: 56px; width: 300px; padding: 14px 16px; animation-delay: .95s, -5s; }
+        .ld-float.is-docs { left: calc(50% + 292px); top: 52px; width: 270px; padding: 16px; animation-delay: .85s, -4s; }
+        .ld-float.is-pallet { left: calc(50% + 300px); bottom: 44px; width: 230px; padding: 14px; animation-delay: 1.05s, -1s; }
         @keyframes ld-bob { from { transform: translateY(0); } to { transform: translateY(-10px); } }
         .ld-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 980px; margin: 24px auto 0; padding: 26px 8px; border-radius: 24px; background: var(--ld-card); }
         .ld-stat { padding: 0 24px; text-align: center; }
@@ -452,7 +455,7 @@
         .ld-head-side p { max-width: 44ch; font-size: var(--ld-lead); line-height: 1.5; color: var(--text-2); }
         .ld-head-side .ant-btn, .ld-head-side .ld-row-nav { margin-top: 24px; }
 
-        /* Try it: a window of A.N.T, the search on the left, what it finds on the right */
+        /* Try it: a window of Grand Archives, the search on the left, what it finds on the right */
         .ld-frame { margin-top: 48px; padding: 0 10px 10px; border-radius: 28px; background: var(--ld-card); }
         .ld-frame .ld-window-bar { height: 48px; }
         #landing-view .ld-frame .ld-window-bar span { background: var(--surface); }
@@ -484,7 +487,10 @@
 
         /* How it works: four stages under thin rules */
         .ld-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; margin-top: 56px; }
-        .ld-step { padding-top: 20px; border-top: 1px solid var(--text); }
+        .ld-step { position: relative; padding-top: 20px; }
+        .ld-step::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--text); transform-origin: 0 50%; }
+        .ld-js .ld-step::before { transform: scaleX(0); transition: transform 1.1s cubic-bezier(.2, .8, .2, 1) calc(var(--rise, 0) * 140ms); }
+        .ld-js .ld-step.is-in::before { transform: none; }
         .ld-step b { display: block; font-size: var(--ld-title); font-weight: 400; line-height: 1.12; letter-spacing: -.025em; }
         .ld-step p { max-width: 30ch; margin-top: 12px; font-size: 16px; line-height: 1.55; color: var(--text-2); }
 
@@ -492,10 +498,14 @@
         .ld-tools-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4.5vw, 72px); align-items: start; margin-top: 56px; }
         .ld-tool-pic { position: sticky; top: 100px; aspect-ratio: 1 / 1; display: grid; place-items: center; padding: clamp(20px, 4vw, 56px); overflow: hidden; border-radius: 28px;
                        background: radial-gradient(60% 60% at 18% 20%, var(--ld-glow-1), transparent 70%), radial-gradient(60% 60% at 90% 90%, var(--ld-glow-2), transparent 70%), var(--ld-glow-base); }
-        .ld-tool-pic > * { width: 100%; max-width: 440px; animation: ld-fade .45s cubic-bezier(.2, .8, .2, 1) both; }
+        .ld-tool-pic { isolation: isolate; }
+        .ld-tool-pic > * { position: relative; z-index: 1; width: 100%; max-width: 440px; animation: ld-fade .55s cubic-bezier(.2, .8, .2, 1) both; }
         @keyframes ld-fade { from { opacity: 0; transform: translateY(14px) scale(.98); } }
         .ld-accs { border-top: 1px solid var(--ld-rule); }
-        .ld-acc { border-bottom: 1px solid var(--ld-rule); }
+        .ld-acc { position: relative; border-bottom: 1px solid var(--ld-rule); }
+        .ld-acc-bar { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--primary); transform-origin: 0 50%; transform: scaleX(0); }
+        .ld-accs.is-auto .ld-acc.is-on .ld-acc-bar { animation: ld-bar 6s linear forwards; }  /* when it ends the next tool opens */
+        .ld-accs:not(.is-live) .ld-acc-bar, .ld-accs:hover .ld-acc-bar, .ld-accs:focus-within .ld-acc-bar { animation-play-state: paused; }
         .ld-acc-head { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 24px 0; text-align: left; color: var(--text-3); font-size: var(--ld-title); font-weight: 400; line-height: 1.15; letter-spacing: -.025em; transition: color .2s; }
         .ld-acc-head:hover, .ld-acc.is-on .ld-acc-head { color: var(--text); }
         .ld-acc-head i { flex: none; font-size: 20px; opacity: 0; transform: translate(-6px, 6px); transition: opacity .2s, transform .2s; }
@@ -516,7 +526,7 @@
         .ld-fr-search i { color: var(--text-3); }
         .ld-fr-search b { font-weight: 500; font-variant-numeric: tabular-nums; }
         .ld-fr-search em { margin-left: auto; font-style: normal; color: var(--text-3); white-space: nowrap; }
-        .ld-fr-pics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 12px 0; }
+        .ld-fr-pics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 12px 0; }
         .ld-fr-pics img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; background: var(--plate); }
         .ld-fr-list li, .ld-fr-rows li { display: flex; align-items: center; gap: 10px; min-height: 48px; border-top: 1px solid var(--line); }
         .ld-fr-box { flex: none; width: 20px; height: 20px; display: grid; place-items: center; border: 1.5px solid var(--line-strong); border-radius: 6px; }
@@ -549,17 +559,24 @@
         .ld-row-nav { display: flex; gap: 8px; }
         .ld-row-nav button { width: 48px; height: 48px; display: grid; place-items: center; border: 1px solid var(--line-strong); border-radius: 50%; color: var(--text); transition: background-color .15s; }
         .ld-row-nav button:hover { background: var(--ld-card); }
-        .ld-row { display: grid; grid-auto-flow: column; grid-auto-columns: clamp(232px, 26vw, 340px); gap: 20px; margin-top: 48px; padding-bottom: 6px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
-        .ld-row::-webkit-scrollbar { display: none; }
-        .ld-card { scroll-snap-align: start; }
-        .ld-card-pic { aspect-ratio: 3 / 4; overflow: hidden; border-radius: 24px; background: var(--ld-card); }
+        /* without motion the row scrolls by hand; with it (.ld-js) three copies drift left, see ldRowFrame */
+        .ld-marquee { margin-top: 48px; padding: 10px var(--ld-m); overflow-x: auto; scrollbar-width: none;
+                      -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); }
+        .ld-marquee::-webkit-scrollbar { display: none; }
+        .ld-js .ld-marquee { padding-left: 0; padding-right: 0; overflow: hidden; touch-action: pan-y; cursor: grab; }
+        .ld-js .ld-marquee:active { cursor: grabbing; }
+        .ld-row { display: flex; width: max-content; will-change: transform; }
+        .ld-card { flex: none; width: clamp(232px, 24vw, 330px); margin-right: 20px; -webkit-user-select: none; user-select: none; }
+        .ld-card img { -webkit-user-drag: none; }
+        .ld-card-pic { aspect-ratio: 3 / 4; overflow: hidden; border-radius: 24px; background: var(--ld-card); transition: transform .5s cubic-bezier(.2, .8, .2, 1); }
+        .ld-card:hover .ld-card-pic { transform: translateY(-8px); }
         .ld-card-pic img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.2, .8, .2, 1); }
         .ld-card:hover .ld-card-pic img { transform: scale(1.04); }
         .ld-card h3 { margin-top: 16px; font-size: 20px; font-weight: 500; letter-spacing: -.01em; }
         .ld-card p { max-width: 30ch; margin-top: 6px; font-size: 16px; line-height: 1.5; color: var(--text-2); }
 
         /* Close: a warm panel with the search in it */
-        .ld-end { margin-top: clamp(96px, 13svh, 168px); padding: clamp(64px, 10svh, 128px) var(--ld-m); border-radius: 32px; text-align: center;
+        .ld-end { position: relative; isolation: isolate; overflow: hidden; margin-top: clamp(96px, 13svh, 168px); padding: clamp(64px, 10svh, 128px) var(--ld-m); border-radius: 32px; text-align: center;
                   background: radial-gradient(50% 70% at 12% 0%, var(--ld-glow-1), transparent 70%), radial-gradient(50% 70% at 90% 100%, var(--ld-glow-2), transparent 70%), var(--ld-glow-base); }
         #landing-view .ld-end h2 { max-width: 18ch; margin: 0 auto; }
         .ld-end-bar { display: flex; gap: 8px; max-width: 640px; margin: 36px auto 0; padding: 6px; border-radius: 999px; background: var(--surface); box-shadow: var(--ld-shadow); }
@@ -593,26 +610,45 @@
         .ld-foot a:hover, .ld-foot button:hover { color: var(--text); }
         .ld-legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--ld-rule); font-size: 14px; line-height: 1.5; color: var(--text-3); }
 
+        /* Motion, all of it transform and opacity so the compositor runs it at the screen's rate */
+        .ld-end > * { position: relative; z-index: 1; }
+        .ld-stage::before, .ld-stage::after, .ld-end::before, .ld-tool-pic::before { content: ''; position: absolute; z-index: 0; aspect-ratio: 1; border-radius: 50%; pointer-events: none; will-change: transform; }
+        .ld-stage::before { left: -10%; top: -30%; width: 48%; background: radial-gradient(closest-side, var(--ld-glow-1), transparent); animation: ld-drift-a 16s ease-in-out infinite alternate; }
+        .ld-stage::after { right: -8%; bottom: -40%; width: 44%; background: radial-gradient(closest-side, var(--ld-glow-2), transparent); animation: ld-drift-b 19s ease-in-out infinite alternate; }
+        .ld-end::before { left: -12%; top: -50%; width: 50%; background: radial-gradient(closest-side, var(--ld-glow-1), transparent); animation: ld-drift-a 18s ease-in-out infinite alternate; }
+        .ld-tool-pic::before { right: -20%; top: -20%; width: 80%; background: radial-gradient(closest-side, var(--ld-glow-2), transparent); animation: ld-drift-b 15s ease-in-out infinite alternate; }
+        @keyframes ld-drift-a { to { transform: translate(45%, 35%) scale(1.2); } }
+        @keyframes ld-drift-b { to { transform: translate(-55%, -25%) scale(1.25); } }
+        @keyframes ld-stage-in { from { opacity: 0; scale: .94; } }
+        @keyframes ld-rise-in { from { opacity: 0; translate: 0 64px; } }
+        @keyframes ld-pop { from { opacity: 0; scale: .7; } }
+        @keyframes ld-bar { to { transform: none; } }
+        .ld-cta i, .ld-link i { transition: transform .2s cubic-bezier(.2, .8, .2, 1); }
+        .ld-cta:hover i, .ld-link:hover i { transform: translateX(4px); }
+
         /* Each part rises once as it enters; without script or with reduced motion everything is simply there */
         .ld-js [data-rise] { opacity: 0; transform: translateY(24px); transition: opacity .6s cubic-bezier(.2, .8, .2, 1), transform .6s cubic-bezier(.2, .8, .2, 1); transition-delay: calc(var(--rise, 0) * 80ms); }
         .ld-js [data-rise].is-in { opacity: 1; transform: none; }
         @media (prefers-reduced-motion: reduce) {
-            .ld-line > span, .ld-float, .ld-tool-pic > * { animation: none; }
-            .ld-acc-body, .ld-card-pic img { transition: none; }
+            .ld-line > span, .ld-float, .ld-tool-pic > *, .ld-stage, .ld-window, .ld-stage::before, .ld-stage::after, .ld-end::before, .ld-tool-pic::before { animation: none; }
+            .ld-acc-body, .ld-card-pic, .ld-card-pic img { transition: none; }
+        }
+        @media (max-width: 1239px) {
+            .ld-float.is-find, .ld-float.is-pallet { display: none; }
+            .ld-window { width: 520px; }
+            .ld-float.is-pic { right: calc(50% + 250px); width: 150px; }
+            .ld-float.is-docs { left: calc(50% + 250px); width: 230px; }
         }
         @media (max-width: 1100px) {
-            .ld-float.is-find, .ld-float.is-pallet { display: none; }
-            .ld-window { width: min(600px, 62%); }
-            .ld-float.is-pic { left: 3%; width: 150px; }
-            .ld-float.is-docs { right: 2%; width: 250px; }
+            .ld-float { display: none; }  /* the window alone: beside it the pieces would cover it */
+            .ld-window { width: min(640px, 86%); }
         }
         @media (max-width: 900px) {
-            .ld-links, .ld-float { display: none; }  /* the window alone: beside it the pieces would cover it */
-            .ld-window { width: min(640px, 86%); }
+            .ld-links { display: none; }
             .ld-head, .ld-frame-body, .ld-tools-body, .ld-faq { grid-template-columns: minmax(0, 1fr); }
             .ld-frame-out { min-height: 0; }
             .ld-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 40px; }
-            .ld-tool-pic { position: static; aspect-ratio: 4 / 3; }
+            .ld-tool-pic { position: relative; top: auto; aspect-ratio: 4 / 3; }  /* relative, not static: it still clips its glow */
             .ld-foot-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 36px; }
         }
         @media (max-width: 760px) {
@@ -637,7 +673,8 @@
             .ld-steps { grid-template-columns: minmax(0, 1fr); }
             .ld-tool-pic { aspect-ratio: auto; min-height: 340px; padding: 20px; border-radius: 24px; }
             .ld-acc-head { padding: 20px 0; }
-            .ld-row { grid-auto-columns: 74%; gap: 14px; margin-top: 32px; }
+            .ld-card { width: 72vw; margin-right: 14px; }
+            .ld-marquee { margin-top: 32px; }
             .ld-end { border-radius: 24px; text-align: left; }
             #landing-view .ld-end h2 { margin: 0; }
             .ld-end-bar { margin-left: 0; }
@@ -954,9 +991,10 @@
     <!-- Sample data only on this page: no master data, no company pictures. -->
     <div id="landing-view">
         <div class="ld-nav-bar">
+            <span class="ld-progress" aria-hidden="true"></span>
             <header class="ld-nav ld-wrap">
-                <a class="ld-word" href="#"><span class="ant-brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" focusable="false"><path d="M6.5 17.5 12 6.5l5.5 11h-11Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="6.5" r="2.8" fill="currentColor"/><circle cx="6.5" cy="17.5" r="2.8" fill="currentColor"/><circle cx="17.5" cy="17.5" r="2.8" fill="currentColor"/></svg></span><span>A.N.T</span></a>
-                <nav class="ld-links" aria-label="A.N.T">
+                <a class="ld-word" href="#"><span class="ant-brand-mark" aria-hidden="true"><img src="assets/logo.svg" width="64" height="64" alt=""></span><span class="ld-word-name">Grand Archives</span></a>
+                <nav class="ld-links" aria-label="Grand Archives">
                     <a href="#ld-try" data-i18n="ldNavTry">Thử tìm</a>
                     <a href="#ld-how" data-i18n="ldNavHow">Cách hoạt động</a>
                     <a href="#ld-tools" data-i18n="ldNavTools">Công cụ</a>
@@ -968,7 +1006,7 @@
                         <button type="button" onclick="setLanguage('vi')" data-lang="vi" aria-pressed="true">VI</button>
                         <button type="button" onclick="setLanguage('en')" data-lang="en" aria-pressed="false">EN</button>
                     </div>
-                    <button type="button" class="ant-btn ld-cta hidden sm:inline-flex" onclick="enterApp()" data-i18n="openApp">Vào A.N.T</button>
+                    <button type="button" class="ant-btn ld-cta hidden sm:inline-flex" onclick="enterApp()" data-i18n="openApp">Vào Grand Archives</button>
                 </div>
             </header>
         </div>
@@ -976,16 +1014,16 @@
         <main>
             <section class="ld-hero ld-wrap" aria-labelledby="ld-title">
                 <h1 id="ld-title"><span class="ld-line"><span data-i18n="ldHeroTitle1">Một mã EAN,</span></span><span class="ld-line"><span data-i18n="ldHeroTitle2">đủ bộ ảnh</span></span></h1>
-                <p class="ld-lead" data-i18n="ldHeroLead" data-rise>A.N.T khớp mã với master data rồi gom ảnh của sản phẩm trên SharePoint, đã chia sẵn packshot, ảnh có người và ảnh dàn cảnh.</p>
+                <p class="ld-lead" data-i18n="ldHeroLead" data-rise>Grand Archives khớp mã với master data rồi gom ảnh của sản phẩm trên SharePoint, đã chia sẵn packshot, ảnh có người và ảnh dàn cảnh.</p>
                 <div class="ld-hero-actions" data-rise style="--rise: 1">
                     <button type="button" class="ant-btn ld-cta" onclick="enterApp()"><span data-i18n="getStarted">Vào không gian làm việc</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
                     <a class="ant-btn ld-ghost" href="#ld-try" data-i18n="ldTryLink">Thử với một mã mẫu</a>
                 </div>
-                <p class="ld-hero-note" data-i18n="ldHeroNote" data-rise style="--rise: 2">Trang này dùng dữ liệu mẫu và hình vẽ; dữ liệu thật chỉ chạy trên máy có A.N.T.</p>
-                <!-- A.N.T itself, with the sample code: the workspace in a window and pieces of the tools around it (drawn by ldRenderHero) -->
+                <p class="ld-hero-note" data-i18n="ldHeroNote" data-rise style="--rise: 2">Trang này dùng dữ liệu mẫu và hình vẽ; dữ liệu thật chỉ chạy trên máy có Grand Archives.</p>
+                <!-- Grand Archives itself, with the sample code: the workspace in a window and pieces of the tools around it (drawn by ldRenderHero) -->
                 <div id="ld-stage" class="ld-stage" data-ui aria-hidden="true"></div>
                 <div class="ld-stats" data-rise>
-                    <p class="ld-stat"><b>6</b><span data-i18n="ldStat1">loại ảnh A.N.T tự chia, packshot lên đầu</span></p>
+                    <p class="ld-stat"><b data-count="6">6</b><span data-i18n="ldStat1">loại ảnh Grand Archives tự chia, packshot lên đầu</span></p>
                     <p class="ld-stat"><b data-i18n="ldStat2Num">1–4 giây</b><span data-i18n="ldStat2">để gom mọi ảnh của một mã trên SharePoint</span></p>
                     <p class="ld-stat"><b id="ld-stat-brands"></b><span data-i18n="ldStat3">thương hiệu trong thư viện logo</span></p>
                 </div>
@@ -997,18 +1035,18 @@
                     <div class="ld-head-side" data-rise style="--rise: 1"><p data-i18n="ldTrySay">Gõ một mã mẫu và xem kết quả đúng như trong không gian làm việc: sản phẩm khớp, bộ ảnh chia theo loại, packshot lên đầu.</p></div>
                 </div>
                 <div class="ld-frame" data-rise>
-                    <div class="ld-window-bar" aria-hidden="true"><i></i><i></i><i></i><span data-i18n="ldTryFrame">A.N.T · Tìm kiếm</span></div>
+                    <div class="ld-window-bar" aria-hidden="true"><i></i><i></i><i></i><span data-i18n="ldTryFrame">Grand Archives · Tìm kiếm</span></div>
                     <div class="ld-frame-body">
                         <div class="ld-frame-in">
                             <label for="ld-try-input" class="ld-try-label" data-i18n="ldTryLabel">Gõ EAN, mã hàng hoặc tên sản phẩm mẫu</label>
-                            <div class="ld-try-box"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input id="ld-try-input" class="ld-try-input" type="text" value="2000104006005" autocomplete="off" spellcheck="false" oninput="ldTry()"></div>
+                            <div class="ld-try-box"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input id="ld-try-input" class="ld-try-input" type="text" value="2000104001000" autocomplete="off" spellcheck="false" oninput="ldTry()"></div>
                             <p class="ld-try-hint" data-i18n="ldTryHint">Dữ liệu mẫu, không phải master data thật.</p>
                             <div class="ld-try-examples">
                                 <span data-i18n="ldTryQuick">Thử nhanh</span>
                                 <button type="button" class="ld-chip" onclick="ldTryExample('MAU0102')">MAU0102</button>
-                                <button type="button" class="ld-chip" onclick="ldTryExample('cream')">cream</button>
+                                <button type="button" class="ld-chip" onclick="ldTryExample('patch')">patch</button>
                                 <button type="button" class="ld-chip" onclick="ldTryExample('2000104004001')">2000104004001</button>
-                                <button type="button" class="ld-chip" onclick="ldTryExample('clay')">clay</button>
+                                <button type="button" class="ld-chip" onclick="ldTryExample('foam')">foam</button>
                             </div>
                         </div>
                         <div id="ld-try-out" class="ld-frame-out" data-ui aria-live="polite"></div>
@@ -1019,11 +1057,11 @@
             <section id="ld-how" class="ld-sec ld-wrap" aria-labelledby="ld-how-title">
                 <div class="ld-head">
                     <h2 id="ld-how-title" data-i18n="ldHowTitle" data-rise>Từ mã tới bộ ảnh</h2>
-                    <div class="ld-head-side" data-rise style="--rise: 1"><p data-i18n="ldHowNote">Thời gian đo trên máy chạy A.N.T, với một mã có 12 ảnh.</p></div>
+                    <div class="ld-head-side" data-rise style="--rise: 1"><p data-i18n="ldHowNote">Thời gian đo trên máy chạy Grand Archives, với một mã có 12 ảnh.</p></div>
                 </div>
                 <ol class="ld-steps">
                     <li class="ld-step" data-rise><b data-i18n="ldDur1">Một giây</b><p data-i18n="ldStep1">Đầu tiên, dán EAN, mã hàng hay tên; cả danh sách CSV cũng được.</p></li>
-                    <li class="ld-step" data-rise style="--rise: 1"><b data-i18n="ldDur2">Tức thì</b><p data-i18n="ldStep2">Rồi A.N.T tìm đúng sản phẩm trong master data, kể cả mã cũ ghi ở cột WARNING.</p></li>
+                    <li class="ld-step" data-rise style="--rise: 1"><b data-i18n="ldDur2">Tức thì</b><p data-i18n="ldStep2">Rồi Grand Archives tìm đúng sản phẩm trong master data, kể cả mã cũ ghi ở cột WARNING.</p></li>
                     <li class="ld-step" data-rise style="--rise: 2"><b data-i18n="ldDur3">Một đến bốn giây</b><p data-i18n="ldStep3">Sau đó gom mọi ảnh của mã trên SharePoint, bỏ bản trùng.</p></li>
                     <li class="ld-step" data-rise style="--rise: 3"><b data-i18n="ldDur4">Khoảng một giây</b><p data-i18n="ldStep4">Cuối cùng chia ảnh theo loại, sẵn để chọn và tải.</p></li>
                 </ol>
@@ -1031,10 +1069,10 @@
 
             <section id="ld-tools" class="ld-sec ld-wrap" aria-labelledby="ld-tools-title">
                 <div class="ld-head">
-                    <h2 id="ld-tools-title" data-i18n="ldToolsTitle" data-rise>Việc làm được trong A.N.T</h2>
+                    <h2 id="ld-tools-title" data-i18n="ldToolsTitle" data-rise>Việc làm được trong Grand Archives</h2>
                     <div class="ld-head-side" data-rise style="--rise: 1">
                         <p data-i18n="ldToolsLead">Từ một mã EAN tới bộ ảnh, file cho nhà bán lẻ, file giá cho Directo và pallet xuất kho.</p>
-                        <button type="button" class="ant-btn ld-cta" onclick="enterApp()"><span data-i18n="openApp">Vào A.N.T</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+                        <button type="button" class="ant-btn ld-cta" onclick="enterApp()"><span data-i18n="openApp">Vào Grand Archives</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
                     </div>
                 </div>
                 <div class="ld-tools-body">
@@ -1043,25 +1081,26 @@
                 </div>
             </section>
 
-            <section id="ld-kinds" class="ld-sec ld-wrap" aria-labelledby="ld-pack-title">
-                <div class="ld-head">
+            <section id="ld-kinds" class="ld-sec" aria-labelledby="ld-pack-title">
+                <div class="ld-head ld-wrap">
                     <h2 id="ld-pack-title" data-i18n="ldPackTitle" data-rise>Packshot lên đầu</h2>
                     <div class="ld-head-side" data-rise style="--rise: 1">
-                        <p data-i18n="ldPackText">Packshot là ảnh vật thể trên nền trơn, thấy đủ hình dáng. A.N.T xếp chúng lên đầu, sau đó đến ảnh có người, ảnh dàn cảnh, bộ sưu tập và artwork; mỗi lần ai đó sửa nhóm, A.N.T học theo.</p>
+                        <p data-i18n="ldPackText">Packshot là ảnh vật thể trên nền trơn, thấy đủ hình dáng. Grand Archives xếp chúng lên đầu, sau đó đến ảnh có người, ảnh dàn cảnh, bộ sưu tập và artwork; mỗi lần ai đó sửa nhóm, Grand Archives học theo.</p>
                         <div class="ld-row-nav">
                             <button type="button" onclick="ldScroll(-1)" aria-label="Ảnh trước" data-i18n-aria="ldPrev"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></button>
                             <button type="button" onclick="ldScroll(1)" aria-label="Ảnh sau" data-i18n-aria="ldNext"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
                         </div>
                     </div>
                 </div>
-                <ul id="ld-kinds-row" class="ld-row">
-                    <li class="ld-card"><div class="ld-card-pic"><img src="assets/art/cushion.svg" width="300" height="400" alt="Minh họa hộp cushion đang mở trên nền trơn"></div><h3 data-i18n="catPackshot">Packshot</h3><p data-i18n="ldKindPack">Vật thể trên nền trơn, thấy đủ hình dáng.</p></li>
-                    <li class="ld-card"><div class="ld-card-pic"><img src="assets/art/kind-human.svg" width="300" height="400" alt="Minh họa bàn tay cầm tuýp kem"></div><h3 data-i18n="catHuman">Có người</h3><p data-i18n="ldKindHuman">Sản phẩm trên tay, trên da.</p></li>
-                    <li class="ld-card"><div class="ld-card-pic"><img src="assets/art/kind-scene.svg" width="300" height="400" alt="Minh họa chai serum đặt trên bục, cạnh lá cây và mặt trời"></div><h3 data-i18n="catScene">Dàn cảnh</h3><p data-i18n="ldKindScene">Sản phẩm giữa đạo cụ, cây lá và ánh sáng.</p></li>
-                    <li class="ld-card"><div class="ld-card-pic"><img src="assets/art/kind-collection.svg" width="300" height="400" alt="Minh họa một dòng sản phẩm xếp trên kệ"></div><h3 data-i18n="catCollection">Bộ sưu tập</h3><p data-i18n="ldKindColl">Cả một dòng sản phẩm trong một khung.</p></li>
-                    <li class="ld-card"><div class="ld-card-pic"><img src="assets/art/kind-color.svg" width="300" height="400" alt="Minh họa chai có vòi trên nền cam"></div><h3 data-i18n="catColor">Nền màu</h3><p data-i18n="ldKindColor">Packshot trên nền màu, xếp sau packshot nền trơn.</p></li>
-                    <li class="ld-card"><div class="ld-card-pic"><img src="assets/art/kind-artwork.svg" width="300" height="400" alt="Minh họa ảnh quảng cáo có chữ và sản phẩm"></div><h3 data-i18n="catArtwork">Artwork</h3><p data-i18n="ldKindArt">Ảnh quảng cáo có chữ và bố cục.</p></li>
-                </ul>
+                <div id="ld-marquee" class="ld-marquee"><ul id="ld-kinds-row" class="ld-row">
+                    <li class="ld-card"><div class="ld-card-pic"><img src="assets/photos/anua-foam-duo.webp" width="1050" height="1400" draggable="false" alt="Hai tuýp sữa rửa mặt Anua trên nền trắng"></div><h3 data-i18n="catPackshot">Packshot</h3><p data-i18n="ldKindPack"></p></li>
+                    <li class="ld-card"><div class="ld-card-pic"><img src="assets/photos/celimax-txa-pad.webp" width="518" height="566" draggable="false" alt="Hộp celimax TXA Body Clarifying Pad trên mặt đá, nắng xiên"></div><h3 data-i18n="catScene">Dàn cảnh</h3><p data-i18n="ldKindScene"></p></li>
+                    <li class="ld-card"><div class="ld-card-pic"><img src="assets/photos/anua-foam-pour.webp" width="1200" height="1265" draggable="false" alt="Sữa rửa mặt chảy ra từ tuýp Anua"></div><h3 data-i18n="catScene">Dàn cảnh</h3><p data-i18n="ldKindPour"></p></li>
+                    <li class="ld-card"><div class="ld-card-pic"><img src="assets/photos/celimax-eye-patch.webp" width="551" height="582" draggable="false" alt="Hũ và hộp celimax Brightening Eye Patch"></div><h3 data-i18n="catCollection">Bộ sưu tập</h3><p data-i18n="ldKindColl"></p></li>
+                    <li class="ld-card"><div class="ld-card-pic"><img src="assets/photos/anua-foam-bubbles.webp" width="1050" height="1400" draggable="false" alt="Tuýp Anua trên nền bọt hồng"></div><h3 data-i18n="catColor">Nền màu</h3><p data-i18n="ldKindColor"></p></li>
+                    <li class="ld-card"><div class="ld-card-pic"><img src="assets/photos/anua-foam-texture.webp" width="1050" height="1400" draggable="false" alt="Cận cảnh tuýp Anua với một vệt kết cấu"></div><h3 data-i18n="catScene">Dàn cảnh</h3><p data-i18n="ldKindTexture"></p></li>
+                    <li class="ld-card"><div class="ld-card-pic"><img src="assets/photos/celimax-pore-cream.webp" width="351" height="663" draggable="false" alt="Mặt hộp celimax Pore + Dark Spot Brightening Cream"></div><h3 data-i18n="catArtwork">Artwork</h3><p data-i18n="ldKindArt"></p></li>
+                </ul></div>
             </section>
 
             <section class="ld-wrap" aria-labelledby="ld-end-title">
@@ -1073,23 +1112,23 @@
                     </form>
                     <div class="ld-samples" data-rise style="--rise: 2">
                         <span data-i18n="ldEndTry">Mã mẫu để thử:</span>
-                        <button type="button" class="ld-chip" onclick="ldSample('2000104004001')">2000104004001</button>
-                        <button type="button" class="ld-chip" onclick="ldSample('MAU0105')">MAU0105</button>
-                        <button type="button" class="ld-chip" onclick="ldSample('Sun Cream')">Sun Cream</button>
+                        <button type="button" class="ld-chip" onclick="ldSample('2000104001000')">2000104001000</button>
+                        <button type="button" class="ld-chip" onclick="ldSample('MAU0103')">MAU0103</button>
+                        <button type="button" class="ld-chip" onclick="ldSample('Eye Patch')">Eye Patch</button>
                     </div>
-                    <p class="ld-end-note" data-i18n="ldEndNote" data-rise style="--rise: 2">Mở không gian làm việc và tìm mã này. Bản trên GitHub Pages dùng dữ liệu mẫu; dữ liệu thật chạy trên máy có A.N.T.</p>
+                    <p class="ld-end-note" data-i18n="ldEndNote" data-rise style="--rise: 2">Mở không gian làm việc và tìm mã này. Bản trên GitHub Pages dùng dữ liệu mẫu; dữ liệu thật chạy trên máy có Grand Archives.</p>
                 </div>
             </section>
 
             <section id="ld-faq" class="ld-sec ld-wrap ld-faq" aria-labelledby="ld-faq-title">
                 <h2 id="ld-faq-title" data-i18n="ldFaqTitle" data-rise>Câu hỏi thường gặp</h2>
                 <div class="ld-faq-list" data-rise style="--rise: 1">
-                    <details name="ld-faq" open><summary><span data-i18n="ldQ1">Trang này có dùng dữ liệu thật không?</span><i class="fa-solid fa-plus" aria-hidden="true"></i></summary><p data-i18n="ldA1">Không. Trang giới thiệu và bản trên GitHub Pages chỉ có sản phẩm mẫu và hình vẽ. Master data và ảnh SharePoint chỉ đi qua máy chạy A.N.T.</p></details>
-                    <details name="ld-faq"><summary><span data-i18n="ldQ2">A.N.T tìm ảnh ở đâu?</span><i class="fa-solid fa-plus" aria-hidden="true"></i></summary><p data-i18n="ldA2">Trên SharePoint của công ty, bằng tài khoản đã đăng nhập trên máy chạy A.N.T. Mã được khớp với master data trước, kể cả mã cũ ghi ở cột WARNING.</p></details>
+                    <details name="ld-faq" open><summary><span data-i18n="ldQ1">Trang này có dùng dữ liệu thật không?</span><i class="fa-solid fa-plus" aria-hidden="true"></i></summary><p data-i18n="ldA1">Không. Trang giới thiệu và bản trên GitHub Pages chỉ có sản phẩm mẫu và hình vẽ. Master data và ảnh SharePoint chỉ đi qua máy chạy Grand Archives.</p></details>
+                    <details name="ld-faq"><summary><span data-i18n="ldQ2">Grand Archives tìm ảnh ở đâu?</span><i class="fa-solid fa-plus" aria-hidden="true"></i></summary><p data-i18n="ldA2">Trên SharePoint của công ty, bằng tài khoản đã đăng nhập trên máy chạy Grand Archives. Mã được khớp với master data trước, kể cả mã cũ ghi ở cột WARNING.</p></details>
                     <details name="ld-faq"><summary><span data-i18n="ldQ3">Có tìm được file PDF artwork không?</span><i class="fa-solid fa-plus" aria-hidden="true"></i></summary><p data-i18n="ldA3">Có. Nút Artwork và tài liệu mở danh sách PDF artwork và hồ sơ của sản phẩm; chọn file rồi tải từng file hoặc tải chung thành một ZIP.</p></details>
-                    <details name="ld-faq"><summary><span data-i18n="ldQ4">Ảnh bị xếp sai loại thì sao?</span><i class="fa-solid fa-plus" aria-hidden="true"></i></summary><p data-i18n="ldA4">Đổi loại cho ảnh đó ngay trong không gian làm việc. A.N.T ghi nhận và lần sau xếp đúng hơn.</p></details>
+                    <details name="ld-faq"><summary><span data-i18n="ldQ4">Ảnh bị xếp sai loại thì sao?</span><i class="fa-solid fa-plus" aria-hidden="true"></i></summary><p data-i18n="ldA4">Đổi loại cho ảnh đó ngay trong không gian làm việc. Grand Archives ghi nhận và lần sau xếp đúng hơn.</p></details>
                     <details name="ld-faq"><summary><span data-i18n="ldQ5">Tải nhiều ảnh cùng lúc được không?</span><i class="fa-solid fa-plus" aria-hidden="true"></i></summary><p data-i18n="ldA5">Được. Một ảnh tải về là file gốc; nhiều ảnh thành một ZIP, mỗi loại ảnh một thư mục.</p></details>
-                    <details name="ld-faq"><summary><span data-i18n="ldQ6">Làm sao chạy A.N.T với dữ liệu thật?</span><i class="fa-solid fa-plus" aria-hidden="true"></i></summary><p data-i18n="ldA6">Trên máy có A.N.T, mở KHOI_DONG_ANT.bat rồi chọn Mở A.N.T; lần đầu nó tự cài những gì còn thiếu. A.N.T mở trong trình duyệt ở 127.0.0.1:8020.</p></details>
+                    <details name="ld-faq"><summary><span data-i18n="ldQ6">Làm sao chạy Grand Archives với dữ liệu thật?</span><i class="fa-solid fa-plus" aria-hidden="true"></i></summary><p data-i18n="ldA6">Trên máy có Grand Archives, mở KHOI_DONG_ANT.bat rồi chọn Mở Grand Archives; lần đầu nó tự cài những gì còn thiếu. Grand Archives mở trong trình duyệt ở 127.0.0.1:8020.</p></details>
                 </div>
             </section>
         </main>
@@ -1097,14 +1136,14 @@
         <footer class="ld-foot ld-wrap">
             <div class="ld-foot-cols">
                 <div>
-                    <a class="ld-word" href="#"><span class="ant-brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" focusable="false"><path d="M6.5 17.5 12 6.5l5.5 11h-11Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="6.5" r="2.8" fill="currentColor"/><circle cx="6.5" cy="17.5" r="2.8" fill="currentColor"/><circle cx="17.5" cy="17.5" r="2.8" fill="currentColor"/></svg></span><span>A.N.T</span></a>
-                    <p class="ld-foot-what">Asset Nexus Technology. <span data-i18n="ldFootWhat">Ảnh và dữ liệu sản phẩm, một chỗ</span></p>
+                    <a class="ld-word" href="#"><span class="ant-brand-mark" aria-hidden="true"><img src="assets/logo.svg" width="64" height="64" alt=""></span><span class="ld-word-name">Grand Archives</span></a>
+                    <p class="ld-foot-what"><span data-i18n="ldFootWhat">Ảnh và dữ liệu sản phẩm, một chỗ</span></p>
                 </div>
-                <ul><li><strong data-i18n="ldFootPage">Trang này</strong></li><li><a href="#ld-try" data-i18n="ldNavTry">Thử tìm</a></li><li><a href="#ld-how" data-i18n="ldNavHow">Cách hoạt động</a></li><li><a href="#ld-tools" data-i18n="ldNavTools">Công cụ</a></li><li><a href="#ld-faq" data-i18n="ldNavFaq">Hỏi đáp</a></li><li><a href="#app" data-i18n="openApp">Vào A.N.T</a></li></ul>
+                <ul><li><strong data-i18n="ldFootPage">Trang này</strong></li><li><a href="#ld-try" data-i18n="ldNavTry">Thử tìm</a></li><li><a href="#ld-how" data-i18n="ldNavHow">Cách hoạt động</a></li><li><a href="#ld-tools" data-i18n="ldNavTools">Công cụ</a></li><li><a href="#ld-faq" data-i18n="ldNavFaq">Hỏi đáp</a></li><li><a href="#app" data-i18n="openApp">Vào Grand Archives</a></li></ul>
                 <ul><li><strong data-i18n="ldNavTools">Công cụ</strong></li><li><button type="button" onclick="enterApp(); triggerTool('IMG EDIT')" data-i18n="imageEdit">Chỉnh ảnh</button></li><li><button type="button" onclick="enterApp(); triggerTool('AUTO FILL')" data-i18n="autoFill">Tự điền file</button></li><li><button type="button" onclick="enterApp(); triggerTool('PRICE SYNC')" data-i18n="priceSync">Cập nhật giá</button></li><li><button type="button" onclick="enterApp(); triggerTool('PALLET')" data-i18n="pallet">Xếp pallet</button></li><li><button type="button" onclick="enterApp(); openLibraryView()" data-i18n="library">Thư viện</button></li></ul>
-                <ul><li><strong data-i18n="ldFootRun">Chạy với dữ liệu thật</strong></li><li data-i18n="ldFootRun1">Mở KHOI_DONG_ANT.bat trên máy có A.N.T</li><li data-i18n="ldFootRun2">Mở trang này với ?local=1</li><li data-i18n="ldFootRun3">Master data và ảnh SharePoint đi qua serve.py</li></ul>
+                <ul><li><strong data-i18n="ldFootRun">Chạy với dữ liệu thật</strong></li><li data-i18n="ldFootRun1">Mở KHOI_DONG_ANT.bat trên máy có Grand Archives</li><li data-i18n="ldFootRun2">Mở trang này với ?local=1</li><li data-i18n="ldFootRun3">Master data và ảnh SharePoint đi qua serve.py</li></ul>
             </div>
-            <div class="ld-legal"><span data-i18n="ldFootLegal">© 2026 A.N.T · Hình minh họa vẽ riêng cho A.N.T</span><a href="#" onclick="window.scrollTo({ top: 0, behavior: 'smooth' }); return false;" data-i18n="ldFootTop">Lên đầu trang</a></div>
+            <div class="ld-legal"><span data-i18n="ldFootLegal">© 2026 Grand Archives · Hình minh họa vẽ riêng cho Grand Archives</span><a href="#" onclick="window.scrollTo({ top: 0, behavior: 'smooth' }); return false;" data-i18n="ldFootTop">Lên đầu trang</a></div>
         </footer>
     </div>
 
@@ -1113,8 +1152,8 @@
 
     <!-- TOP BAR: brand, search, the screens as one pill, then data status, theme and language -->
     <header id="ant-topbar">
-        <button type="button" class="ant-brand" onclick="leaveApp()" aria-label="A.N.T · Trang giới thiệu" data-i18n-aria="toLanding" title="Trang giới thiệu" data-i18n-title="toLanding">
-            <span class="ant-brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" focusable="false"><path d="M6.5 17.5 12 6.5l5.5 11h-11Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="6.5" r="2.8" fill="currentColor"/><circle cx="6.5" cy="17.5" r="2.8" fill="currentColor"/><circle cx="17.5" cy="17.5" r="2.8" fill="currentColor"/></svg></span><span class="ant-brand-sep" aria-hidden="true"></span><span class="ant-brand-word">A.N.T</span>
+        <button type="button" class="ant-brand" onclick="leaveApp()" aria-label="Grand Archives · Trang giới thiệu" data-i18n-aria="toLanding" title="Trang giới thiệu" data-i18n-title="toLanding">
+            <span class="ant-brand-mark" aria-hidden="true"><img src="assets/logo.svg" width="64" height="64" alt=""></span><span class="ant-brand-sep" aria-hidden="true"></span><span class="ant-brand-word">Grand Archives</span>
         </button>
         <div class="ant-topbar-search">
             <div class="ant-searchbar" role="search">
@@ -1125,7 +1164,7 @@
                 <button type="button" class="ant-search-file" onclick="document.getElementById('file-upload').click()" title="Tải danh sách CSV hoặc TXT" aria-label="Tải file" data-i18n-aria="upload"><i class="fa-solid fa-file-arrow-up" aria-hidden="true"></i><span data-i18n="upload">Tải file</span></button>
             </div>
         </div>
-        <nav id="ant-topnav" class="om-nav" aria-label="A.N.T">
+        <nav id="ant-topnav" class="om-nav" aria-label="Grand Archives">
             <button type="button" class="ant-tool-active" aria-current="page" onclick="openSearchView()" data-i18n="mainPage">Trang chính</button>
             <button type="button" onclick="openLibraryView()" data-i18n="library">Thư viện</button>
             <button type="button" onclick="triggerTool('IMG EDIT')" data-i18n="imageEdit">Chỉnh ảnh</button>
@@ -1207,7 +1246,7 @@
         <div id="search-view-wrapper" class="w-full flex flex-col">
             <button id="return-to-master" type="button" onclick="returnToMasterData()" class="hidden self-start ant-btn ant-btn-secondary" data-i18n="backToMaster">Về master data</button>
 
-            <!-- TITLE ROW: the screen's name and the data A.N.T is using -->
+            <!-- TITLE ROW: the screen's name and the data Grand Archives is using -->
             <header id="header-container" class="ant-title-row">
                 <div class="min-w-0">
                     <h1 id="app-title">Trang chính</h1>
@@ -1240,7 +1279,7 @@
             <div id="home-dashboard" class="om-bento">
                 <section class="om-card om-demo" aria-labelledby="demo-title">
                     <h2 id="demo-title" data-i18n="omDemoTitle">Thử với sản phẩm mẫu</h2>
-                    <p class="om-sub" data-i18n="omDemoSay">Bản xem trước không có master data. Trên máy chạy A.N.T, chỗ này là sản phẩm theo trạng thái, thương hiệu lớn nhất và độ đầy đủ dữ liệu.</p>
+                    <p class="om-sub" data-i18n="omDemoSay">Bản xem trước không có master data. Trên máy chạy Grand Archives, chỗ này là sản phẩm theo trạng thái, thương hiệu lớn nhất và độ đầy đủ dữ liệu.</p>
                     <div id="demo-samples" class="om-samples"></div>
                 </section>
                 <section class="om-card om-status" aria-labelledby="st-title">
@@ -1606,15 +1645,15 @@
     <script>
         const translations = {
             vi: {
-                subtitle: 'Asset Nexus Technology · Không gian tìm kiếm tài sản sản phẩm', searchPlaceholder: 'EAN, mã hàng hoặc tên sản phẩm', search: 'Tìm kiếm', upload: 'Tải file', viewMaster: 'Xem dữ liệu', downloadMaster: 'Tải CSV', masterSearchPlaceholder: 'Tìm tên hoặc mã sản phẩm trong brand...', productName: 'Sản phẩm', articleCode: 'Article code', category: 'Danh mục', dimensions: 'Kích thước', weight: 'Khối lượng', preview: 'Xem ảnh', backToMaster: 'Về master data', demoProduct: 'Sản phẩm mẫu', demoUnavailable: 'Dữ liệu thật chưa được kết nối', noMasterMatch: 'Không tìm thấy sản phẩm mẫu trong brand này.', sampleStatus: 'Minh họa', imageInfo: 'Thông tin ảnh: ', lookupCode: 'Mã tra cứu: ', dataSource: 'Nguồn dữ liệu: ',
+                subtitle: 'Không gian tìm kiếm tài sản sản phẩm', searchPlaceholder: 'EAN, mã hàng hoặc tên sản phẩm', search: 'Tìm kiếm', upload: 'Tải file', viewMaster: 'Xem dữ liệu', downloadMaster: 'Tải CSV', masterSearchPlaceholder: 'Tìm tên hoặc mã sản phẩm trong brand...', productName: 'Sản phẩm', articleCode: 'Article code', category: 'Danh mục', dimensions: 'Kích thước', weight: 'Khối lượng', preview: 'Xem ảnh', backToMaster: 'Về master data', demoProduct: 'Sản phẩm mẫu', demoUnavailable: 'Dữ liệu thật chưa được kết nối', noMasterMatch: 'Không tìm thấy sản phẩm mẫu trong brand này.', sampleStatus: 'Minh họa', imageInfo: 'Thông tin ảnh: ', lookupCode: 'Mã tra cứu: ', dataSource: 'Nguồn dữ liệu: ',
                 expandProducts: 'Mở danh sách sản phẩm', collapseProducts: 'Đóng danh sách sản phẩm', relatedProducts: 'Các sản phẩm liên quan tìm thấy:', imageEdit: 'Chỉnh ảnh', library: 'Thư viện', request: 'Yêu cầu ảnh', autoFill: 'Tự điền file', settings: 'Cài đặt',
                 next: 'Tiếp', moreImagesHint: 'Bấm nút bên phải để xem thêm ảnh', description: 'Mô tả sản phẩm: ', specifications: 'Chất liệu & Thông số: ', origin: 'Bảo hành & Xuất xứ: ', addToOrder: 'Thêm vào đơn hàng',
                 chooseBrand: 'Chọn thương hiệu', chooseBrandHint: 'Tìm tên brand và chọn logo để xem thư viện', nextPage: 'Trang tiếp', backToBrands: 'Về thương hiệu', brandOverview: 'Tổng quan thương hiệu', imageLibrary: 'Thư viện ảnh', featuredImage: 'Ảnh nổi bật', featureHint: 'Chọn ảnh để xem đầy đủ', swipeHint: 'Vuốt ngang để xem ba phần của thư viện.', brandFilter: 'Tìm thương hiệu...', demoAssets: 'Ảnh minh họa bố cục · chưa có dữ liệu thật của brand', demoImage: 'Ảnh mẫu', brandMasterData: 'Master data · thương hiệu', demoData: 'Dữ liệu demo', canonicalBrand: 'Tên chuẩn', brandCode: 'Mã tra cứu', brandAliases: 'Tên gốc / bí danh', masterStatus: 'Dữ liệu sản phẩm', notConnected: 'Chưa kết nối', pendingLogo: 'Logo đang chờ xác minh',
-                back: 'Quay lại', singleViewer: 'Xem ảnh sản phẩm', products: 'sản phẩm', brandSelection: 'Chọn thương hiệu', backToSearch: 'Về tìm kiếm', backToGrid: 'Về thư viện', image: 'Ảnh', brandLibrary: 'Thư viện', viewing: 'Đang xem', receivedFile: 'Đã nhận file', fileMatches: 'Sản phẩm demo khớp trong file', noFileMatches: 'Không có mã hoặc tên nào trong file khớp với sản phẩm demo. Hỗ trợ danh sách CSV/TXT.', toolReady: 'Sẵn sàng', noResult: 'Không tìm thấy sản phẩm phù hợp', noResultHelp: 'Không tìm thấy sản phẩm. Thử tên khác, mã EAN hoặc article code.', tryDemo: 'Thử EAN mẫu', noBrands: 'Không tìm thấy thương hiệu. Thử tên khác hoặc tên viết tắt.', showMoreBrands: 'Xem thêm thương hiệu', addedToOrder: 'Đã thêm vào đơn hàng', saved: 'Đã lưu', nextPageReady: 'Đây là bản xem trước thư viện', imageEditHint: 'MINIMA Resize Studio · chỉnh sửa và xuất ảnh', autoFillHint: 'Grand Archives · xử lý và điền file Excel', priceSync: 'Cập nhật giá', priceSyncHint: 'PriceSync Tracker · ghép formula với template thành file upload Directo', pallet: 'Xếp pallet', palletHint: 'Pallet 3D · số thùng tối đa trên một pallet, chỉnh tay trong 3D và kiểm chứng hình học',
+                back: 'Quay lại', singleViewer: 'Xem ảnh sản phẩm', products: 'sản phẩm', brandSelection: 'Chọn thương hiệu', backToSearch: 'Về tìm kiếm', backToGrid: 'Về thư viện', image: 'Ảnh', brandLibrary: 'Thư viện', viewing: 'Đang xem', receivedFile: 'Đã nhận file', fileMatches: 'Sản phẩm demo khớp trong file', noFileMatches: 'Không có mã hoặc tên nào trong file khớp với sản phẩm demo. Hỗ trợ danh sách CSV/TXT.', toolReady: 'Sẵn sàng', noResult: 'Không tìm thấy sản phẩm phù hợp', noResultHelp: 'Không tìm thấy sản phẩm. Thử tên khác, mã EAN hoặc article code.', tryDemo: 'Thử EAN mẫu', noBrands: 'Không tìm thấy thương hiệu. Thử tên khác hoặc tên viết tắt.', showMoreBrands: 'Xem thêm thương hiệu', addedToOrder: 'Đã thêm vào đơn hàng', saved: 'Đã lưu', nextPageReady: 'Đây là bản xem trước thư viện', imageEditHint: 'MINIMA Resize Studio · chỉnh sửa và xuất ảnh', autoFillHint: 'Auto Fill · xử lý và điền file Excel', priceSync: 'Cập nhật giá', priceSyncHint: 'PriceSync Tracker · ghép formula với template thành file upload Directo', pallet: 'Xếp pallet', palletHint: 'Pallet 3D · số thùng tối đa trên một pallet, chỉnh tay trong 3D và kiểm chứng hình học',
                 connOnline: 'Dữ liệu thật', darkMode: 'Chế độ tối', kpiLabelled: 'Ảnh đã gắn nhãn',
                 stActive: 'Đang bán', stLimited: 'Bán giới hạn', stUpcoming: 'Sắp ra mắt', stNonactive: 'Không hoạt động', stDiscontinued: 'Ngừng sản xuất', stUnknown: 'Chưa rõ trạng thái', omBlank: 'để trống',
                 omStatusTitle: 'Sản phẩm theo trạng thái', omStatusSub: 'sản phẩm trong master data, chia theo cột STATUS', omStatusSubCut: 'sản phẩm trong file, chia theo cột STATUS. File xuất bị cắt nên thực tế nhiều hơn', omCutShort: 'file bị cắt', spOk: 'Đã kết nối', spNeed: 'Cần đăng nhập', omSourceTitle: 'Nguồn dữ liệu', omSrcFile: 'Tệp', omSrcModified: 'Lưu lúc', omSrcRows: 'Dòng × cột', omSrcSkipped: 'Bỏ qua', omSrcSkippedRows: 'dòng {rows} · tiêu đề lặp lại', omAllBrands: 'Xem tất cả', omKeyOnSale: 'Đang bán (gồm bán giới hạn)', omKeyRest: 'Còn lại',
-                omCutTitle: 'File xuất bị cắt ở {cap} dòng', omCutText: 'So với bản đầy đủ gần nhất {ref}, file này thiếu khoảng {n} mã ({brands}). Directo cắt không theo thứ tự nên mã thiếu nằm rải rác; chúng chưa tìm được trong A.N.T.',
+                omCutTitle: 'File xuất bị cắt ở {cap} dòng', omCutText: 'So với bản đầy đủ gần nhất {ref}, file này thiếu khoảng {n} mã ({brands}). Directo cắt không theo thứ tự nên mã thiếu nằm rải rác; chúng chưa tìm được trong Grand Archives.',
                 omCutPending: 'Đang so với bản xuất đầy đủ gần nhất…', omCutFix: 'Cách sửa: xuất lại từ Directo không giới hạn dòng, hoặc chia thành hai file.',
                 omBrandsSub: 'thương hiệu, đã gộp các cách viết khác nhau · {m} mã không có thương hiệu (để trống hoặc BRÄNDITA)', omOnSale: 'đang bán',
                 omCompleteTitle: 'Độ đầy đủ dữ liệu', omCompleteSub: 'Trên {n} sản phẩm đang bán, bán giới hạn và sắp ra mắt',
@@ -1624,60 +1663,60 @@
                 chRecoveredNote: '“Có lại” là mã file trước không có nhưng từng có trong một file cũ hơn (đã xét {n} file); “mới” là mã chưa từng xuất hiện.', chCutNote: 'File trước bị cắt ở {cap} dòng, và Directo xuất không theo thứ tự cố định nên mỗi lần cắt lại thiếu những mã khác.', chOtherMoves: 'Đổi trạng thái khác', stMovesTitle: 'Đổi trạng thái so với {file}', stMovesCount: '{n} mã', chPending: 'Đang so với file trước…', chNone: 'Chưa có file trước để so.',
                 omNewSearch: 'Tìm mới', omStart: 'Bắt đầu', omStartEan: 'Tìm một mã EAN', omStartEanSub: 'Hoặc mã hàng, tên sản phẩm', omStartList: 'Tra cả danh sách mã', omStartListSub: 'File CSV hoặc TXT', omStartLibrary: 'Mở thư viện thương hiệu', omStartPalletSub: 'Số thùng tối đa, chỉnh trong 3D', omLabelled: 'Ảnh đã gắn nhãn', omTotal: 'tổng', omPerDot: 'Mỗi chấm {n} ảnh', omNeedsData: 'Cần dữ liệu thật (serve.py)', omOfProducts: 'sản phẩm',
                 omTopBrands: 'Thương hiệu nhiều sản phẩm nhất', omProductsIn: 'sản phẩm của', omBrandsWord: 'thương hiệu', omLastProduct: 'Sản phẩm vừa xem',
-                omLastProductEmpty: 'Mở một sản phẩm, ảnh packshot của nó sẽ nằm ở đây.', omDemoTitle: 'Thử với sản phẩm mẫu', omDemoSay: 'Bản xem trước không có master data. Trên máy chạy A.N.T, chỗ này là sản phẩm theo trạng thái, thương hiệu lớn nhất và độ đầy đủ dữ liệu.', omDemoSet: '{n} sản phẩm mẫu', omOpen: 'Mở', omToolsSub: 'Chỉnh ảnh, điền file nhà bán lẻ và cập nhật giá ngay trong A.N.T.',
+                omLastProductEmpty: 'Mở một sản phẩm, ảnh packshot của nó sẽ nằm ở đây.', omDemoTitle: 'Thử với sản phẩm mẫu', omDemoSay: 'Bản xem trước không có master data. Trên máy chạy Grand Archives, chỗ này là sản phẩm theo trạng thái, thương hiệu lớn nhất và độ đầy đủ dữ liệu.', omDemoSet: '{n} sản phẩm mẫu', omOpen: 'Mở', omToolsSub: 'Chỉnh ảnh, điền file nhà bán lẻ và cập nhật giá ngay trong Grand Archives.',
                 omLogoLibrary: 'Thư viện logo', omPictureSet: 'Bộ ảnh', typeProduct: 'Sản phẩm',
                
-                ldNavTry: 'Thử tìm', ldNavHow: 'Cách hoạt động', ldNavTools: 'Công cụ', ldNavFaq: 'Hỏi đáp', toLanding: 'A.N.T · Trang giới thiệu',
-                ldHeroTitle1: 'Một mã EAN,', ldHeroTitle2: 'đủ bộ ảnh', ldTryLink: 'Thử với một mã mẫu', ldHeroNote: 'Trang này dùng dữ liệu mẫu và hình vẽ; dữ liệu thật chỉ chạy trên máy có A.N.T.',
-                ldHeroLead: 'A.N.T khớp mã với master data rồi gom ảnh của sản phẩm trên SharePoint, đã chia sẵn packshot, ảnh có người và ảnh dàn cảnh.',
-                ldStat1: 'loại ảnh A.N.T tự chia, packshot lên đầu', ldStat2Num: '1–4 giây', ldStat2: 'để gom mọi ảnh của một mã trên SharePoint', ldStat3: 'thương hiệu trong thư viện logo',
-                ldSampleBrand: 'Thương hiệu mẫu', ldTryTitle: 'Mã vào, bộ ảnh ra.', ldTrySay: 'Gõ một mã mẫu và xem kết quả đúng như trong không gian làm việc: sản phẩm khớp, bộ ảnh chia theo loại, packshot lên đầu.',
-                ldTryFrame: 'A.N.T · Tìm kiếm', ldTryLabel: 'Gõ EAN, mã hàng hoặc tên sản phẩm mẫu', ldTryHint: 'Dữ liệu mẫu, không phải master data thật.', ldTryQuick: 'Thử nhanh', ldTryNone: 'Không có trong dữ liệu mẫu. Thử một mã bên dưới.', ldTryAlso: 'Cũng khớp',
-                ldHowTitle: 'Từ mã tới bộ ảnh', ldHowNote: 'Thời gian đo trên máy chạy A.N.T, với một mã có 12 ảnh.', ldDur1: 'Một giây', ldDur2: 'Tức thì', ldDur3: 'Một đến bốn giây', ldDur4: 'Khoảng một giây', ldStep1: 'Đầu tiên, dán EAN, mã hàng hay tên; cả danh sách CSV cũng được.',
-                ldStep2: 'Rồi A.N.T tìm đúng sản phẩm trong master data, kể cả mã cũ ghi ở cột WARNING.',
+                ldNavTry: 'Thử tìm', ldNavHow: 'Cách hoạt động', ldNavTools: 'Công cụ', ldNavFaq: 'Hỏi đáp', toLanding: 'Grand Archives · Trang giới thiệu',
+                ldHeroTitle1: 'Một mã EAN,', ldHeroTitle2: 'đủ bộ ảnh', ldTryLink: 'Thử với một mã mẫu', ldHeroNote: 'Dữ liệu mẫu: mã là mã giả, ảnh để minh họa. Dữ liệu thật chỉ chạy trên máy có Grand Archives.',
+                ldHeroLead: 'Grand Archives khớp mã với master data rồi gom ảnh của sản phẩm trên SharePoint, đã chia sẵn packshot, ảnh có người và ảnh dàn cảnh.',
+                ldStat1: 'loại ảnh Grand Archives tự chia, packshot lên đầu', ldStat2Num: '1–4 giây', ldStat2: 'để gom mọi ảnh của một mã trên SharePoint', ldStat3: 'thương hiệu trong thư viện logo',
+                ldTryTitle: 'Mã vào, bộ ảnh ra.', ldTrySay: 'Gõ một mã mẫu và xem kết quả đúng như trong không gian làm việc: sản phẩm khớp, bộ ảnh chia theo loại, packshot lên đầu.',
+                ldTryFrame: 'Grand Archives · Tìm kiếm', ldTryLabel: 'Gõ EAN, mã hàng hoặc tên sản phẩm mẫu', ldTryHint: 'Dữ liệu mẫu, không phải master data thật.', ldTryQuick: 'Thử nhanh', ldTryNone: 'Không có trong dữ liệu mẫu. Thử một mã bên dưới.', ldTryAlso: 'Cũng khớp',
+                ldHowTitle: 'Từ mã tới bộ ảnh', ldHowNote: 'Thời gian đo trên máy chạy Grand Archives, với một mã có 12 ảnh.', ldDur1: 'Một giây', ldDur2: 'Tức thì', ldDur3: 'Một đến bốn giây', ldDur4: 'Khoảng một giây', ldStep1: 'Đầu tiên, dán EAN, mã hàng hay tên; cả danh sách CSV cũng được.',
+                ldStep2: 'Rồi Grand Archives tìm đúng sản phẩm trong master data, kể cả mã cũ ghi ở cột WARNING.',
                 ldStep3: 'Sau đó gom mọi ảnh của mã trên SharePoint, bỏ bản trùng.', ldStep4: 'Cuối cùng chia ảnh theo loại, sẵn để chọn và tải.',
-                ldToolsTitle: 'Việc làm được trong A.N.T', ldToolsLead: 'Từ một mã EAN tới bộ ảnh, file cho nhà bán lẻ, file giá cho Directo và pallet xuất kho.', ldCmdGo: 'Mở {area}',
-                ldToolSearch: 'Tìm ảnh theo mã', ldToolSearchSay: 'Dán EAN, mã hàng hay tên, hoặc tải lên cả danh sách CSV. A.N.T khớp từng mã với master data, kể cả mã cũ, rồi gom ảnh trên SharePoint và chia theo loại.',
+                ldToolsTitle: 'Việc làm được trong Grand Archives', ldToolsLead: 'Từ một mã EAN tới bộ ảnh, file cho nhà bán lẻ, file giá cho Directo và pallet xuất kho.', ldCmdGo: 'Mở {area}',
+                ldToolSearch: 'Tìm ảnh theo mã', ldToolSearchSay: 'Dán EAN, mã hàng hay tên, hoặc tải lên cả danh sách CSV. Grand Archives khớp từng mã với master data, kể cả mã cũ, rồi gom ảnh trên SharePoint và chia theo loại.',
                 ldToolDocs: 'Artwork và tài liệu', ldToolDocsSay: 'Cạnh bộ ảnh là file PDF artwork và hồ sơ của sản phẩm. Tick file cần dùng rồi tải một lần; nhiều file thành một ZIP.',
                 ldToolEdit: 'Chỉnh ảnh hàng loạt', ldToolEditSay: 'Ảnh gốc vào thẳng MINIMA để resize theo preset và xuất hàng loạt.',
                 ldToolFill: 'Tự điền file nhà bán lẻ', ldToolFillSay: 'Điền mẫu Excel của Douglas, Nocibé, Zalando và Baltics từ master data.',
                 ldToolPrice: 'Cập nhật giá lên Directo', ldToolPriceSay: 'Ghép file formula với template thành file upload Directo, xem từng dòng trước khi xuất.',
                 ldToolPallet: 'Xếp thùng lên pallet', ldToolPalletSay: 'Tính số thùng tối đa theo kích thước, chiều cao và tải trọng, rồi chỉnh từng thùng trong 3D.',
                 ldFrEan: 'EAN · 1 sản phẩm', ldFrName: 'Tên sản phẩm', ldFrFilled: '{n} dòng đã điền', ldFrRows: '{n} dòng', ldFrReady: 'Sẵn sàng', ldFrCheck: 'Cần xem', ldFrExport: 'Xuất file', ldFrLayers: '{n} lớp', ldFrCartons: '{n} thùng',
-                ldPackTitle: 'Packshot lên đầu', ldPackText: 'Packshot là ảnh vật thể trên nền trơn, thấy đủ hình dáng. A.N.T xếp chúng lên đầu, sau đó đến ảnh có người, ảnh dàn cảnh, bộ sưu tập và artwork; mỗi lần ai đó sửa nhóm, A.N.T học theo.',
-                ldKindPack: 'Vật thể trên nền trơn, thấy đủ hình dáng.', ldKindHuman: 'Sản phẩm trên tay, trên da.', ldKindScene: 'Sản phẩm giữa đạo cụ, cây lá và ánh sáng.', ldKindColl: 'Cả một dòng sản phẩm trong một khung.', ldKindColor: 'Packshot trên nền màu, xếp sau packshot nền trơn.', ldKindArt: 'Ảnh quảng cáo có chữ và bố cục.', ldPrev: 'Ảnh trước', ldNext: 'Ảnh sau',
-                ldEndA: 'Có một mã trong tay? Tìm ảnh cho nó ngay.', ldEndTry: 'Mã mẫu để thử:', ldEndGo: 'Tìm ảnh', ldEndNote: 'Mở không gian làm việc và tìm mã này. Bản trên GitHub Pages dùng dữ liệu mẫu; dữ liệu thật chạy trên máy có A.N.T.',
-                ldFaqTitle: 'Câu hỏi thường gặp', ldQ1: 'Trang này có dùng dữ liệu thật không?', ldA1: 'Không. Trang giới thiệu và bản trên GitHub Pages chỉ có sản phẩm mẫu và hình vẽ. Master data và ảnh SharePoint chỉ đi qua máy chạy A.N.T.',
-                ldQ2: 'A.N.T tìm ảnh ở đâu?', ldA2: 'Trên SharePoint của công ty, bằng tài khoản đã đăng nhập trên máy chạy A.N.T. Mã được khớp với master data trước, kể cả mã cũ ghi ở cột WARNING.',
+                ldPackTitle: 'Packshot lên đầu', ldPackText: 'Packshot là ảnh vật thể trên nền trơn, thấy đủ hình dáng. Grand Archives xếp chúng lên đầu, sau đó đến ảnh có người, ảnh dàn cảnh, bộ sưu tập và artwork; mỗi lần ai đó sửa nhóm, Grand Archives học theo.',
+                ldKindPack: 'Sản phẩm trên nền trắng, thấy đủ hình dáng.', ldKindPour: 'Kết cấu sữa rửa mặt chảy ra từ tuýp.', ldKindScene: 'Hộp sản phẩm trên mặt đá, nắng xiên qua cửa sổ.', ldKindColl: 'Hũ và hộp của cùng một sản phẩm trong một khung.', ldKindColor: 'Tuýp trên nền bọt hồng, xếp sau packshot nền trắng.', ldKindTexture: 'Cận cảnh tuýp với một vệt kết cấu.', ldKindArt: 'Mặt hộp in chữ, thành phần và hình minh họa.', ldPrev: 'Ảnh trước', ldNext: 'Ảnh sau',
+                ldEndA: 'Có một mã trong tay? Tìm ảnh cho nó ngay.', ldEndTry: 'Mã mẫu để thử:', ldEndGo: 'Tìm ảnh', ldEndNote: 'Mở không gian làm việc và tìm mã này. Bản trên GitHub Pages dùng dữ liệu mẫu; dữ liệu thật chạy trên máy có Grand Archives.',
+                ldFaqTitle: 'Câu hỏi thường gặp', ldQ1: 'Trang này có dùng dữ liệu thật không?', ldA1: 'Không. Trang giới thiệu và bản trên GitHub Pages chỉ có dữ liệu mẫu: EAN và mã hàng là mã giả, ảnh sản phẩm để minh họa. Master data và ảnh SharePoint chỉ đi qua máy chạy Grand Archives.',
+                ldQ2: 'Grand Archives tìm ảnh ở đâu?', ldA2: 'Trên SharePoint của công ty, bằng tài khoản đã đăng nhập trên máy chạy Grand Archives. Mã được khớp với master data trước, kể cả mã cũ ghi ở cột WARNING.',
                 ldQ3: 'Có tìm được file PDF artwork không?', ldA3: 'Có. Nút Artwork và tài liệu mở danh sách PDF artwork và hồ sơ của sản phẩm; chọn file rồi tải từng file hoặc tải chung thành một ZIP.',
-                ldQ4: 'Ảnh bị xếp sai loại thì sao?', ldA4: 'Đổi loại cho ảnh đó ngay trong không gian làm việc. A.N.T ghi nhận và lần sau xếp đúng hơn.',
+                ldQ4: 'Ảnh bị xếp sai loại thì sao?', ldA4: 'Đổi loại cho ảnh đó ngay trong không gian làm việc. Grand Archives ghi nhận và lần sau xếp đúng hơn.',
                 ldQ5: 'Tải nhiều ảnh cùng lúc được không?', ldA5: 'Được. Một ảnh tải về là file gốc; nhiều ảnh thành một ZIP, mỗi loại ảnh một thư mục.',
-                ldQ6: 'Làm sao chạy A.N.T với dữ liệu thật?', ldA6: 'Trên máy có A.N.T, mở KHOI_DONG_ANT.bat rồi chọn Mở A.N.T; lần đầu nó tự cài những gì còn thiếu. A.N.T mở trong trình duyệt ở 127.0.0.1:8020.',
-                ldFootWhat: 'Ảnh và dữ liệu sản phẩm, một chỗ', ldFootRun: 'Chạy với dữ liệu thật', ldFootRun1: 'Mở KHOI_DONG_ANT.bat trên máy có A.N.T', ldFootRun2: 'Mở trang này với ?local=1', ldFootRun3: 'Master data và ảnh SharePoint đi qua serve.py', ldFootPage: 'Trang này', ldFootLegal: '© 2026 A.N.T · Hình minh họa vẽ riêng cho A.N.T', ldFootTop: 'Lên đầu trang',
-                dataProducts: 'sản phẩm', spConnected: 'SharePoint đã kết nối', spLogin: 'SharePoint cần đăng nhập', connOffline: 'Mất kết nối', connDemo: 'Dữ liệu demo', connOnlineHint: 'Đang dùng master data và ảnh SharePoint qua máy chủ A.N.T (serve.py).', connOfflineHint: 'Chưa kết nối được máy chủ A.N.T trên máy này. Chạy run-ant.bat trong thư mục ANT, A.N.T sẽ tự kết nối lại.', connOfflineSharedHint: 'Mất kết nối máy chủ A.N.T. Tải lại trang (có thể phải đăng nhập lại); nếu vẫn lỗi, báo người quản lý máy chủ.', liveLoginServer: 'Phiên SharePoint của máy chủ A.N.T đã hết hạn. Báo người quản lý máy chủ đăng nhập lại trên máy chủ.', connDemoHint: 'Bản xem trước dùng dữ liệu demo. Mở link có ?local=1 trên máy đang chạy A.N.T để dùng dữ liệu thật.', comingSoon: 'Chức năng này đang được chuẩn bị.',
+                ldQ6: 'Làm sao chạy Grand Archives với dữ liệu thật?', ldA6: 'Trên máy có Grand Archives, mở KHOI_DONG_ANT.bat rồi chọn Mở Grand Archives; lần đầu nó tự cài những gì còn thiếu. Grand Archives mở trong trình duyệt ở 127.0.0.1:8020.',
+                ldFootWhat: 'Ảnh và dữ liệu sản phẩm, một chỗ', ldFootRun: 'Chạy với dữ liệu thật', ldFootRun1: 'Mở KHOI_DONG_ANT.bat trên máy có Grand Archives', ldFootRun2: 'Mở trang này với ?local=1', ldFootRun3: 'Master data và ảnh SharePoint đi qua serve.py', ldFootPage: 'Trang này', ldFootLegal: '© 2026 Grand Archives · Ảnh sản phẩm: Anua, celimax', ldFootTop: 'Lên đầu trang',
+                dataProducts: 'sản phẩm', spConnected: 'SharePoint đã kết nối', spLogin: 'SharePoint cần đăng nhập', connOffline: 'Mất kết nối', connDemo: 'Dữ liệu demo', connOnlineHint: 'Đang dùng master data và ảnh SharePoint qua máy chủ Grand Archives (serve.py).', connOfflineHint: 'Chưa kết nối được máy chủ Grand Archives trên máy này. Chạy run-ant.bat trong thư mục ANT, Grand Archives sẽ tự kết nối lại.', connOfflineSharedHint: 'Mất kết nối máy chủ Grand Archives. Tải lại trang (có thể phải đăng nhập lại); nếu vẫn lỗi, báo người quản lý máy chủ.', liveLoginServer: 'Phiên SharePoint của máy chủ Grand Archives đã hết hạn. Báo người quản lý máy chủ đăng nhập lại trên máy chủ.', connDemoHint: 'Bản xem trước dùng dữ liệu demo. Mở link có ?local=1 trên máy đang chạy Grand Archives để dùng dữ liệu thật.', comingSoon: 'Chức năng này đang được chuẩn bị.',
                 workspace: 'Không gian', tools: 'Công cụ', soon: 'Sắp có', uploadLookup: 'Tải file tra cứu', logoLibrary: 'Thư viện logo', shortcuts: 'Lối tắt', brandLibraryTitle: 'Thư viện thương hiệu',
-                mainPage: 'Trang chính', aboutAnt: 'Giới thiệu A.N.T', lightMode: 'Chế độ sáng', overview: 'Tổng quan', ready: 'Sẵn sàng', requestMeta: 'Giao và theo dõi ảnh cần chụp', suggestions: 'Thương hiệu gợi ý', viewAll: 'Xem tất cả', openLibrary: 'Mở thư viện', recent: 'Gần đây', recentEmpty: 'Chưa có hoạt động. Tìm một mã EAN hoặc mở một thương hiệu để bắt đầu.', colName: 'Tên', colType: 'Loại', colTime: 'Thời gian', typeSearch: 'Tìm kiếm', typeBrand: 'Thương hiệu', typeTool: 'Công cụ',
-                features: 'Tính năng', howItWorks: 'Cách hoạt động', openApp: 'Vào A.N.T', previewBadge: 'Bản xem trước · dữ liệu demo', heroTitle: 'Mọi hình ảnh và dữ liệu sản phẩm, ở một nơi.', heroLead: 'Nhập EAN, article code hoặc tên sản phẩm. A.N.T khớp master data rồi trả về packshot, thông tin sản phẩm và công cụ xử lý ảnh.', getStarted: 'Vào không gian làm việc', seeHow: 'Xem cách hoạt động', statBrands: 'thương hiệu', statLogos: 'logo đã chuẩn hóa', statAreas: 'khu vực làm việc',
+                mainPage: 'Trang chính', aboutAnt: 'Giới thiệu Grand Archives', lightMode: 'Chế độ sáng', overview: 'Tổng quan', ready: 'Sẵn sàng', requestMeta: 'Giao và theo dõi ảnh cần chụp', suggestions: 'Thương hiệu gợi ý', viewAll: 'Xem tất cả', openLibrary: 'Mở thư viện', recent: 'Gần đây', recentEmpty: 'Chưa có hoạt động. Tìm một mã EAN hoặc mở một thương hiệu để bắt đầu.', colName: 'Tên', colType: 'Loại', colTime: 'Thời gian', typeSearch: 'Tìm kiếm', typeBrand: 'Thương hiệu', typeTool: 'Công cụ',
+                features: 'Tính năng', howItWorks: 'Cách hoạt động', openApp: 'Vào Grand Archives', previewBadge: 'Bản xem trước · dữ liệu demo', heroTitle: 'Mọi hình ảnh và dữ liệu sản phẩm, ở một nơi.', heroLead: 'Nhập EAN, article code hoặc tên sản phẩm. Grand Archives khớp master data rồi trả về packshot, thông tin sản phẩm và công cụ xử lý ảnh.', getStarted: 'Vào không gian làm việc', seeHow: 'Xem cách hoạt động', statBrands: 'thương hiệu', statLogos: 'logo đã chuẩn hóa', statAreas: 'khu vực làm việc',
                 featuresTitle: 'Mọi thứ cho tài sản sản phẩm', featuresLead: 'Bốn khu vực làm việc dùng chung một nguồn dữ liệu sản phẩm.', featSearchTitle: 'Tìm theo EAN, mã hoặc tên', featSearchText: 'Nhận diện loại mã, khớp master data rồi gom toàn bộ ảnh liên quan.', featLibraryText: 'Logo chuẩn hóa, ảnh và master data xếp theo từng thương hiệu.', featEditText: 'Resize theo preset, cắt, đặt ảnh lên nền trắng và xuất hàng loạt.', featFillText: 'Kiểm tra và điền file Excel theo mẫu của từng nhà bán lẻ.',
                 howLead: 'Master data là cầu nối: mọi giá trị nhập vào được đổi thành một sản phẩm trước khi tìm ảnh.', step1Title: 'Nhập hoặc tải file', step1Text: 'Một EAN, article code, tên sản phẩm hay cả danh sách CSV.', step2Title: 'Khớp master data', step2Text: 'Barcode, mã hàng, mã cũ và tên được quy về đúng sản phẩm.', step3Title: 'Nhận ảnh và thông tin', step3Text: 'Packshot, ảnh hộp, lifestyle cùng kích thước, pháp lý và nhà cung cấp.', ctaTitle: 'Sẵn sàng tìm ảnh?', ctaText: 'Mở không gian làm việc và thử với một mã EAN mẫu.',
-                liveNoProduct: 'Không có sản phẩm này trong master data. Thử EAN, article code hoặc tên khác.', liveNoFileMatch: 'Không mã nào trong file có trong master data.', liveFileMatches: 'Sản phẩm khớp trong file', liveNotFound: 'mã không thấy', liveSearching: 'Đang tìm ảnh trên SharePoint…', liveClassifying: 'Đang phân loại ảnh…', livePending: 'Đang phân loại', liveByPerson: 'Đã xác nhận', liveReview: 'Cần xem lại', liveSelect: 'Chọn', liveCategory: 'Nhóm ảnh', liveLearned: 'Đã lưu, A.N.T sẽ học từ ảnh này', liveZipping: 'Đang nén ảnh gốc…', liveFailed: 'Không thực hiện được', liveSelectAll: 'Chọn tất cả', liveClearAll: 'Bỏ chọn', liveDownloadSelected: 'Tải ảnh đã chọn', liveImages: 'ảnh', liveToReview: 'cần xem lại', liveSelectedCount: 'đã chọn', liveLoginNeeded: 'Phiên đăng nhập SharePoint đã hết hạn.', liveLoginButton: 'Đăng nhập SharePoint', liveLoginOpen: 'Mở trang đăng nhập và nhập mã', liveLoginDone: 'Đã đăng nhập SharePoint', liveNotInMaster: 'Không có trong master data · tìm ảnh theo đúng mã đã nhập', liveAllFields: 'Tất cả trường master data', liveDownloadOriginal: 'Tải ảnh gốc', liveEdit: 'Chỉnh ảnh', liveEditLoading: 'Đang lấy ảnh gốc cho Chỉnh ảnh', liveEditSent: 'Đã gửi sang Chỉnh ảnh', liveClose: 'Đóng', liveNoImages: 'Không tìm thấy ảnh nào trên SharePoint cho sản phẩm này.',
+                liveNoProduct: 'Không có sản phẩm này trong master data. Thử EAN, article code hoặc tên khác.', liveNoFileMatch: 'Không mã nào trong file có trong master data.', liveFileMatches: 'Sản phẩm khớp trong file', liveNotFound: 'mã không thấy', liveSearching: 'Đang tìm ảnh trên SharePoint…', liveClassifying: 'Đang phân loại ảnh…', livePending: 'Đang phân loại', liveByPerson: 'Đã xác nhận', liveReview: 'Cần xem lại', liveSelect: 'Chọn', liveCategory: 'Nhóm ảnh', liveLearned: 'Đã lưu, Grand Archives sẽ học từ ảnh này', liveZipping: 'Đang nén ảnh gốc…', liveFailed: 'Không thực hiện được', liveSelectAll: 'Chọn tất cả', liveClearAll: 'Bỏ chọn', liveDownloadSelected: 'Tải ảnh đã chọn', liveImages: 'ảnh', liveToReview: 'cần xem lại', liveSelectedCount: 'đã chọn', liveLoginNeeded: 'Phiên đăng nhập SharePoint đã hết hạn.', liveLoginButton: 'Đăng nhập SharePoint', liveLoginOpen: 'Mở trang đăng nhập và nhập mã', liveLoginDone: 'Đã đăng nhập SharePoint', liveNotInMaster: 'Không có trong master data · tìm ảnh theo đúng mã đã nhập', liveAllFields: 'Tất cả trường master data', liveDownloadOriginal: 'Tải ảnh gốc', liveEdit: 'Chỉnh ảnh', liveEditLoading: 'Đang lấy ảnh gốc cho Chỉnh ảnh', liveEditSent: 'Đã gửi sang Chỉnh ảnh', liveClose: 'Đóng', liveNoImages: 'Không tìm thấy ảnh nào trên SharePoint cho sản phẩm này.',
                 catPackshot: 'Packshot', catHuman: 'Có người', catScene: 'Dàn cảnh', catCollection: 'Bộ sưu tập', catColor: 'Nền màu', catArtwork: 'Artwork', catUncertain: 'Không rõ',
                 liveTabImages: 'Hình ảnh', liveTabInfo: 'Thông tin chi tiết', liveTabDocs: 'Artwork & tài liệu', docsArtwork: 'Artwork', docsDossier: 'Hồ sơ sản phẩm', docsPickHint: 'Tick file cần tải; nhiều file thành một ZIP.', docsDownloadPicked: 'Tải đã chọn', docsLook: 'Xem trong file', docsLooking: 'Đang đọc file…', docsLookFailed: 'Chưa đọc được file này.', docsFoundRows: '{n} dòng có mã sản phẩm', docsFoundPassages: '{n} chỗ nhắc tới mã sản phẩm', docsNotFound: 'Không thấy EAN hay mã hàng trong chữ của file.', docsPreview: 'Đầu file', docsSheets: 'Các sheet: {list}', docsOcrPage: '{n} trang là ảnh scan; chữ được đọc bằng OCR.', docsGaps: 'Một phần là hình ảnh hoặc font lạ, chưa đọc được hết; mở file để xem đủ.', docsPage: 'Trang {n}', docsLine: 'Dòng {n}', docsSlide: 'Slide {n}', docsRow: '{sheet} · dòng {row}', infoSource: 'Nguồn trong master data', infoSourceAt: '{file} · sheet {sheet} · dòng {row}', infoMissing: 'Còn trống ({n}):', infoComplete: 'Không trường nào trống.', docsPicked: '{n} file · {mb} MB', docsTooMany: 'Tối đa 300 file một lần', docsDownload: 'Tải về', docsZipping: 'Đang nén…', docsSelectGroup: 'Chọn cả nhóm', docsOpenHint: 'Bấm tên file để mở PDF', docsGeneral: 'Chung', docsNone: 'Không có artwork hay hồ sơ PDF nào mang EAN của sản phẩm này.', docsNoEan: 'Sản phẩm không có EAN, nên chưa tìm được PDF.', docsFailed: 'Chưa tải được danh sách PDF từ SharePoint.', docsFiles: 'file', liveProductsWord: 'sản phẩm', liveProductWord: 'Sản phẩm', liveStatusFilter: 'Lọc theo trạng thái', liveFilterResults: 'Lọc theo tên, EAN, mã…', liveNoMatchFilter: 'Không có mục nào khớp bộ lọc.', groupAll: 'Tất cả', groupActive: 'Đang bán', groupUpcoming: 'Sắp ra mắt', groupInactive: 'Không hoạt động', liveCopy: 'Sao chép', liveCopied: 'Đã sao chép', liveCopyIngredients: 'Sao chép thành phần',
                 factVolume: 'Dung tích', factSize: 'Kích thước', factSizeHint: 'rộng × cao × sâu', factWeight: 'Khối lượng tịnh', factGross: 'cả bì', factCarton: 'Đóng thùng', factPerCarton: 'sp/thùng', factPerInner: 'sp/hộp trong', unitMonths: 'tháng',
                 infoIdentity: 'Định danh', infoCompliance: 'Pháp lý & hạn dùng', infoSupply: 'Nhà cung cấp & sản xuất', infoNotes: 'Mô tả & ghi chú', infoPacking: 'Kích thước & đóng gói', infoIngredients: 'Thành phần (INCI)', infoOther: 'Trường khác', infoNoData: 'Master data chưa có thông tin này.',
                 packProduct: 'Sản phẩm', packInner: 'Hộp trong', packCarton: 'Thùng', packSize: 'Kích thước (mm)', packWeight: 'Khối lượng (g)', packQty: 'Số lượng', packNet: 'tịnh', packGross: 'cả bì', packPerLayer: '/lớp',
-                imgFilterAll: 'Tất cả', imgFilterReview: 'Cần xem lại', imgFilterConfirmed: 'Đã xác nhận', liveSelectGroup: 'Chọn nhóm', liveConfirmGroup: 'Xác nhận cả nhóm', liveConfirmGroupHint: 'Đánh dấu các ảnh này đúng nhóm để A.N.T học'
+                imgFilterAll: 'Tất cả', imgFilterReview: 'Cần xem lại', imgFilterConfirmed: 'Đã xác nhận', liveSelectGroup: 'Chọn nhóm', liveConfirmGroup: 'Xác nhận cả nhóm', liveConfirmGroupHint: 'Đánh dấu các ảnh này đúng nhóm để Grand Archives học'
             },
             en: {
-                subtitle: 'Asset Nexus Technology · Product asset workspace', searchPlaceholder: 'EAN, article code or product name', search: 'Search', upload: 'Import file', viewMaster: 'View data', downloadMaster: 'Download CSV', masterSearchPlaceholder: 'Search a product name or code in this brand...', productName: 'Product', articleCode: 'Article code', category: 'Category', dimensions: 'Dimensions', weight: 'Weight', preview: 'View image', backToMaster: 'Back to master data', demoProduct: 'Sample product', demoUnavailable: 'Real product data is not connected', noMasterMatch: 'No sample product found in this brand.', sampleStatus: 'Preview', imageInfo: 'Image information: ', lookupCode: 'Lookup code: ', dataSource: 'Data source: ',
+                subtitle: 'Product asset workspace', searchPlaceholder: 'EAN, article code or product name', search: 'Search', upload: 'Import file', viewMaster: 'View data', downloadMaster: 'Download CSV', masterSearchPlaceholder: 'Search a product name or code in this brand...', productName: 'Product', articleCode: 'Article code', category: 'Category', dimensions: 'Dimensions', weight: 'Weight', preview: 'View image', backToMaster: 'Back to master data', demoProduct: 'Sample product', demoUnavailable: 'Real product data is not connected', noMasterMatch: 'No sample product found in this brand.', sampleStatus: 'Preview', imageInfo: 'Image information: ', lookupCode: 'Lookup code: ', dataSource: 'Data source: ',
                 expandProducts: 'Expand product list', collapseProducts: 'Close product list', relatedProducts: 'Related products found:', imageEdit: 'Image edit', library: 'Library', request: 'Image request', autoFill: 'Auto fill', settings: 'Settings',
                 next: 'Next', moreImagesHint: 'Use the button on the right to see more images', description: 'Description: ', specifications: 'Materials & specifications: ', origin: 'Warranty & origin: ', addToOrder: 'Add to order',
                 chooseBrand: 'Choose a brand', chooseBrandHint: 'Search a brand name and select its logo to view the library', nextPage: 'Next page', backToBrands: 'Back to brands', brandOverview: 'Brand overview', imageLibrary: 'Image library', featuredImage: 'Featured image', featureHint: 'Select the image to view it fully', swipeHint: 'Swipe sideways to explore the three library panels.', brandFilter: 'Find a brand...', demoAssets: 'Layout preview · real brand assets have not been added', demoImage: 'Sample image', brandMasterData: 'Brand master data', demoData: 'Demo data', canonicalBrand: 'Standard name', brandCode: 'Search key', brandAliases: 'Source names / aliases', masterStatus: 'Product data', notConnected: 'Not connected', pendingLogo: 'Logo awaiting verification',
-                back: 'Back', singleViewer: 'Product image viewer', products: 'products', brandSelection: 'Brand selection', backToSearch: 'Back to search', backToGrid: 'Back to library', image: 'Image', brandLibrary: 'Library', viewing: 'Viewing', receivedFile: 'File received', fileMatches: 'Matching demo products in file', noFileMatches: 'No code or name in this file matches a demo product. CSV/TXT lists are supported.', toolReady: 'Ready', noResult: 'No matching product found', noResultHelp: 'No product found. Try another name, EAN, or article code.', tryDemo: 'Try a sample EAN', noBrands: 'No brands found. Try another name or abbreviation.', showMoreBrands: 'Show more brands', addedToOrder: 'Added to order', saved: 'Saved', nextPageReady: 'This is a library preview', imageEditHint: 'MINIMA Resize Studio · edit and export images', autoFillHint: 'Grand Archives · process and fill Excel files', priceSync: 'Price update', priceSyncHint: 'PriceSync Tracker · build the Directo upload file from formula and template', pallet: 'Pallet load', palletHint: 'Pallet 3D · the most cartons a pallet takes, hand edits in 3D, geometric checks',
+                back: 'Back', singleViewer: 'Product image viewer', products: 'products', brandSelection: 'Brand selection', backToSearch: 'Back to search', backToGrid: 'Back to library', image: 'Image', brandLibrary: 'Library', viewing: 'Viewing', receivedFile: 'File received', fileMatches: 'Matching demo products in file', noFileMatches: 'No code or name in this file matches a demo product. CSV/TXT lists are supported.', toolReady: 'Ready', noResult: 'No matching product found', noResultHelp: 'No product found. Try another name, EAN, or article code.', tryDemo: 'Try a sample EAN', noBrands: 'No brands found. Try another name or abbreviation.', showMoreBrands: 'Show more brands', addedToOrder: 'Added to order', saved: 'Saved', nextPageReady: 'This is a library preview', imageEditHint: 'MINIMA Resize Studio · edit and export images', autoFillHint: 'Auto Fill · process and fill Excel files', priceSync: 'Price update', priceSyncHint: 'PriceSync Tracker · build the Directo upload file from formula and template', pallet: 'Pallet load', palletHint: 'Pallet 3D · the most cartons a pallet takes, hand edits in 3D, geometric checks',
                 connOnline: 'Live data', darkMode: 'Dark mode', kpiLabelled: 'Labelled images',
                 stActive: 'Active', stLimited: 'Limited', stUpcoming: 'Upcoming', stNonactive: 'Non-active', stDiscontinued: 'Discontinued', stUnknown: 'No clear status', omBlank: 'blank',
                 omStatusTitle: 'Products by status', omStatusSub: 'products in master data, by the STATUS column', omStatusSubCut: 'products in the file, by the STATUS column. The export was cut, so there are more', omCutShort: 'export cut', spOk: 'Connected', spNeed: 'Sign-in needed', omSourceTitle: 'Data source', omSrcFile: 'File', omSrcModified: 'Saved', omSrcRows: 'Rows × columns', omSrcSkipped: 'Skipped', omSrcSkippedRows: 'row {rows} · repeated header', omAllBrands: 'See all', omKeyOnSale: 'On sale (incl. limited)', omKeyRest: 'Other',
-                omCutTitle: 'The export stops at {cap} rows', omCutText: 'Against the last complete export {ref}, this file lacks about {n} codes ({brands}). Directo cuts in no fixed order, so they are spread through the list; they cannot be found in A.N.T yet.',
+                omCutTitle: 'The export stops at {cap} rows', omCutText: 'Against the last complete export {ref}, this file lacks about {n} codes ({brands}). Directo cuts in no fixed order, so they are spread through the list; they cannot be found in Grand Archives yet.',
                 omCutPending: 'Comparing with the last complete export…', omCutFix: 'To fix it: export again from Directo without the row limit, or in two files.',
                 omBrandsSub: 'brands, spellings merged · {m} codes without a brand (blank or BRÄNDITA)', omOnSale: 'on sale',
                 omCompleteTitle: 'Data completeness', omCompleteSub: 'Across the {n} products that are active, limited or upcoming',
@@ -1687,49 +1726,49 @@
                 chRecoveredNote: '“Back” are codes the previous file lacks that an older export listed ({n} files checked); “new” never appeared before.', chCutNote: 'The previous file was cut at {cap} rows, and Directo exports in no fixed order, so each cut loses different codes.', chOtherMoves: 'Other status changes', stMovesTitle: 'Status changes since {file}', stMovesCount: '{n} codes', chPending: 'Comparing with the previous file…', chNone: 'No earlier file to compare with.',
                 omNewSearch: 'New search', omStart: 'Start', omStartEan: 'Search an EAN', omStartEanSub: 'Or an article code or a name', omStartList: 'Look up a list of codes', omStartListSub: 'A CSV or TXT file', omStartLibrary: 'Open the brand library', omStartPalletSub: 'The most cartons, adjusted in 3D', omLabelled: 'Labelled pictures', omTotal: 'total', omPerDot: 'Each dot {n} pictures', omNeedsData: 'Needs live data (serve.py)', omOfProducts: 'of products',
                 omTopBrands: 'Brands with the most products', omProductsIn: 'products from', omBrandsWord: 'brands', omLastProduct: 'Last product',
-                omLastProductEmpty: 'Open a product and its packshot shows up here.', omDemoTitle: 'Try a sample product', omDemoSay: 'This preview has no master data. On a computer running A.N.T, this space shows products by status, the largest brands and how complete the data is.', omDemoSet: '{n} sample products', omOpen: 'Open', omToolsSub: 'Edit images, fill retailer files and update prices without leaving A.N.T.',
+                omLastProductEmpty: 'Open a product and its packshot shows up here.', omDemoTitle: 'Try a sample product', omDemoSay: 'This preview has no master data. On a computer running Grand Archives, this space shows products by status, the largest brands and how complete the data is.', omDemoSet: '{n} sample products', omOpen: 'Open', omToolsSub: 'Edit images, fill retailer files and update prices without leaving Grand Archives.',
                 omLogoLibrary: 'Logo library', omPictureSet: 'Picture set', typeProduct: 'Product',
                
-                ldNavTry: 'Try it', ldNavHow: 'How it works', ldNavTools: 'Tools', ldNavFaq: 'Questions', toLanding: 'A.N.T · Home page',
-                ldHeroTitle1: 'One EAN,', ldHeroTitle2: 'every picture', ldTryLink: 'Try a sample code', ldHeroNote: 'This page uses sample data and drawings; the real data only runs on the A.N.T computer.',
-                ldHeroLead: "A.N.T matches the code to master data, then gathers the product's pictures from SharePoint, already sorted into packshots, pictures with people and set-ups.",
-                ldStat1: 'kinds of picture A.N.T sorts, packshots first', ldStat2Num: '1–4 s', ldStat2: 'to gather every picture of a code on SharePoint', ldStat3: 'brands in the logo library',
-                ldSampleBrand: 'Sample brand', ldTryTitle: 'Code in, pictures out.', ldTrySay: 'Type a sample code and see the result just as the workspace shows it: the matching product and its pictures sorted by type, packshots first.',
-                ldTryFrame: 'A.N.T · Search', ldTryLabel: 'Type a sample EAN, article code or product name', ldTryHint: 'Sample data, not the real master data.', ldTryQuick: 'Quick tries', ldTryNone: 'Not in the sample data. Try one below.', ldTryAlso: 'Also matches',
-                ldHowTitle: 'From a code to the pictures', ldHowNote: 'Times measured on a computer running A.N.T, for a code with 12 pictures.', ldDur1: 'A second', ldDur2: 'Instant', ldDur3: 'One to four seconds', ldDur4: 'About a second', ldStep1: 'First, paste an EAN, article code or name; a CSV list works too.',
-                ldStep2: 'Then A.N.T finds the product in master data, old codes in the WARNING column included.',
+                ldNavTry: 'Try it', ldNavHow: 'How it works', ldNavTools: 'Tools', ldNavFaq: 'Questions', toLanding: 'Grand Archives · Home page',
+                ldHeroTitle1: 'One EAN,', ldHeroTitle2: 'every picture', ldTryLink: 'Try a sample code', ldHeroNote: 'Sample data: the codes are made up, the photos illustrate. The real data only runs on the Grand Archives computer.',
+                ldHeroLead: "Grand Archives matches the code to master data, then gathers the product's pictures from SharePoint, already sorted into packshots, pictures with people and set-ups.",
+                ldStat1: 'kinds of picture Grand Archives sorts, packshots first', ldStat2Num: '1–4 s', ldStat2: 'to gather every picture of a code on SharePoint', ldStat3: 'brands in the logo library',
+                ldTryTitle: 'Code in, pictures out.', ldTrySay: 'Type a sample code and see the result just as the workspace shows it: the matching product and its pictures sorted by type, packshots first.',
+                ldTryFrame: 'Grand Archives · Search', ldTryLabel: 'Type a sample EAN, article code or product name', ldTryHint: 'Sample data, not the real master data.', ldTryQuick: 'Quick tries', ldTryNone: 'Not in the sample data. Try one below.', ldTryAlso: 'Also matches',
+                ldHowTitle: 'From a code to the pictures', ldHowNote: 'Times measured on a computer running Grand Archives, for a code with 12 pictures.', ldDur1: 'A second', ldDur2: 'Instant', ldDur3: 'One to four seconds', ldDur4: 'About a second', ldStep1: 'First, paste an EAN, article code or name; a CSV list works too.',
+                ldStep2: 'Then Grand Archives finds the product in master data, old codes in the WARNING column included.',
                 ldStep3: 'Next it gathers every picture of the code on SharePoint, without duplicates.', ldStep4: 'Last, it sorts the pictures by type, ready to pick and download.',
-                ldToolsTitle: 'What you can do in A.N.T', ldToolsLead: 'From one EAN to its pictures, the retailer file, the Directo price file and the pallet that ships.', ldCmdGo: 'Open {area}',
-                ldToolSearch: 'Find pictures by code', ldToolSearchSay: 'Paste an EAN, article code or name, or upload a whole CSV list. A.N.T matches every code to master data, old codes included, then gathers the pictures on SharePoint and sorts them by type.',
+                ldToolsTitle: 'What you can do in Grand Archives', ldToolsLead: 'From one EAN to its pictures, the retailer file, the Directo price file and the pallet that ships.', ldCmdGo: 'Open {area}',
+                ldToolSearch: 'Find pictures by code', ldToolSearchSay: 'Paste an EAN, article code or name, or upload a whole CSV list. Grand Archives matches every code to master data, old codes included, then gathers the pictures on SharePoint and sorts them by type.',
                 ldToolDocs: 'Artwork and documents', ldToolDocsSay: "Beside the pictures are the product's PDF artwork and dossier files. Tick the ones you need and download them at once; several become one ZIP.",
                 ldToolEdit: 'Edit pictures in bulk', ldToolEditSay: 'Originals go straight into MINIMA to resize by preset and export in bulk.',
                 ldToolFill: 'Fill retailer files', ldToolFillSay: 'Fill the Excel templates of Douglas, Nocibé, Zalando and the Baltics from master data.',
                 ldToolPrice: 'Update prices in Directo', ldToolPriceSay: 'Combine the formula and template files into a Directo upload, row by row before export.',
                 ldToolPallet: 'Load a pallet', ldToolPalletSay: 'Work out the most cartons by size, height and weight, then adjust each one in 3D.',
                 ldFrEan: 'EAN · 1 product', ldFrName: 'Product name', ldFrFilled: '{n} rows filled', ldFrRows: '{n} rows', ldFrReady: 'Ready', ldFrCheck: 'Check', ldFrExport: 'Export', ldFrLayers: '{n} layers', ldFrCartons: '{n} cartons',
-                ldPackTitle: 'Packshots come first', ldPackText: 'A packshot is the object on a plain ground, its whole shape in view. A.N.T puts them first, then pictures with people, set-ups, collections and artwork; every correction someone makes teaches it.',
-                ldKindPack: 'The object on a plain ground, its whole shape in view.', ldKindHuman: 'The product in a hand, on skin.', ldKindScene: 'The product among props, leaves and light.', ldKindColl: 'A whole product line in one frame.', ldKindColor: 'A packshot on a coloured ground, sorted after plain ones.', ldKindArt: 'An advert with words and layout.', ldPrev: 'Previous pictures', ldNext: 'Next pictures',
-                ldEndA: 'Got a code? Find its pictures now.', ldEndTry: 'Sample codes to try:', ldEndGo: 'Find pictures', ldEndNote: 'Opens the workspace and searches this code. The GitHub Pages copy uses sample data; real data runs on a computer with A.N.T.',
-                ldFaqTitle: 'Questions', ldQ1: 'Does this page use real data?', ldA1: 'No. The home page and the GitHub Pages copy only have sample products and drawings. Master data and SharePoint pictures only pass through the computer running A.N.T.',
-                ldQ2: 'Where does A.N.T find pictures?', ldA2: "On the company's SharePoint, with the account signed in on the computer running A.N.T. The code is matched to master data first, old codes in the WARNING column included.",
+                ldPackTitle: 'Packshots come first', ldPackText: 'A packshot is the object on a plain ground, its whole shape in view. Grand Archives puts them first, then pictures with people, set-ups, collections and artwork; every correction someone makes teaches it.',
+                ldKindPack: 'The product on white, its whole shape in view.', ldKindPour: 'The cleanser flowing out of its tube.', ldKindScene: 'The box on marble, sun slanting through a window.', ldKindColl: 'The jar and its box together in one frame.', ldKindColor: 'The tube on pink foam, sorted after plain packshots.', ldKindTexture: 'A close-up of the tube with a swatch of the texture.', ldKindArt: 'The printed box: words, ingredients and drawings.', ldPrev: 'Previous pictures', ldNext: 'Next pictures',
+                ldEndA: 'Got a code? Find its pictures now.', ldEndTry: 'Sample codes to try:', ldEndGo: 'Find pictures', ldEndNote: 'Opens the workspace and searches this code. The GitHub Pages copy uses sample data; real data runs on a computer with Grand Archives.',
+                ldFaqTitle: 'Questions', ldQ1: 'Does this page use real data?', ldA1: 'No. The home page and the GitHub Pages copy only have sample data: the EANs and article codes are made up and the product photos illustrate. Master data and SharePoint pictures only pass through the computer running Grand Archives.',
+                ldQ2: 'Where does Grand Archives find pictures?', ldA2: "On the company's SharePoint, with the account signed in on the computer running Grand Archives. The code is matched to master data first, old codes in the WARNING column included.",
                 ldQ3: 'Can it find PDF artwork?', ldA3: "Yes. The Artwork and documents button lists the product's PDF artwork and dossier files; pick files and download them one by one or together as a ZIP.",
-                ldQ4: 'What if a picture is in the wrong group?', ldA4: 'Change its type right in the workspace. A.N.T remembers and sorts better next time.',
+                ldQ4: 'What if a picture is in the wrong group?', ldA4: 'Change its type right in the workspace. Grand Archives remembers and sorts better next time.',
                 ldQ5: 'Can I download many pictures at once?', ldA5: 'Yes. One picture downloads as the original file; several become one ZIP with a folder per type.',
-                ldQ6: 'How do I run A.N.T with the real data?', ldA6: 'On the A.N.T computer, open KHOI_DONG_ANT.bat and choose to open A.N.T; the first time it installs what is missing. A.N.T opens in the browser at 127.0.0.1:8020.',
-                ldFootWhat: 'Product pictures and data, in one place', ldFootRun: 'With the real data', ldFootRun1: 'Open KHOI_DONG_ANT.bat on the A.N.T computer', ldFootRun2: 'Open this page with ?local=1', ldFootRun3: 'Master data and SharePoint pictures come through serve.py', ldFootPage: 'This page', ldFootLegal: '© 2026 A.N.T · Illustrations drawn for A.N.T', ldFootTop: 'Back to top',
-                dataProducts: 'products', spConnected: 'SharePoint connected', spLogin: 'SharePoint needs sign-in', connOffline: 'Disconnected', connDemo: 'Demo data', connOnlineHint: 'Using master data and SharePoint images through the A.N.T server (serve.py).', connOfflineHint: 'Cannot reach the A.N.T server on this computer. Run run-ant.bat in the ANT folder; A.N.T reconnects by itself.', connOfflineSharedHint: 'Lost the A.N.T server. Reload the page (you may need to sign in again); if it persists, tell the server owner.', liveLoginServer: 'The A.N.T server\'s SharePoint session has expired. Ask the server owner to sign in again on the server.', connDemoHint: 'This preview uses demo data. Open the link with ?local=1 on a computer running A.N.T for live data.', comingSoon: 'This function is being prepared.',
+                ldQ6: 'How do I run Grand Archives with the real data?', ldA6: 'On the Grand Archives computer, open KHOI_DONG_ANT.bat and choose to open Grand Archives; the first time it installs what is missing. Grand Archives opens in the browser at 127.0.0.1:8020.',
+                ldFootWhat: 'Product pictures and data, in one place', ldFootRun: 'With the real data', ldFootRun1: 'Open KHOI_DONG_ANT.bat on the Grand Archives computer', ldFootRun2: 'Open this page with ?local=1', ldFootRun3: 'Master data and SharePoint pictures come through serve.py', ldFootPage: 'This page', ldFootLegal: '© 2026 Grand Archives · Product photos: Anua, celimax', ldFootTop: 'Back to top',
+                dataProducts: 'products', spConnected: 'SharePoint connected', spLogin: 'SharePoint needs sign-in', connOffline: 'Disconnected', connDemo: 'Demo data', connOnlineHint: 'Using master data and SharePoint images through the Grand Archives server (serve.py).', connOfflineHint: 'Cannot reach the Grand Archives server on this computer. Run run-ant.bat in the ANT folder; Grand Archives reconnects by itself.', connOfflineSharedHint: 'Lost the Grand Archives server. Reload the page (you may need to sign in again); if it persists, tell the server owner.', liveLoginServer: 'The Grand Archives server\'s SharePoint session has expired. Ask the server owner to sign in again on the server.', connDemoHint: 'This preview uses demo data. Open the link with ?local=1 on a computer running Grand Archives for live data.', comingSoon: 'This function is being prepared.',
                 workspace: 'Workspace', tools: 'Tools', soon: 'Soon', uploadLookup: 'Upload lookup file', logoLibrary: 'Logo library', shortcuts: 'Shortcuts', brandLibraryTitle: 'Brand library',
-                mainPage: 'Home', aboutAnt: 'About A.N.T', lightMode: 'Light mode', overview: 'Overview', ready: 'Ready', requestMeta: 'Assign and follow the photos you need', suggestions: 'Suggested brands', viewAll: 'View all', openLibrary: 'Open library', recent: 'Recent', recentEmpty: 'No activity yet. Search an EAN or open a brand to get started.', colName: 'Name', colType: 'Type', colTime: 'Time', typeSearch: 'Search', typeBrand: 'Brand', typeTool: 'Tool',
-                features: 'Features', howItWorks: 'How it works', openApp: 'Open A.N.T', previewBadge: 'Preview · demo data', heroTitle: 'Every product image and record, in one place.', heroLead: 'Type an EAN, article code or product name. A.N.T matches it against master data and returns the packshots, product details and image tools.', getStarted: 'Open the workspace', seeHow: 'See how it works', statBrands: 'brands', statLogos: 'standardised logos', statAreas: 'workspaces',
+                mainPage: 'Home', aboutAnt: 'About Grand Archives', lightMode: 'Light mode', overview: 'Overview', ready: 'Ready', requestMeta: 'Assign and follow the photos you need', suggestions: 'Suggested brands', viewAll: 'View all', openLibrary: 'Open library', recent: 'Recent', recentEmpty: 'No activity yet. Search an EAN or open a brand to get started.', colName: 'Name', colType: 'Type', colTime: 'Time', typeSearch: 'Search', typeBrand: 'Brand', typeTool: 'Tool',
+                features: 'Features', howItWorks: 'How it works', openApp: 'Open Grand Archives', previewBadge: 'Preview · demo data', heroTitle: 'Every product image and record, in one place.', heroLead: 'Type an EAN, article code or product name. Grand Archives matches it against master data and returns the packshots, product details and image tools.', getStarted: 'Open the workspace', seeHow: 'See how it works', statBrands: 'brands', statLogos: 'standardised logos', statAreas: 'workspaces',
                 featuresTitle: 'Everything for product assets', featuresLead: 'Four workspaces sharing one source of product data.', featSearchTitle: 'Search by EAN, code or name', featSearchText: 'Recognises the kind of code, matches master data and gathers every related image.', featLibraryText: 'Standardised logos, images and master data, organised by brand.', featEditText: 'Resize with presets, crop, place images on white and export in bulk.', featFillText: 'Check and fill Excel files to each retailer’s template.',
                 howLead: 'Master data is the bridge: every input is resolved to one product before images are fetched.', step1Title: 'Type or upload a file', step1Text: 'One EAN, article code, product name, or a whole CSV list.', step2Title: 'Match master data', step2Text: 'Barcodes, article codes, old codes and names resolve to the right product.', step3Title: 'Get images and details', step3Text: 'Packshots, box and lifestyle shots with dimensions, compliance and supplier data.', ctaTitle: 'Ready to find images?', ctaText: 'Open the workspace and try it with a sample EAN.',
-                liveNoProduct: 'This product is not in master data. Try another EAN, article code or name.', liveNoFileMatch: 'No code in the file is in master data.', liveFileMatches: 'Products matched in the file', liveNotFound: 'codes not found', liveSearching: 'Searching SharePoint for images…', liveClassifying: 'Classifying images…', livePending: 'Classifying', liveByPerson: 'Confirmed', liveReview: 'Check', liveSelect: 'Select', liveCategory: 'Image type', liveLearned: 'Saved; A.N.T will learn from this image', liveZipping: 'Zipping the originals…', liveFailed: 'That did not work', liveSelectAll: 'Select all', liveClearAll: 'Clear selection', liveDownloadSelected: 'Download selected', liveImages: 'images', liveToReview: 'to check', liveSelectedCount: 'selected', liveLoginNeeded: 'The SharePoint session has expired.', liveLoginButton: 'Sign in to SharePoint', liveLoginOpen: 'Open the sign-in page and enter the code', liveLoginDone: 'Signed in to SharePoint', liveNotInMaster: 'Not in master data · searching images for the code as typed', liveAllFields: 'All master data fields', liveDownloadOriginal: 'Download original', liveEdit: 'Edit', liveEditLoading: 'Fetching originals for Image edit', liveEditSent: 'Sent to Image edit', liveClose: 'Close', liveNoImages: 'No images found on SharePoint for this product.',
+                liveNoProduct: 'This product is not in master data. Try another EAN, article code or name.', liveNoFileMatch: 'No code in the file is in master data.', liveFileMatches: 'Products matched in the file', liveNotFound: 'codes not found', liveSearching: 'Searching SharePoint for images…', liveClassifying: 'Classifying images…', livePending: 'Classifying', liveByPerson: 'Confirmed', liveReview: 'Check', liveSelect: 'Select', liveCategory: 'Image type', liveLearned: 'Saved; Grand Archives will learn from this image', liveZipping: 'Zipping the originals…', liveFailed: 'That did not work', liveSelectAll: 'Select all', liveClearAll: 'Clear selection', liveDownloadSelected: 'Download selected', liveImages: 'images', liveToReview: 'to check', liveSelectedCount: 'selected', liveLoginNeeded: 'The SharePoint session has expired.', liveLoginButton: 'Sign in to SharePoint', liveLoginOpen: 'Open the sign-in page and enter the code', liveLoginDone: 'Signed in to SharePoint', liveNotInMaster: 'Not in master data · searching images for the code as typed', liveAllFields: 'All master data fields', liveDownloadOriginal: 'Download original', liveEdit: 'Edit', liveEditLoading: 'Fetching originals for Image edit', liveEditSent: 'Sent to Image edit', liveClose: 'Close', liveNoImages: 'No images found on SharePoint for this product.',
                 catPackshot: 'Packshot', catHuman: 'With people', catScene: 'Scene setup', catCollection: 'Collection', catColor: 'Color background', catArtwork: 'Artwork', catUncertain: 'Unclear',
                 liveTabImages: 'Images', liveTabInfo: 'Details', liveTabDocs: 'Artwork & documents', docsArtwork: 'Artwork', docsDossier: 'Product dossier', docsPickHint: 'Tick the files to download; several come as one ZIP.', docsDownloadPicked: 'Download selected', docsLook: 'Look inside', docsLooking: 'Reading the file…', docsLookFailed: 'Could not read this file.', docsFoundRows: '{n} rows with the product\'s code', docsFoundPassages: '{n} mentions of the product\'s code', docsNotFound: 'No EAN or article code in the file\'s text.', docsPreview: 'Start of the file', docsSheets: 'Sheets: {list}', docsOcrPage: '{n} scanned page(s); their text was read by OCR.', docsGaps: 'Part of it is images or unusual fonts and was not fully read; open the file to see it all.', docsPage: 'Page {n}', docsLine: 'Line {n}', docsSlide: 'Slide {n}', docsRow: '{sheet} · row {row}', infoSource: 'Source in master data', infoSourceAt: '{file} · sheet {sheet} · row {row}', infoMissing: 'Empty ({n}):', infoComplete: 'No field is empty.', docsPicked: '{n} files · {mb} MB', docsTooMany: 'At most 300 files at a time', docsDownload: 'Download', docsZipping: 'Zipping…', docsSelectGroup: 'Select the whole group', docsOpenHint: 'Click a file name to open the PDF', docsGeneral: 'General', docsNone: 'No artwork or dossier PDFs carry this product\'s EAN.', docsNoEan: 'This product has no EAN, so no PDFs could be looked up.', docsFailed: 'Could not load the PDF list from SharePoint.', docsFiles: 'files', liveProductsWord: 'products', liveProductWord: 'Product', liveStatusFilter: 'Filter by status', liveFilterResults: 'Filter by name, EAN, code…', liveNoMatchFilter: 'Nothing matches the filter.', groupAll: 'All', groupActive: 'On sale', groupUpcoming: 'Upcoming', groupInactive: 'Inactive', liveCopy: 'Copy', liveCopied: 'Copied', liveCopyIngredients: 'Copy ingredients',
                 factVolume: 'Volume', factSize: 'Size', factSizeHint: 'width × height × depth', factWeight: 'Net weight', factGross: 'gross', factCarton: 'Carton', factPerCarton: 'per carton', factPerInner: 'per inner box', unitMonths: 'months',
                 infoIdentity: 'Identity', infoCompliance: 'Compliance & shelf life', infoSupply: 'Supplier & manufacturer', infoNotes: 'Description & notes', infoPacking: 'Size & packing', infoIngredients: 'Ingredients (INCI)', infoOther: 'Other fields', infoNoData: 'Master data has nothing here yet.',
                 packProduct: 'Product', packInner: 'Inner box', packCarton: 'Carton', packSize: 'Size (mm)', packWeight: 'Weight (g)', packQty: 'Quantity', packNet: 'net', packGross: 'gross', packPerLayer: 'per layer',
-                imgFilterAll: 'All', imgFilterReview: 'To check', imgFilterConfirmed: 'Confirmed', liveSelectGroup: 'Select group', liveConfirmGroup: 'Confirm group', liveConfirmGroupHint: 'Mark these images as correctly sorted so A.N.T learns'
+                imgFilterAll: 'All', imgFilterReview: 'To check', imgFilterConfirmed: 'Confirmed', liveSelectGroup: 'Select group', liveConfirmGroup: 'Confirm group', liveConfirmGroupHint: 'Mark these images as correctly sorted so Grand Archives learns'
             }
         };
         let language = localStorage.getItem('ant-language') === 'en' ? 'en' : 'vi';
@@ -1763,7 +1802,7 @@
         }
         // Brands & Library Database
         // Sample pictures, where no real product image may appear (the demo and the landing): the
-        // landing's own flat drawings of cosmetics, in A.N.T's colours.
+        // landing's own flat drawings of cosmetics, in Grand Archives' colours.
         const DEMO_ART = ['dropper', 'jar', 'pump', 'toner', 'tube', 'cushion', 'mask'];
         function demoPackshot(brandIndex, imageIndex) {
             return `assets/art/${DEMO_ART[(brandIndex + imageIndex) % DEMO_ART.length]}.svg`;
@@ -1794,20 +1833,20 @@
 
 
         // Sample products. Their EANs are in GS1's 200-299 range, numbers for internal use that no
-        // product on a shelf carries; the pictures are the drawings in assets/art (demoPackshot).
+        // product on a shelf carries; the pictures are the products' own photos in assets/photos (ldPhoto).
         const LD_SAMPLES = [
-            { ean: '2000104001000', code: 'MAU0101', name: 'Apricot Peeling Gel', volume: '100ml', group: 'active', set: { '01_packshot': 6, '02_lifestyle_human': 2, '02_lifestyle_scene_setup': 4 } },
-            { ean: '2000104002007', code: 'MAU0102', name: 'Centella Moisturising Cream', volume: '50ml', group: 'active', set: { '01_packshot': 5, '02_lifestyle_scene_setup': 3, '02_lifestyle_collection': 1 } },
-            { ean: '2000104003004', code: 'MAU0103', name: 'Green Tea Cleansing Foam', volume: '150ml', group: 'upcoming', set: { '01_packshot': 3, '03_artwork': 2 } },
-            { ean: '2000104004001', code: 'MAU0104', name: 'Rice Essence', volume: '30ml', group: 'active', old: 'MAU0094', set: { '01_packshot': 8, '02_lifestyle_human': 3, '02_lifestyle_scene_setup': 5, '02_lifestyle_color_background_or_packshot_low_priority': 2 } },
-            { ean: '2000104005008', code: 'MAU0105', name: 'Kaolin Clay Mask', volume: '120g', group: 'inactive', set: { '01_packshot': 2 } },
-            { ean: '2000104006005', code: 'MAU0106', name: 'Daily Sun Cream SPF50', volume: '50ml', group: 'active', set: { '01_packshot': 4, '02_lifestyle_human': 4, '02_lifestyle_scene_setup': 2 } },
+            { ean: '2000104001000', code: 'MAU0101', brand: 'Anua', name: 'Peach Niacin Spread Cleansing Foam', volume: '150ml', group: 'active', photos: ['anua-foam-duo', 'anua-foam-bubbles', 'anua-foam-texture', 'anua-foam-pour'], set: { '01_packshot': 2, '02_lifestyle_scene_setup': 3, '02_lifestyle_color_background_or_packshot_low_priority': 1 } },
+            { ean: '2000104002007', code: 'MAU0102', brand: 'celimax', name: 'TXA Body Clarifying Pad', volume: '200ml', group: 'active', photos: ['celimax-txa-pad'], set: { '01_packshot': 3, '02_lifestyle_scene_setup': 2 } },
+            { ean: '2000104003004', code: 'MAU0103', brand: 'celimax', name: 'Brightening Eye Patch', volume: '80g', group: 'upcoming', photos: ['celimax-eye-patch'], set: { '01_packshot': 2, '02_lifestyle_collection': 1, '02_lifestyle_scene_setup': 1 } },
+            { ean: '2000104004001', code: 'MAU0104', brand: 'celimax', name: 'Pore + Dark Spot Brightening Cream', volume: '35ml', group: 'inactive', photos: ['celimax-pore-cream'], set: { '01_packshot': 2, '03_artwork': 2 } },
         ];
-        // Demo search (no A.N.T server, as on GitHub Pages): the same sample cosmetics as the landing,
-        // with drawn pictures, so a code tried on the landing is found in the workspace too.
+        // a sample product's k-th photo (assets/photos, supplied by the user)
+        const ldPhoto = (p, k = 0) => `assets/photos/${p.photos[k % p.photos.length]}.webp`;
+        // Demo search (no Grand Archives server, as on GitHub Pages): the same sample cosmetics as the landing,
+        // with their photos, so a code tried on the landing is found in the workspace too.
         const productsDatabase = LD_SAMPLES.map((p, i) => ({
             id: i + 1, sample: true, ean: p.ean, articleCode: p.code, name: `${p.name} ${p.volume}`, group: p.group, set: p.set,
-            images: [0, 1, 2].map(k => demoPackshot(i, k)),
+            images: p.photos.slice(0, 3).map((_, k) => ldPhoto(p, k)),
         }));
 
         // View States tracking
@@ -1957,7 +1996,7 @@
             const demo = !liveOnline && !liveMode && !liveOptIn;
             document.getElementById('home-dashboard').classList.toggle('is-demo', demo);
             document.getElementById('demo-samples').innerHTML = demo ? LD_SAMPLES.map((p, i) => `<button type="button" class="om-sample" onclick="tryDemoSearch('${p.code}')">
-                <img src="${demoPackshot(i, 0)}" alt="" loading="lazy"><strong>${esc(p.name)}</strong><small>${p.code} · ${p.volume}</small></button>`).join('') : '';
+                <img src="${ldPhoto(p)}" alt="" loading="lazy"><strong>${esc(p.name)}</strong><small>${p.code} · ${p.volume}</small></button>`).join('') : '';
             const st = h && h.stats;
             // Products by status: the six statuses add up to the file's rows.
             document.getElementById('st-total').textContent = st ? num(String(st.rows)) : '—';
@@ -2729,7 +2768,7 @@
         } catch (e) { /* storage blocked: only the ?local=1 link works */ }
         let liveOnline = false;
         let liveSameOrigin = true;  // false once this host has no /api/images (static hosting such as GitHub Pages)
-        let liveCanLogin = true;  // false through the shared address: only the A.N.T computer signs in to SharePoint
+        let liveCanLogin = true;  // false through the shared address: only the Grand Archives computer signs in to SharePoint
         let liveHealth = null;    // the last health answer: master data file, product count, SharePoint session
         async function liveHealthy(base) {
             try {
@@ -2841,7 +2880,7 @@
             renderTitle();
             selectLiveProduct(0);
         }
-        // The title row: on the main page its name and the data A.N.T is using; on a search, the search and its count.
+        // The title row: on the main page its name and the data Grand Archives is using; on a search, the search and its count.
         function renderTitle() {
             const title = document.getElementById('app-title'), sub = document.getElementById('app-subtitle');
             const query = liveMode ? liveQuery : document.getElementById('search-input').value.trim();
@@ -3345,7 +3384,7 @@
         }
 
         // ================= LANDING (sample data only: nothing from master data or SharePoint) =================
-        const LD_SAMPLE = 3;  // Rice Essence: the sample code the hero and the tools show
+        const LD_SAMPLE = 0;  // the Anua cleansing foam: the sample code the hero and the tools show
         const ldTotal = p => Object.values(p.set).reduce((a, b) => a + b, 0);
         function ldSetHtml(set, legend = true) {
             const order = CAT_ORDER.filter(c => set[c]);
@@ -3353,15 +3392,15 @@
             return `<div class="ant-set"><div class="ant-set-bar" role="img" aria-label="${esc(order.map(c => `${catName(c)} ${set[c]}`).join(', '))}">${order.map(c => `<span class="${mark(c)}" style="flex: ${set[c]}"></span>`).join('')}</div>${legend
                 ? `<div class="ant-set-legend">${order.map(c => `<span class="ld-legend"><i class="${mark(c)}" aria-hidden="true"></i>${catName(c)} <b>${set[c]}</b></span>`).join('')}</div>` : ''}</div>`;
         }
-        const ldHead = (p, i) => `<div class="ant-object"><div class="ant-object-cover"><img src="${demoPackshot(i, 0)}" alt=""></div><div class="min-w-0">
+        const ldHead = (p, i) => `<div class="ant-object"><div class="ant-object-cover"><img src="${ldPhoto(p)}" alt=""></div><div class="min-w-0">
             <p class="ld-frag-name">${esc(p.name)}</p>
-            <p class="ant-object-meta"><span>${t('ldSampleBrand')}</span><span>${esc(p.volume)}</span><span class="ant-status is-${p.group}">${groupName(p.group)}</span></p>
+            <p class="ant-object-meta"><span>${esc(p.brand)}</span><span>${esc(p.volume)}</span><span class="ant-status is-${p.group}">${groupName(p.group)}</span></p>
             <div class="ant-id-row"><span class="ant-copy">${fieldLabel('BAR CODE')} <b>${p.ean}</b></span><span class="ant-copy">${fieldLabel('CODE')} <b>${p.code}</b></span></div></div></div>`;
         // One sample product as the workspace shows it: its head, the picture set, the first packshots.
         function ldPanel(p, i) {
-            const tiles = [0, 1, 2, 3].map(k => `<div class="ant-img-card${k < 2 ? ' is-selected' : ''}">
+            const tiles = p.photos.slice(0, 4).map((_, k) => `<div class="ant-img-card${k < 2 ? ' is-selected' : ''}">
                 <span class="ant-img-check"><input type="checkbox" tabindex="-1" aria-hidden="true"${k < 2 ? ' checked' : ''}></span>
-                <span class="ant-img-thumb"><img src="${demoPackshot(i, k)}" alt=""></span>
+                <span class="ant-img-thumb"><img src="${ldPhoto(p, k)}" alt=""></span>
                 <span class="ant-img-name">${p.ean}_${k + 1}.jpg</span>
                 <span class="ant-img-meta">${k === 0 ? `<span class="ant-badge is-person">${t('liveByPerson')}</span>` : `<span>${[0, 94, 88, 81][k]}%</span><span>${['2.4', '1.8', '3.1', '2.2'][k]} MB</span>`}</span></div>`).join('');
             return `<div class="ld-panel">${ldHead(p, i)}
@@ -3376,14 +3415,14 @@
             search: () => {
                 const p = LD_SAMPLES[LD_SAMPLE];
                 return `<div class="ld-fr"><span class="ld-fr-search"><i class="fa-solid fa-magnifying-glass"></i><b>${p.ean}</b><em>${t('ldFrEan')}</em></span>
-                    <div class="ld-fr-pics">${[0, 1, 2, 3, 4, 5].map(k => `<img src="${demoPackshot(LD_SAMPLE, k)}" alt="">`).join('')}</div>${ldSetHtml(p.set)}</div>`;
+                    <div class="ld-fr-pics">${p.photos.map((_, k) => `<img src="${ldPhoto(p, k)}" alt="">`).join('')}</div>${ldSetHtml(p.set)}</div>`;
             },
             find: () => `<div class="ld-fr"><span class="ld-fr-search"><i class="fa-solid fa-magnifying-glass"></i><b>${LD_SAMPLES[LD_SAMPLE].ean}</b><em>${t('ldFrEan')}</em></span></div>`,
             docs: () => `<div class="ld-fr"><p class="ld-fr-title"><i class="fa-regular fa-file-pdf"></i>${t('ldToolDocs')}</p>
-                <ul class="ld-fr-list">${[['Rice_Essence_30ml_artwork.pdf', 'docsArtwork', '2.1 MB', 1], ['Rice_Essence_label_EN.pdf', 'docsArtwork', '0.8 MB', 1], ['MAU0104_spec_sheet.xlsx', 'docsDossier', '64 KB', 0]]
+                <ul class="ld-fr-list">${[['Peach_Niacin_Foam_150ml_artwork.pdf', 'docsArtwork', '2.1 MB', 1], ['Peach_Niacin_Foam_label_EN.pdf', 'docsArtwork', '0.8 MB', 1], ['MAU0101_spec_sheet.xlsx', 'docsDossier', '64 KB', 0]]
                     .map(([name, kind, size, on]) => `<li><span class="ld-fr-box${on ? ' is-on' : ''}">${on ? '<i class="fa-solid fa-check"></i>' : ''}</span><i class="fa-regular ${name.endsWith('.pdf') ? 'fa-file-pdf' : 'fa-file-excel'} ld-fr-ico"></i><span class="ld-fr-name">${name}<small>${t(kind)} · ${size}</small></span></li>`).join('')}</ul>
                 <div class="ld-fr-foot"><span>${fill(t('docsPicked'), { n: 2, mb: '2.9' })}</span><span class="ant-btn ant-btn-primary">${t('docsDownloadPicked')}</span></div></div>`,
-            edit: () => `<div class="ld-fr"><div class="ld-fr-crop"><img src="${demoPackshot(LD_SAMPLE, 2)}" alt=""><span></span></div>
+            edit: () => `<div class="ld-fr"><div class="ld-fr-crop"><img src="${ldPhoto(LD_SAMPLES[LD_SAMPLE], 1)}" alt=""><span></span></div>
                 <div class="ld-fr-chips">${['1000 × 1000', '1500 × 2000', 'WebP · 85%'].map((s, k) => `<span class="ld-fr-chip${k ? '' : ' is-on'}">${s}</span>`).join('')}</div></div>`,
             fill: () => `<div class="ld-fr"><p class="ld-fr-title"><i class="fa-regular fa-file-excel"></i>Douglas_template.xlsx</p>
                 <table class="ld-fr-table"><thead><tr><th>${fieldLabel('BAR CODE')}</th><th>${t('ldFrName')}</th><th>${fieldLabel('UNIT/VOLUME')}</th></tr></thead>
@@ -3412,12 +3451,14 @@
         function ldRenderHero() {
             const p = LD_SAMPLES[LD_SAMPLE];
             document.getElementById('ld-stage').innerHTML = `
-                <div class="ld-window"><div class="ld-window-bar"><i></i><i></i><i></i><span>A.N.T</span></div><div class="ld-window-body">${ldPanel(p, LD_SAMPLE)}</div></div>
-                <figure class="ld-float is-pic"><img src="${demoPackshot(LD_SAMPLE, 1)}" alt=""><figcaption><span>${catName('01_packshot')}</span><span class="ant-badge is-person">${t('liveByPerson')}</span></figcaption></figure>
-                <div class="ld-float is-find">${LD_FRAG.find()}</div>
-                <div class="ld-float is-docs">${LD_FRAG.docs()}</div>
-                <div class="ld-float is-pallet">${LD_FRAG.pallet()}</div>`;
-            document.getElementById('ld-stat-brands').textContent = brandsDatabase.length;
+                <div class="ld-window" data-depth=".3"><div class="ld-window-bar"><i></i><i></i><i></i><span>Grand Archives</span></div><div class="ld-window-body">${ldPanel(p, LD_SAMPLE)}</div></div>
+                <figure class="ld-float is-pic" data-depth="1"><img src="${ldPhoto(p)}" alt=""><figcaption><span>${catName('01_packshot')}</span><span class="ant-badge is-person">${t('liveByPerson')}</span></figcaption></figure>
+                <div class="ld-float is-find" data-depth="1.5">${LD_FRAG.find()}</div>
+                <div class="ld-float is-docs" data-depth=".8">${LD_FRAG.docs()}</div>
+                <div class="ld-float is-pallet" data-depth="1.25">${LD_FRAG.pallet()}</div>`;
+            const brands = document.getElementById('ld-stat-brands');
+            brands.dataset.count = brandsDatabase.length;
+            brands.textContent = brandsDatabase.length;
         }
         // Try it: the typed line searches the sample products the way the workspace searches master data;
         // the first match shows as the workspace shows it, the others are named under it.
@@ -3426,6 +3467,9 @@
             const words = fold(q).split(/\s+/).filter(Boolean);
             const hits = words.length ? LD_SAMPLES.map((p, i) => [p, i]).filter(([p]) => words.every(w => fold(`${p.ean} ${p.code} ${p.name} ${p.volume}`).includes(w))) : [];
             const out = document.getElementById('ld-try-out');
+            const key = `${language}:${words.length ? hits.map(([, i]) => i).join(',') : '-'}`;
+            if (out.dataset.key === key) return;
+            out.dataset.key = key;
             if (!hits.length) { out.innerHTML = `<p class="ld-try-none">${t(words.length ? 'ldTryNone' : 'ldTryLabel')}</p>`; return; }
             const [p, i] = hits[0];
             out.innerHTML = `${ldPanel(p, i)}${hits.length > 1 ? `<p class="ld-try-more">${t('ldTryAlso')}: ${hits.slice(1).map(([o]) => esc(`${o.name} ${o.volume}`)).join(' · ')}</p>` : ''}`;
@@ -3454,7 +3498,7 @@
         let ldToolIndex = 0;
         function ldToolsRender() {
             document.getElementById('ld-tool-list').innerHTML = LD_TOOLS.map(([key, area], i) => `<li class="ld-acc">
-                <h3><button type="button" class="ld-acc-head" aria-controls="ld-acc-${i}" onclick="ldToolPick(${i})"><span>${t(key)}</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></h3>
+                <h3><button type="button" class="ld-acc-head" aria-controls="ld-acc-${i}" onclick="ldToolPick(${i})"><span>${t(key)}</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></h3><span class="ld-acc-bar" aria-hidden="true"></span>
                 <div id="ld-acc-${i}" class="ld-acc-body"><div><p>${esc(t(`${key}Say`))}</p>
                 <button type="button" class="ld-link" onclick="LD_TOOLS[${i}][3]()">${fill(t('ldCmdGo'), { area: t(area) })}<i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div></div></li>`).join('');
             ldToolPick(ldToolIndex);
@@ -3468,10 +3512,155 @@
             });
             document.getElementById('ld-tool-pic').innerHTML = LD_FRAG[LD_TOOLS[i][2]]();
         }
-        // Picture kinds: the arrows move the row by most of its width.
-        function ldScroll(dir) {
+        // ---- Motion. Everything moves by transform and opacity, which the compositor runs at the screen's rate; each
+        // frame loop runs only while its part is on screen. With reduced motion none of it starts: the page is simply there.
+        const LD_MOTION = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const ldSeen = (el, on, threshold = 0) => new IntersectionObserver(([e]) => on(e.isIntersecting), { threshold }).observe(el);
+        // Picture kinds: three copies of the six cards drift left without end; the arrows glide one card, a drag moves them by hand.
+        const ldRow = { x: 0, target: null, drag: null, hover: false, on: false, last: 0 };
+        function ldRowCopies() {
             const row = document.getElementById('ld-kinds-row');
-            row.scrollBy({ left: dir * row.clientWidth * .8, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+            row.querySelectorAll('.is-copy').forEach(el => el.remove());
+            if (!LD_MOTION) return;
+            const cards = [...row.children];
+            for (let k = 0; k < 2; k++) cards.forEach(card => {
+                const copy = card.cloneNode(true);
+                copy.classList.add('is-copy');
+                copy.setAttribute('aria-hidden', 'true');
+                copy.inert = true;
+                row.append(copy);
+            });
+        }
+        function ldRowFrame(now) {
+            const row = document.getElementById('ld-kinds-row'), set = row.scrollWidth / 3;
+            const dt = ldRow.last ? Math.min(.05, (now - ldRow.last) / 1000) : 0;
+            ldRow.last = now;
+            if (ldRow.target !== null) {
+                ldRow.x += (ldRow.target - ldRow.x) * Math.min(1, dt * 8);
+                if (Math.abs(ldRow.target - ldRow.x) < .5) { ldRow.x = ldRow.target; ldRow.target = null; }
+            } else if (!ldRow.drag && !ldRow.hover) ldRow.x -= 42 * dt;  // px a second
+            // one copy's width further on looks the same: fold back so the row never runs out
+            const fold = ldRow.x <= -set ? set : ldRow.x > 0 ? -set : 0;
+            if (fold) {
+                ldRow.x += fold;
+                if (ldRow.target !== null) ldRow.target += fold;
+                if (ldRow.drag) ldRow.drag.x0 += fold;
+            }
+            row.style.transform = `translate3d(${ldRow.x.toFixed(2)}px, 0, 0)`;
+            if (ldRow.on) requestAnimationFrame(ldRowFrame);
+            else ldRow.last = 0;
+        }
+        function ldScroll(dir) {
+            const row = document.getElementById('ld-kinds-row'), card = row.firstElementChild;
+            if (!LD_MOTION) return row.parentElement.scrollBy({ left: dir * row.parentElement.clientWidth * .8 });
+            const step = card.getBoundingClientRect().width + parseFloat(getComputedStyle(card).marginRight);
+            ldRow.target = (ldRow.target ?? ldRow.x) - dir * step;
+        }
+        // Hero: the window and the pieces around it sit at different depths; the mouse and the scroll move them apart.
+        const ldHero = { px: 0, py: 0, cur: new WeakMap(), on: false, running: false };
+        function ldHeroFrame() {
+            const stage = document.getElementById('ld-stage'), r = stage.getBoundingClientRect();
+            const s = Math.max(-1, Math.min(1, (innerHeight / 2 - (r.top + r.height / 2)) / innerHeight));
+            let moving = false;
+            stage.querySelectorAll('[data-depth]').forEach(el => {
+                const d = +el.dataset.depth, c = ldHero.cur.get(el) || { x: 0, y: 0 };
+                const tx = ldHero.px * d * 22, ty = ldHero.py * d * 16 - s * d * 64;
+                c.x += (tx - c.x) * .1;
+                c.y += (ty - c.y) * .1;
+                if (Math.abs(tx - c.x) + Math.abs(ty - c.y) > .05) moving = true;
+                ldHero.cur.set(el, c);
+                el.style.translate = `${c.x.toFixed(2)}px ${c.y.toFixed(2)}px`;
+            });
+            ldHero.running = moving && ldHero.on;
+            if (ldHero.running) requestAnimationFrame(ldHeroFrame);
+        }
+        function ldHeroKick() {
+            if (!ldHero.on || ldHero.running) return;
+            ldHero.running = true;
+            requestAnimationFrame(ldHeroFrame);
+        }
+        // The reading bar under the navigation: how far down the page is.
+        let ldBarQueued = false;
+        function ldProgress() {
+            if (ldBarQueued || !document.body.classList.contains('ant-landing')) return;
+            ldBarQueued = true;
+            requestAnimationFrame(() => {
+                ldBarQueued = false;
+                const max = document.documentElement.scrollHeight - innerHeight;
+                document.querySelector('.ld-progress').style.transform = `scaleX(${max > 0 ? Math.min(1, scrollY / max).toFixed(4) : 0})`;
+            });
+        }
+        // Figures count up once when they come into view.
+        function ldCount(el) {
+            const to = +el.dataset.count, t0 = performance.now();
+            const step = now => {
+                const k = Math.min(1, (now - t0) / 1400);
+                el.textContent = Math.round(to * (1 - (1 - k) ** 3));
+                if (k < 1) requestAnimationFrame(step);
+            };
+            requestAnimationFrame(step);
+        }
+        // Try it: the first time it comes into view the sample code types itself in and the result follows each letter;
+        // a click into the field stops it and leaves it to the visitor.
+        function ldAutoType() {
+            const input = document.getElementById('ld-try-input'), text = input.value;
+            let n = 0, stop = false;
+            input.addEventListener('focus', () => { stop = true; }, { once: true });
+            input.value = '';
+            ldTry();
+            const tick = () => {
+                if (stop) return;
+                input.value = text.slice(0, ++n);
+                ldTry();
+                if (n < text.length) setTimeout(tick, 85);
+            };
+            setTimeout(tick, 500);
+        }
+        function ldMotion() {
+            const marquee = document.getElementById('ld-marquee');
+            ldSeen(marquee, on => {
+                ldRow.on = on;
+                if (on) requestAnimationFrame(ldRowFrame);
+            });
+            marquee.addEventListener('pointerdown', e => {
+                ldRow.drag = { x0: ldRow.x, px: e.clientX };
+                ldRow.target = null;
+                marquee.setPointerCapture(e.pointerId);
+            });
+            marquee.addEventListener('pointermove', e => { if (ldRow.drag) ldRow.x = ldRow.drag.x0 + e.clientX - ldRow.drag.px; });
+            ['pointerup', 'pointercancel'].forEach(type => marquee.addEventListener(type, () => { ldRow.drag = null; }));
+            marquee.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') ldRow.hover = true; });
+            marquee.addEventListener('pointerleave', () => { ldRow.hover = false; });
+
+            const hero = document.querySelector('.ld-hero');
+            ldSeen(hero, on => { ldHero.on = on; if (on) ldHeroKick(); });
+            hero.addEventListener('pointermove', e => {
+                if (e.pointerType !== 'mouse') return;
+                const r = hero.getBoundingClientRect();
+                ldHero.px = (e.clientX - r.left) / r.width * 2 - 1;
+                ldHero.py = (e.clientY - r.top) / r.height * 2 - 1;
+                ldHeroKick();
+            });
+            hero.addEventListener('pointerleave', () => { ldHero.px = ldHero.py = 0; ldHeroKick(); });
+            addEventListener('scroll', () => { ldProgress(); ldHeroKick(); }, { passive: true });
+            addEventListener('resize', ldProgress, { passive: true });
+
+            let counted = false;
+            ldSeen(document.querySelector('.ld-stats'), on => {
+                if (!on || counted) return;
+                counted = true;
+                document.querySelectorAll('.ld-stats [data-count]').forEach(ldCount);
+            }, .5);
+            let typed = false;
+            ldSeen(document.querySelector('.ld-frame'), on => {
+                if (!on || typed) return;
+                typed = true;
+                ldAutoType();
+            }, .45);
+            const list = document.getElementById('ld-tool-list');
+            list.classList.add('is-auto');
+            list.addEventListener('animationend', e => { if (e.target.classList.contains('ld-acc-bar')) ldToolPick((ldToolIndex + 1) % LD_TOOLS.length); });
+            ldSeen(list, on => list.classList.toggle('is-live', on));
         }
         // Close: the code typed into the sentence is searched in the workspace (the demo's first EAN when left empty).
         function ldOpen() {
@@ -3482,8 +3671,9 @@
         }
         // Each part rises once as it enters; without script or with reduced motion everything is simply there.
         function ldWatchRise() {
-            if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            if (!LD_MOTION) return;
             document.documentElement.classList.add('ld-js');
+            ldMotion();
             const io = new IntersectionObserver(entries => entries.forEach(entry => {
                 if (!entry.isIntersecting) return;
                 entry.target.classList.add('is-in');
@@ -3495,6 +3685,7 @@
             ldRenderHero();
             ldTry();
             ldToolsRender();
+            ldRowCopies();
         }
 
         function showToast(message) {
