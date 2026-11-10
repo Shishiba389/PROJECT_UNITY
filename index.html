@@ -144,12 +144,13 @@
         .ant-lang button[aria-pressed="true"] { background: var(--ink-dark); color: var(--on-dark); }
         #toast { top: 84px; right: 24px; max-width: min(380px, calc(100vw - 32px)); border-radius: 16px !important; background: var(--ink-dark); color: var(--on-dark); }
         #main-scroll-container { background: var(--bg); }
-        /* The workspace is an app: double-clicking a label or an empty spot selects nothing (no stray caret or
-           highlight); the data people copy stays selectable, and inputs keep their own selection. */
-        #ant-app { -webkit-user-select: none; user-select: none; }
+        /* The workspace and its landing page select nothing on a double click or a drag (no stray caret, no orange
+           blocks over headings); the data people copy stays selectable, and inputs keep their own selection. */
+        #ant-app, #landing-view { -webkit-user-select: none; user-select: none; }
         #ant-app :is(input, textarea, select, td, .om-prod-head h2, .om-prod-meta, .om-kpi dd, .ant-mono, .ant-copy b, .ant-result-name,
             .ant-kv, .ant-inci, .ant-pack, .ant-img-name, .ant-doc-name span, #live-docs-sub, #live-viewer-name, #live-viewer-meta,
             .om-src-list dd, .om-raw, .ant-doc-look, .ant-source-at) { -webkit-user-select: text; user-select: text; }
+        #landing-view :is(input, textarea, .ant-mono) { -webkit-user-select: text; user-select: text; }
         @media (min-width: 1024px) {
             #ant-topbar { flex-wrap: nowrap; gap: 12px; padding: 20px 32px 12px; }
             .ant-topbar-search { order: 0; flex: 0 1 420px; margin-left: 20px; }
@@ -383,7 +384,7 @@
         body.ant-landing #ant-app { display: none !important; }
         /* The landing scrolls the document itself (anchors follow the window). */
         html:has(body.ant-landing), body.ant-landing { height: auto !important; overflow: visible !important; background: var(--sheet); }
-        body.ant-landing { display: block !important; }
+        body.ant-landing { display: block !important; width: auto !important; }  /* not w-screen (100vw): with the page's scrollbar that is wider than the page */
         body.ant-landing #landing-view { display: block; }
         #landing-view .ant-mono, #landing-view .ant-copy b { font-family: inherit; }
         #landing-view { --ld-m: clamp(16px, 2.8vw, 40px); --ld-gap: 24px; --ld-display: clamp(46px, 5.4vw, 104px); --ld-h2: clamp(32px, 3.4vw, 60px); --ld-say: 20px; --ld-28: clamp(20px, 1.95vw, 28px); --on-dark-2: #bdbdbd; }
